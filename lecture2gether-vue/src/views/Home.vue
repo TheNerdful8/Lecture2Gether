@@ -7,12 +7,11 @@
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue';
+import Vue from 'vue';
+import Component from 'vue-class-component';
 
-export default {
-    name: 'Home',
-    components: {
-        HelloWorld,
-    },
-};
+@Component({})
+export default class L2gHome extends Vue {
+
+}
 </script>
