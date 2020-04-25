@@ -1,4 +1,4 @@
 {
-  "apiRoot": "/api",
+  "apiRoot": "http://localhost:5000",
   "environment": "dev"
 }

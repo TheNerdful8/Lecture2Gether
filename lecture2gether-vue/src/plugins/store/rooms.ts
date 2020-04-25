@@ -18,17 +18,14 @@ export const roomsModule: Module<RoomsState, any> = {
     },
 
     actions: {
-        newRoom: (context) => fetch(new Request(`${context.rootState.settings.apiRoot}/rooms`, {
-            method: 'POST',
-            body: JSON.stringify(({} as NewRoomRequest)),
-        }))
-            .then((response) => response.json())
-            .then((response: NewRoomResponse) => {
-                context.commit('setRoomId', response.roomId);
-            }),
+        newRoom: (context) => {
+            return socketio.createRoom().then(response => {
+                context.commit('setRoomId', response.roomId)
+            });
+        },
 
         joinRoom: (context, roomId: string) => {
-            socketio.joinRoom(roomId).then((response) => {
+            socketio.joinRoom(roomId).then(response => {
                 context.commit('setRoomId', response.roomId);
             });
         },
