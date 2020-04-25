@@ -1,5 +1,5 @@
 <template>
-    <l2g-player url="https://www.youtube.com/watch?v=m8UQ4O7UiDs"></l2g-player>
+    <l2g-player class="l2g-player" url="https://www.youtube.com/watch?v=m8UQ4O7UiDs"></l2g-player>
 </template>
 
 <script lang="ts">
@@ -43,4 +43,14 @@ export default class L2gPlayerView extends Vue {
 </script>
 
 <style scoped lang="scss">
+    .l2g-player > * {
+        width: 100%!important;
+    }
+    .l2g-player {
+        margin: auto;
+        //hacky way to force centered video.
+        //this size has to be the same as the video
+        //width in src/components/Player.vue
+        max-width: 750px;
+    }
 </style>
