@@ -101,9 +101,8 @@ def on_create(init_state):
 
     join_room(room_token)
 
-    emit('join_room', {'roomId': room_token}, room=request.sid)
+    send({'roomId': room_token, 'status_code': 200}, room=request.sid)
     emit('video_state_update', state, room=room_token)
-    send({'status_code': 200}, room=request.sid)
 
 @socketio.on('join')
 def on_join(data):
@@ -129,9 +128,8 @@ def on_join(data):
         join_room(room_token)
 
     # Send response anyway
-    emit('join_room', {'roomId': room_token}, room=request.sid)
+    send({'roomId': room_token,'status_code': 200}, room=request.sid)
     emit('video_state_update', room['state'], room=request.sid)
-    send({'status_code': 200}, room=request.sid)
 
 @socketio.on('leave')
 def on_leave(data):
