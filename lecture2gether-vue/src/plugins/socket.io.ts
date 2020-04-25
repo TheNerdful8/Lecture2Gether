@@ -63,31 +63,25 @@ const onVideoStateUpdate = (state: any) => {
 
 export const joinRoom = (roomId: string): Promise<JoinRoomResponse> => {
     console.debug('socket.io joining room', roomId)
-    const socket = getSafeSocket();
     return new Promise((resolve, reject) => {
-        socket.once(receivedEvents.roomJoined, (response: JoinRoomResponse) => {
+        getSafeSocket().emit(sentEvents.joinRoom, {
+            roomId,
+        } as JoinRoomRequest, (response: JoinRoomResponse) => {
             console.debug(`socket.io response from joining room`, response)
             if (response.status_code !== 200) reject(response);
             else resolve(response);
         });
-
-        socket.emit(sentEvents.joinRoom, {
-            roomId,
-        } as JoinRoomRequest);
     });
 };
 
 
 export const createRoom = (): Promise<JoinRoomResponse> => {
     console.debug('socket.io creating room')
-    const socket = getSafeSocket();
     return new Promise<JoinRoomResponse>((resolve, reject) => {
-        socket.once(receivedEvents.roomJoined, (response: JoinRoomResponse) => {
+        getSafeSocket().emit(sentEvents.createRoom, {}, (response: JoinRoomResponse) => {
             console.debug('socket.io response from creating room', response)
-            if (response.status_code !== 200) resolve(response)     // TODO Change back to reject
+            if (response.status_code !== 200) reject(response)
             else resolve(response)
         });
-
-        socket.emit(sentEvents.createRoom, {});
     })
 }

@@ -99,22 +99,20 @@ def on_create(init_state):
 
     join_room(room_token)
 
-    emit({'roomId': room_token, 'status_code': 200}, room=request.sid)
     emit('video_state_update', state, room=room_token)
+    return {'roomId': room_token, 'status_code': 200}, request.sid
 
 @socketio.on('join')
 def on_join(data):
     """Join a watch room"""
 
     if 'roomId' not in data:
-        emit({'status_code': 400}, room=request.sid)
-        return
+        return {'status_code': 400}, request.sid
 
     room_token = data['roomId']
 
     if not db.hexists('rooms', room_token):  # Room does not exist
-        emit({'status_code': 404}, room=request.sid)
-        return
+        return {'status_code': 404}, request.sid
 
     room = json.loads(db.hget('rooms', room_token))
 
@@ -126,25 +124,22 @@ def on_join(data):
         join_room(room_token)
 
     # Emit response anyway
-    emit({'roomId': room_token,'status_code': 200}, room=request.sid)
     emit('video_state_update', room['state'], room=request.sid)
+    return {'roomId': room_token,'status_code': 200}, request.sid
 
 @socketio.on('leave')
 def on_leave(data):
     """Leave a watch room"""
     if 'roomId' not in data:
-        emit({'status_code': 400}, room=request.sid)
-        return
+        return {'status_code': 400}, request.sid
 
     room_token = data['roomId']
 
     if not db.hexists('rooms', room_token):  # Room does not exist
-        emit({'status_code': 404}, room=request.sid)
-        return
+        return {'status_code': 404}, request.sid
 
     if not room_token in rooms(sid=request.sid):  # User not in room
-        emit({'status_code': 403}, room=request.sid)
-        return
+        return {'status_code': 403}, request.sid
 
     room = json.loads(db.hget('rooms', room_token))
     room['count'] -= 1
@@ -154,26 +149,21 @@ def on_leave(data):
         db.hdel('rooms', room_token)
 
     leave_room(room_token)
-    emit({'status_code': 200}, room=request.sid)
+    return {'status_code': 200}, request.sid
 
 @socketio.on('video_state_set')
 def on_video_state_set(state):
-    # TODO: Only update params, not delete old params
     """Update a watch room"""
     if 'roomId' not in state:
-        emit({'status_code': 400}, room=request.sid)
-        return
+        return {'status_code': 400}, request.sid
 
     room_token = state['roomId']
 
-
     if not db.hexists('rooms', room_token):  # Room does not exist
-        emit({'status_code': 404}, room=request.sid)
-        return
+        {'status_code': 404}, request.sid
 
     if not room_token in rooms(sid=request.sid):  # User not in room
-        emit({'status_code': 403}, room=request.sid)
-        return
+        return {'status_code': 403}, request.sid
 
     state = add_current_time_to_state(state)
     state = add_set_time_to_state(state)
@@ -183,7 +173,7 @@ def on_video_state_set(state):
     db.hset('rooms', room_token, json.dumps(room))
 
     emit('video_state_update', state, room=room_token)
-    emit({'status_code': 200}, room=request.sid)
+    return {'status_code': 200}, request.sid
 
 def add_current_time_to_state(state):
     state['currentTime'] = datetime.now().timestamp()
