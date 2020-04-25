@@ -14,7 +14,6 @@ from redis.client import Redis
 
 
 logging.basicConfig(level=os.getenv('LOGLEVEL', 'INFO'))
-# TODO: readme redis
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -57,10 +56,19 @@ def decode_l2go_path():
     except requests.exceptions.RequestException as e:
         abort(404)
 
+    title = re.search('<title>(.*)</title>', r.content.decode())
+    if title.groups()[0] == 'Catalog - Lecture2Go':
+        # Redirected to catalog means video does not exist
+        abort(404)
+
     m = re.search('https://[^"]*m3u8', r.content.decode())
 
     if m is None:
-        abort(404)
+        # No m3u8 file found means wrong (or no) password
+        if password:
+            abort(403)
+        else:
+            abort(401)
 
     return jsonify(m.group())
 
@@ -100,19 +108,19 @@ def on_create(init_state):
     join_room(room_token)
 
     emit('video_state_update', state, room=room_token)
-    return {'roomId': room_token, 'status_code': 200}, request.sid
+    return {'roomId': room_token, 'status_code': 200}, 200
 
 @socketio.on('join')
 def on_join(data):
     """Join a watch room"""
 
     if 'roomId' not in data:
-        return {'status_code': 400}, request.sid
+        return {'status_code': 400}, 400
 
     room_token = data['roomId']
 
     if not db.hexists('rooms', room_token):  # Room does not exist
-        return {'status_code': 404}, request.sid
+        return {'status_code': 404}, 404
 
     room = json.loads(db.hget('rooms', room_token))
 
@@ -125,21 +133,21 @@ def on_join(data):
 
     # Emit response anyway
     emit('video_state_update', room['state'], room=request.sid)
-    return {'roomId': room_token,'status_code': 200}, request.sid
+    return {'roomId': room_token,'status_code': 200}, 200
 
 @socketio.on('leave')
 def on_leave(data):
     """Leave a watch room"""
     if 'roomId' not in data:
-        return {'status_code': 400}, request.sid
+        return {'status_code': 400}, 400
 
     room_token = data['roomId']
 
     if not db.hexists('rooms', room_token):  # Room does not exist
-        return {'status_code': 404}, request.sid
+        return {'status_code': 404}, 404
 
     if not room_token in rooms(sid=request.sid):  # User not in room
-        return {'status_code': 403}, request.sid
+        return {'status_code': 403}, 403
 
     room = json.loads(db.hget('rooms', room_token))
     room['count'] -= 1
@@ -149,21 +157,21 @@ def on_leave(data):
         db.hdel('rooms', room_token)
 
     leave_room(room_token)
-    return {'status_code': 200}, request.sid
+    return {'status_code': 200}, 200
 
 @socketio.on('video_state_set')
 def on_video_state_set(state):
     """Update a watch room"""
     if 'roomId' not in state:
-        return {'status_code': 400}, request.sid
+        return {'status_code': 400}, 400
 
     room_token = state['roomId']
 
     if not db.hexists('rooms', room_token):  # Room does not exist
-        {'status_code': 404}, request.sid
+        {'status_code': 404}, 404
 
     if not room_token in rooms(sid=request.sid):  # User not in room
-        return {'status_code': 403}, request.sid
+        return {'status_code': 403}, 403
 
     state = add_current_time_to_state(state)
     state = add_set_time_to_state(state)
@@ -173,7 +181,7 @@ def on_video_state_set(state):
     db.hset('rooms', room_token, json.dumps(room))
 
     emit('video_state_update', state, room=room_token)
-    return {'status_code': 200}, request.sid
+    return {'status_code': 200}, 200
 
 @socketio.on('chat_send')
 def on_chat_send(message):

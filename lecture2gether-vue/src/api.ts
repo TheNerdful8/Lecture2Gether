@@ -15,9 +15,9 @@ export const receivedEvents = {
 };
 
 
-export type NewRoomRequest = {}
+export type CreateRoomRequest = {}
 
-export interface NewRoomResponse extends BaseResponse{
+export interface CreateRoomResponse extends BaseResponse{
     roomId: string;
 }
 
@@ -28,3 +28,9 @@ export interface JoinRoomRequest {
 export interface JoinRoomResponse extends BaseResponse {
     roomId: string;
 }
+
+export type LeaveRoomRequest = {
+    roomId: string;
+}
+
+export interface LeaveRoomResponse extends BaseResponse {}
