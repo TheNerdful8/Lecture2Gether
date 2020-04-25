@@ -47,12 +47,13 @@ export default class Toolbar extends Vue {
     .searchbar-cover {
         margin: 0;
         padding: 0;
-        position: absolute;
+        position: relative;
         top: 0;
         left: 0;
         width: 100%;
         max-width: 100%;
         transition: all 0.8s ease;
+        margin-bottom: 64px;
     }
 
     .searchbar-cover-collapsed {
