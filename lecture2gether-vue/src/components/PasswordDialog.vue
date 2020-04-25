@@ -5,13 +5,20 @@
                 <h2 class="display-3">
                     Video is password protected!
                 </h2>
-                <v-form @submit.prevent="sendPassword" class="ma-12">
+                <v-form @submit.prevent="sendPassword" class="ma-12" v-model="valid">
                     <v-layout row justify-space-between>
                         <v-flex md9 class="d-flex align-center">
-                            <v-text-field v-model="password" label="Password" type="password"></v-text-field>
+                            <v-text-field v-model="password" label="Password" type="password"
+                                          :rules="[rules.required]"></v-text-field>
                         </v-flex>
                         <v-flex md2 class="d-flex align-center">
-                            <v-btn type="submit" color="secondary" class="password-button">Submit</v-btn>
+                            <v-btn type="submit" color="secondary" class="password-button" :disabled="!valid">
+                                <span v-if="!loading">Submit</span>
+                                <span v-if="loading">
+                                    <v-progress-circular color="white" indeterminate="true" size="24" width="3">
+                                    </v-progress-circular>
+                                </span>
+                            </v-btn>
                         </v-flex>
                     </v-layout>
                 </v-form>
@@ -26,10 +33,18 @@
 
     @Component({})
     export default class PasswordDialog extends Vue {
-        password='';
+        password = '';
+
+        loading = false;
+
+        valid = false;
+
+        rules = {
+            required: value => !!value || 'Required.',
+        }
 
         sendPassword() {
-            // TODO
+            this.loading = true;
         }
     }
 </script>
@@ -40,5 +55,6 @@
         height: 480px;
     }
     .password-button {
+        width: 96px;
     }
 </style>
