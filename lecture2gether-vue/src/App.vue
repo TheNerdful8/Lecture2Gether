@@ -9,11 +9,13 @@
 <script lang="ts">
 import Component from 'vue-class-component';
 import Vue from 'vue';
+import { connect } from '@/plugins/socket.io';
 
 @Component({})
 export default class L2gHome extends Vue {
     created(): void {
         this.$store.dispatch('fetchSettings');
+        connect();
     }
 }
 </script>
