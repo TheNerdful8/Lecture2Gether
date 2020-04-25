@@ -1,12 +1,14 @@
 <template>
     <v-container class="searchbar-cover"
                  :class="collapsed ? 'searchbar-cover-collapsed' : 'searchbar-cover-extended'">
-        <v-toolbar
+        <v-card
             class="searchbar-background"
             color="primary"
-            flat>
-            <h1 v-if="!collapsed" class="lecture2gether-heading display-4">Lecture&#x200b;2Gether</h1>
-        </v-toolbar>
+            flat
+            bottom
+            >
+                <h1 v-if="!collapsed" class="lecture2gether-heading display-4">Lecture&#x200b;2Gether</h1>
+        </v-card>
         <v-form @submit.prevent="watch">
             <v-card :class="collapsed ? 'searchbar-collapsed' : 'searchbar-extended'"
                     class="mx-auto searchbar">
@@ -70,6 +72,9 @@ export default class Toolbar extends Vue {
     }
 
     .searchbar-background {
+        display: flex;
+        align-items: flex-end;
+        flex-direction: column;
         height: 100% !important;
     }
 
@@ -81,7 +86,6 @@ export default class Toolbar extends Vue {
     .lecture2gether-heading {
         color: white;
         margin: auto;
-        padding-top: 64px;
         transition: all 0.8s ease;
     }
 </style>
