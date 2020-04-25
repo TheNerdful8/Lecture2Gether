@@ -19,8 +19,14 @@ import { Watch } from 'vue-property-decorator';
 })
 export default class L2gHome extends Vue {
     @Watch('$store.state.isConnected')
-    onConnectedChanged(): void {
-        this.$store.dispatch('newRoom');
+    async onConnectedChanged() {
+        await this.$store.dispatch('newRoom');
+        await this.$router.push({
+            name: 'player',
+            params: {
+                roomId: this.$store.state.rooms.roomId,
+            },
+        });
     }
 }
 </script>

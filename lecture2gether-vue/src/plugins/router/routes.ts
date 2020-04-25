@@ -9,7 +9,7 @@ export default [
         component: Home,
     },
     {
-        path: '/player',
+        path: '/l/:roomId',
         name: 'player',
         component: Player,
     },
@@ -18,4 +18,9 @@ export default [
         name: 'syncdebug',
         component: () => import(/* webpackChunkName: "syncdebug" */ '@/views/SyncControl.vue'),
     },
+
+    {
+        path: '*',
+        redirect: '/'
+    }
 ] as Array<RouteConfig>;
