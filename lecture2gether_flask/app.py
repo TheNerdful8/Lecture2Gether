@@ -83,8 +83,6 @@ def on_disconnect():
             if room['count'] <= 0:  # Delete empty rooms
                 db.hdel('rooms', room_token)
 
-            # TODO: leave_room(room_token) ???
-
 @socketio.on('create')
 def on_create(init_state):
     """Create a watch room"""
