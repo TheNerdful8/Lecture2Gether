@@ -7,10 +7,12 @@ import logging
 import eventlet
 from datetime import datetime 
 from secrets import token_urlsafe
+from time import sleep
 from flask import Flask, request, jsonify, abort
 from flask_cors import CORS
 from flask_socketio import SocketIO, join_room, leave_room, close_room, emit, rooms
 from redis.client import Redis
+from redis.exceptions import ConnectionError
 
 
 logging.basicConfig(level=os.getenv('LOGLEVEL', 'INFO'))
@@ -33,10 +35,16 @@ redis_db = os.getenv('REDIS_DB', 0)
 redis_password = os.getenv('REDIS_PASSWORD', None)
 db = Redis(host=redis_host, port=redis_port, db=redis_db, password=redis_password)
 
-if db.ping():
-    logging.info("SUCCESS: Connected to Redis database.")
-else:
-    logging.error("ERROR: Connection to Redis database failed!")
+while True:
+    try:
+        db.ping()
+    except ConnectionError:
+        logging.info("Waiting for connection to redis database...")
+        sleep(1)
+    else:
+        logging.info("SUCCESS: Connected to Redis database.")
+        break
+
 
 @app.route('/l2go', methods=['POST'])
 def decode_l2go_path():
