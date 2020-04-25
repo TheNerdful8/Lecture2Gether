@@ -1,6 +1,7 @@
-"""Flask server for Codenames"""
-# pylint: disable=C0103
-
+#! /usr/bin/python3
+import re
+import requests
+from flask import Flask, request, jsonify
 import logging
 import json
 import os
@@ -9,13 +10,34 @@ from flask import Flask, render_template, jsonify, request
 from flask_socketio import SocketIO, join_room, leave_room, close_room, send, emit, rooms
 from datetime import datetime, timedelt 
 
-ACTIVE_CLIENTS = 0
 app = Flask(__name__)
+
 socketio = SocketIO(app, cors_allowed_origins="*")
 app.secret_key = os.getenv("SECRET_KEY", "codenames")
 
+ACTIVE_CLIENTS = 0
 ROOM_STATES = {}
 ROOM_USER_COUNT = {}
+
+@app.route('/l2go', methods=['POST'])
+def decode_l2go_path():
+    data = request.get_json()
+    video_url = data['video_url']
+    password = data['password']
+
+    response = get_m3u8(video_url, password=password)
+    if response is None:
+        response = "Invalid videoURL or password does not match."
+
+    return jsonify(response)
+
+def get_m3u8(video_url, password=''):
+    r = requests.post(video_url, data={'_lgopenaccessvideos_WAR_lecture2goportlet_password': password}, headers={'User-Agent': 'Lecture2Gether'})
+    m = re.search('https://[^"]*m3u8', r.content.decode())
+    if not m:
+        return None
+    else:
+        return m.group()
 
 @socketio.on('connect')
 def on_connect():
