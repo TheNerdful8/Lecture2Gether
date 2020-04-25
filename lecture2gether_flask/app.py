@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
-import re
-import requests
-import eventlet
-from flask import Flask, request, jsonify, abort
-import logging
-import json
 import os
-from secrets import token_urlsafe
-from flask_socketio import SocketIO, join_room, leave_room, close_room, send, emit, rooms
+import re
+import json
+import requests
+import logging
+import eventlet
 from datetime import datetime 
+from secrets import token_urlsafe
+from flask import Flask, request, jsonify, abort
+from flask_socketio import SocketIO, join_room, leave_room, close_room, send, emit, rooms
+from flask_cors import CORS
 
 app = Flask(__name__)
 
