@@ -89,5 +89,7 @@ export default class Toolbar extends Vue {
         color: white;
         margin: auto;
         transition: all 0.8s ease;
+        padding-left: 32px;
+        padding-right: 32px;
     }
 </style>
