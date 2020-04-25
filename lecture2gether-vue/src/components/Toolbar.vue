@@ -1,6 +1,7 @@
 <template>
     <v-container class="searchbar-cover">
         <v-toolbar :class="collapsed ? 'searchbar-background-collapsed' : 'searchbar-background-extended'" 
+            class="searchbar-background"
             color="primary" 
             flat>
         </v-toolbar>
@@ -24,11 +25,11 @@ import { Prop } from 'vue-property-decorator';
 
 @Component({})
 export default class Toolbar extends Component {
-    @Prop({type: Boolean, default: true, required: false}) collapsed: boolean
+    @Prop({type: Boolean, default: false, required: false}) collapsed: boolean
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
     .searchbar-cover {
         margin: 0;
         padding: 0;
@@ -56,7 +57,12 @@ export default class Toolbar extends Component {
         transform: translateY(-50%);
     }
 
+    .searchbar-background {
+        transition: all 0.8s ease;
+    }
+
     .searchbar {
         max-width: 700px;
+        transition: all 0.8s ease;
     }
 </style>

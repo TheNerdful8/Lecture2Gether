@@ -1,6 +1,6 @@
 <template>
     <v-container class="fill-height" fluid>
-        <Toolbar></Toolbar>
+        <Toolbar collapsed></Toolbar>
         <v-row align="center" justify="center">
             <v-col cols="4">
                 <v-progress-circular indeterminate color="primary"/>
