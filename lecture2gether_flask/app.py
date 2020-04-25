@@ -6,19 +6,20 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-@app.route('/l2go')
+@app.route('/l2go', methods=['POST'])
 def decode_l2go_path():
-    video_id = request.args.get('video_id')
-    password = request.args.get('password')
+    data = request.get_json()
+    video_url = data['video_url']
+    password = data['password']
 
-    response = get_m3u8(video_id, password=password)
+    response = get_m3u8(video_url, password=password)
     if response is None:
-        response = "Invalid videoID or password does not match."
+        response = "Invalid videoURL or password does not match."
 
     return jsonify(response)
 
-def get_m3u8(id, password=''):
-    r = requests.post(f'https://lecture2go.uni-hamburg.de/l2go/-/get/v/{id}', data={'_lgopenaccessvideos_WAR_lecture2goportlet_password': password}, headers={'User-Agent': 'Lecture2Gether'})
+def get_m3u8(video_url, password=''):
+    r = requests.post(video_url, data={'_lgopenaccessvideos_WAR_lecture2goportlet_password': password}, headers={'User-Agent': 'Lecture2Gether'})
     m = re.search('https://[^"]*m3u8', r.content.decode())
     if not m:
         return None
