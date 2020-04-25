@@ -1,6 +1,7 @@
 <template>
     <v-app>
         <v-content>
+            <Toolbar :collapsed="isCollapsed"></Toolbar>
             <router-view/>
         </v-content>
     </v-app>
@@ -9,11 +10,18 @@
 <script lang="ts">
 import Component from 'vue-class-component';
 import Vue from 'vue';
+import Toolbar from "@/components/Toolbar.vue";
 
-@Component({})
+@Component({
+    components: { Toolbar },
+})
 export default class L2gHome extends Vue {
     created(): void {
         this.$store.dispatch('fetchSettings');
+    }
+
+    get isCollapsed(): boolean {
+        return this.$store.state.player.videoUrl !== "";
     }
 }
 </script>
