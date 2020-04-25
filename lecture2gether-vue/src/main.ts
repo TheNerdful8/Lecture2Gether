@@ -4,7 +4,6 @@ import './registerServiceWorker';
 import router from './plugins/router';
 import store from './plugins/store';
 import vuetify from './plugins/vuetify';
-import './plugins/player';
 
 
 Vue.config.productionTip = false;

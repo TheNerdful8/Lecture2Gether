@@ -12,5 +12,5 @@ export default [
         path: '/player',
         name: 'player',
         component: Player,
-    }
+    },
 ] as Array<RouteConfig>;

@@ -3,16 +3,15 @@
 </template>
 
 <script>
-    // @ is an alias to /src
-    import Vue from 'vue';
-    import Component from 'vue-class-component';
-    import L2gPlayer from "../components/Player";
+// @ is an alias to /src
+import Vue from 'vue';
+import Component from 'vue-class-component';
+import L2gPlayer from '@/components/Player.vue';
 
-    @Component({components: {L2gPlayer}})
-    export default class L2gPlayerView extends Vue {
-    }
+@Component({ components: { L2gPlayer } })
+export default class L2gPlayerView extends Vue {
+}
 </script>
 
 <style scoped lang="scss">
 </style>
-
