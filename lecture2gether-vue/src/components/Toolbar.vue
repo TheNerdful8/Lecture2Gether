@@ -5,18 +5,20 @@
             class="searchbar-background"
             color="primary"
             flat>
-            <h1 v-if="!collapsed" class="lecture2gether-heading display-4">Lecture2Gether</h1>
+            <h1 v-if="!collapsed" class="lecture2gether-heading display-4">Lecture&#x200b;2Gether</h1>
         </v-toolbar>
-        <v-card :class="collapsed ? 'searchbar-collapsed' : 'searchbar-extended'"
-                class="mx-auto searchbar">
-            <v-toolbar>
-                <v-text-field class="mx-auto" solo flat single-line hide-details label="Enter URL">
-                </v-text-field>
-                <v-btn depressed large>
-                    Watch!
-                </v-btn>
-            </v-toolbar>
-        </v-card>
+        <v-form @submit.prevent="watch">
+            <v-card :class="collapsed ? 'searchbar-collapsed' : 'searchbar-extended'"
+                    class="mx-auto searchbar">
+                <v-toolbar>
+                    <v-text-field class="mx-auto" v-model="url" solo flat single-line hide-details label="Enter URL">
+                    </v-text-field>
+                    <v-btn depressed large type="submit">
+                        Watch!
+                    </v-btn>
+                </v-toolbar>
+            </v-card>
+        </v-form>
     </v-container>
 </template>
 
@@ -28,6 +30,14 @@ import { Prop } from 'vue-property-decorator';
 @Component({})
 export default class Toolbar extends Vue {
     @Prop({ type: Boolean, default: false, required: false }) collapsed!: boolean
+
+    url = '';
+
+    // Called when the watch button is pressed.
+    // The url variable contains the url from the text field at this point.
+    watch() {
+        this.$store.dispatch('setUrl', this.url);
+    }
 }
 </script>
 
@@ -60,7 +70,7 @@ export default class Toolbar extends Vue {
     }
 
     .searchbar-background {
-        height: 100%!important;
+        height: 100% !important;
     }
 
     .searchbar {

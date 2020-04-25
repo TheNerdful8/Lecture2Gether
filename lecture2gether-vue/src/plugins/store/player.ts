@@ -1,17 +1,7 @@
-import Vue from 'vue';
 import { Module } from 'vuex';
 
-
 export class PlayerState {
-    /**
-     * Whether the player is currently playing or not
-     */
-    playing: boolean = false
-
-    /**
-     * Timestamp in the video (0 = start of video) which is up to 5 seconds off from the real timestamp.
-     */
-    roughTimestamp: number = 0
+    videoUrl = ''
 }
 
 
@@ -19,21 +9,14 @@ export const playerModule: Module<PlayerState, any> = {
     state: () => new PlayerState(),
 
     mutations: {
-        togglePlaying: (state, payload?: boolean) => {
-            if (payload) {
-                state.playing = payload
-            } else {
-                state.playing = !state.playing
-            }
-        }
+        setUrl: (state, payload: string) => {
+            state.videoUrl = payload;
+        },
     },
 
     actions: {
-        togglePlaying: (context, payload?: boolean) => {
-            if (!payload)
-                payload = !context.state.playing;
-
-
-        }
+        setUrl: async (ctx, payload: string) => {
+            ctx.commit('setUrl', payload);
+        },
     },
 };
