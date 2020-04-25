@@ -1,4 +1,3 @@
-
 name: Flask CI
 
 on: [push, pull_request]
@@ -26,4 +25,4 @@ jobs:
       - name: Run Tests
         run: |
           cd lecture2gether_flask
-          poetry run ./app.py
+          poetry run ./testrun.py
