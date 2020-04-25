@@ -30,22 +30,47 @@
         url!: string;
 
         get playerOptions() {
-            let type = "";
-            if (this.url.endsWith(".m3u8")) {
-                type = "application/x-mpegURL";
-            } else if (this.url.endsWith(".mp4")) {
-                type = "video/mp4";
-            } else {
+            let type = "video/mp4";
+
+            // First, try extension based file types
+            const extension = this.url.split('.').pop()
+            switch (extension) {
+                case "m3u8":
+                    type = "application/x-mpegURL";
+                    break;
+                case "mp4":
+                    type = "video/mp4";
+                    break;
+                case "ogg":
+                    type = "video/ogg";
+                    break;
+                case "webm":
+                    type = "video/webm";
+                    break;
+                default:
+                    // Set a known type for an unknown url results in a useful error message
+                    type = "video/mp4";
+            }
+
+            // Then, try hostname based types
+            try {
                 const url = new URL(this.url);
-                if (["youtube.com", "www.youtube.com", "youtu.be"].includes(url.hostname)) {
-                    type = "video/youtube";
+                switch (url.hostname) {
+                    case "youtube.com":
+                    case "www.youtube.com":
+                    case "youtu.be":
+                        type = "video/youtube";
+                        break;
                 }
+            } catch (e) {
+                // Show error page, the url was invalid
             }
 
             return {
                 // videojs options
                 muted: true,
                 language: 'en',
+                height: "500px",
                 playbackRates: [0.7, 1.0, 1.3, 1.5, 2.0],
                 sources: [{
                     type: type,
