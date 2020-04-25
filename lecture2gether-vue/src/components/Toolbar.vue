@@ -32,8 +32,7 @@ export default class Toolbar extends Component {
     //Called when the watch button is pressed.
     //The url variable contains the url from the text field at this point.
     watch() {
-        this.collapsed = true;
-        console.log("URL: " + this.url);
+        this.$store.dispatch("setUrl", this.url);
     };
 
     @Prop({type: Boolean, default: false, required: false}) collapsed: boolean
