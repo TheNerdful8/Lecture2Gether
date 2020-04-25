@@ -32,19 +32,17 @@ def decode_l2go_path():
     if 'password' in data:
         password = data['password']
 
-    response = get_m3u8(video_url, password=password)
-    if response is None:
-        response = "Invalid videoURL or password does not match."
+    try:
+        r = requests.post(video_url, data={'_lgopenaccessvideos_WAR_lecture2goportlet_password': password}, headers={'User-Agent': 'Lecture2Gether'})
+    except requests.exceptions.RequestException as e:
+        abort(404)
 
-    return jsonify(response)
-
-def get_m3u8(video_url, password=''):
-    r = requests.post(video_url, data={'_lgopenaccessvideos_WAR_lecture2goportlet_password': password}, headers={'User-Agent': 'Lecture2Gether'})
     m = re.search('https://[^"]*m3u8', r.content.decode())
-    if not m:
-        return None
-    else:
-        return m.group()
+
+    if m is None:
+        abort(404)
+
+    return jsonify(m.group())
 
 @socketio.on('connect')
 def on_connect():
