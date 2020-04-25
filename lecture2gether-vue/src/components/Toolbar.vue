@@ -25,6 +25,8 @@ export default class Toolbar extends Component {
 
 <style scoped>
     .searchbar-cover {
+        margin: 0;
+        padding: 0;
         position: absolute;
         top: 0;
         left: 0;
@@ -34,6 +36,7 @@ export default class Toolbar extends Component {
     }
 
     .searchbar-background {
+        margin: 0;
         height: 100%;
         max-height: 100%;
     }
