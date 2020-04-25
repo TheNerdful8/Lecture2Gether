@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "lecture2gether-flask"
+name = "lecture2gether_flask"
 version = "0.1.0"
 description = "Flask backend for the lecture2gether service"
 authors = ["Florian <florian@flova.de>"]
