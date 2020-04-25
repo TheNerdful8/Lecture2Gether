@@ -87,8 +87,7 @@ def on_join(data):
     """Join a watch room"""
 
     if 'roomId' not in data['roomId']:
-        state = {'status_code': 400}
-        send(state, room=request.sid)
+        send({'status_code': 400}, room=request.sid)
         return
 
     room_token = data['roomId']
@@ -96,8 +95,7 @@ def on_join(data):
     global ROOM_STATES
 
     if not room_token in ROOM_STATES.keys():
-        state = {'status_code': 404}
-        send(state, room=request.sid)
+        send({'status_code': 404}, room=request.sid)
         return
 
     global ROOM_USER_COUNT
@@ -111,8 +109,7 @@ def on_join(data):
 def on_leave(data):
     """Leave a watch room"""
     if 'roomId' not in data['roomId']:
-        state = {'status_code': 400}
-        send(state, room=request.sid)
+        send({'status_code': 400}, room=request.sid)
         return
 
     room_token = data['roomId']
@@ -120,8 +117,7 @@ def on_leave(data):
     global ROOM_STATES
 
     if not room_token in ROOM_STATES.keys():
-        state = {'status_code': 404}
-        send(state, room=request.sid)
+        send({'status_code': 404}, room=request.sid)
         return
 
     global ROOM_USER_COUNT
@@ -133,6 +129,7 @@ def on_leave(data):
         del ROOM_STATES[room_token]
         
     leave_room(room_token)
+    send({'status_code': 200}, room=request.sid)
 
 @socketio.on('video_state_set')
 def on_video_state_set(state):
