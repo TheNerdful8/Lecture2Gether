@@ -1,14 +1,13 @@
 <template>
-    <v-container>
-        <v-toolbar color="primary" dark prominent flat>
+    <v-container class="searchbar-cover">
+        <v-toolbar class="searchbar-background" color="primary" prominent flat>
         </v-toolbar>
-        <v-card class="mx-auto" max-width="1000" style="margin-top: -64px;">
-            <v-toolbar flat>
-                <v-text-field class="mx-auto" flat solo dense single-line hide-details label="Enter URL">
+        <v-card class="searchbar mx-auto">
+            <v-toolbar>
+                <v-text-field class="mx-auto" solo flat single-line hide-details label="Enter URL">
                 </v-text-field>
-                <v-spacer></v-spacer>
-                <v-btn icon>
-                    <v-icon>mdi-magnify</v-icon>
+                <v-btn depressed large>
+                    Watch!
                 </v-btn>
             </v-toolbar>
         </v-card>
@@ -25,5 +24,22 @@ export default class Toolbar extends Component {
 </script>
 
 <style scoped>
+    .searchbar-cover {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        max-width: 100%;
+        height: 50vh;
+    }
 
+    .searchbar-background {
+        height: 100%;
+        max-height: 100%;
+    }
+
+    .searchbar {
+        max-width: 700px;
+        transform: translateY(-50%);
+    }
 </style>
