@@ -1,9 +1,9 @@
 <template>
     <v-container class="fill-height" fluid>
-        <Toolbar collapsed></Toolbar>
+        <Toolbar></Toolbar>
         <v-row align="center" justify="center">
             <v-col cols="4">
-                <v-progress-circular indeterminate color="primary"/>
+                <!--v-progress-circular indeterminate color="primary"/ -->
             </v-col>
         </v-row>
     </v-container>

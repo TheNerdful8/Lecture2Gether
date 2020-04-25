@@ -10,9 +10,9 @@
         <v-card :class="collapsed ? 'searchbar-collapsed' : 'searchbar-extended'"
                 class="mx-auto searchbar">
             <v-toolbar>
-                <v-text-field class="mx-auto" solo flat single-line hide-details label="Enter URL">
+                <v-text-field class="mx-auto" v-model="url" solo flat single-line hide-details label="Enter URL">
                 </v-text-field>
-                <v-btn depressed large>
+                <v-btn depressed large @click="watch()">
                     Watch!
                 </v-btn>
             </v-toolbar>
@@ -27,6 +27,15 @@ import { Prop } from 'vue-property-decorator';
 
 @Component({})
 export default class Toolbar extends Component {
+    url = "";
+
+    //Called when the watch button is pressed.
+    //The url variable contains the url from the text field at this point.
+    watch() {
+        this.collapsed = true;
+        console.log("URL: " + this.url);
+    };
+
     @Prop({type: Boolean, default: false, required: false}) collapsed: boolean
 }
 </script>
