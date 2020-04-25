@@ -1,6 +1,6 @@
 import { RouteConfig } from 'vue-router';
 import Home from '@/views/Home.vue';
-import Player from '@/views/Player.vue';
+import Player from '@/views/Room.vue';
 
 export default [
     {
