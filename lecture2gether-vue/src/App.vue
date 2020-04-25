@@ -10,7 +10,7 @@
 <script lang="ts">
 import Component from 'vue-class-component';
 import Vue from 'vue';
-import Toolbar from "@/components/Toolbar.vue";
+import Toolbar from '@/components/Toolbar.vue';
 
 @Component({
     components: { Toolbar },
@@ -21,7 +21,7 @@ export default class L2gHome extends Vue {
     }
 
     get isCollapsed(): boolean {
-        return this.$store.state.player.videoUrl !== "";
+        return this.$store.state.player.videoUrl !== '';
     }
 }
 </script>

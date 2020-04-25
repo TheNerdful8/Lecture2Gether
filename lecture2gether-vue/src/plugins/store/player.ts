@@ -1,5 +1,4 @@
-import {Module} from 'vuex';
-import {NewRoomRequest, NewRoomResponse} from '@/apiTypes';
+import { Module } from 'vuex';
 
 export class PlayerState {
     videoUrl = ''
@@ -17,7 +16,7 @@ export const playerModule: Module<PlayerState, any> = {
 
     actions: {
         setUrl: async (ctx, payload: string) => {
-            ctx.commit("setUrl", payload);
-        }
+            ctx.commit('setUrl', payload);
+        },
     },
 };

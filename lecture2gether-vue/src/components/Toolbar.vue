@@ -24,11 +24,10 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-    @Component({})
+@Component({})
 export default class Toolbar extends Component {
         url = '';
 
