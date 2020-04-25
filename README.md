@@ -40,7 +40,20 @@ The video streams are synchronized to partially restore the social aspect of cam
 * [Eventlet](http://eventlet.net)
 
 
-<!-- TODO: Installation -->
+<!-- TODO: Installation for frontend -->
+## Install
+### Install Backend
+Clone the repository (`git clone https://github.com/TheNerdful8/Lecture2Gether`).
+
+Go to the backend folder `cd Lecture2Gether/lecture2gether_flask/`.
+
+Get [Poetry](https://python-poetry.org/). 
+
+Run `poetry install` to install the dependencys. 
+
+To start the server manually type `poetry run python app.py`.
+
+The installation will also be provided via Docker in the future.
 
 
 ## License
