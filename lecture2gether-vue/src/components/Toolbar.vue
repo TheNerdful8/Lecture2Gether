@@ -5,7 +5,7 @@
             class="searchbar-background"
             color="primary"
             flat>
-            <h1 v-if="!collapsed" class="lecture2gether-heading display-4">Lecture2Gether</h1>
+            <h1 v-if="!collapsed" class="lecture2gether-heading display-4">Lecture&#x200b;2Gether</h1>
         </v-toolbar>
         <v-card :class="collapsed ? 'searchbar-collapsed' : 'searchbar-extended'"
                 class="mx-auto searchbar">
