@@ -1,13 +1,22 @@
 <template>
-    <div id="app">
-        <div id="nav">
-            <router-link to="/">Home</router-link>
-            |
-            <router-link to="/about">About</router-link>
-        </div>
-        <router-view/>
-    </div>
+    <v-app>
+        <v-content>
+            <router-view/>
+        </v-content>
+    </v-app>
 </template>
+
+<script lang="ts">
+import Component from 'vue-class-component';
+import Vue from 'vue';
+
+@Component({})
+export default class L2gHome extends Vue {
+    created(): void {
+        this.$store.dispatch('fetchSettings');
+    }
+}
+</script>
 
 <style lang="scss">
     #app {
