@@ -109,4 +109,5 @@ export default class L2gPlayer extends Vue {
 </script>
 
 <style scoped lang="scss">
+@import "~video.js/dist/video-js.css" ;
 </style>

@@ -8,8 +8,9 @@ import {Store} from "vuex";
 
 export let socket: Socket | null = null;
 
-export const connect = () => {
+export const connect = (store: Store<any>) => {
     socket = io({
+        path: `${store.state.settings.apiRoot}/socket.io`,
         autoConnect: false,
     });
 
