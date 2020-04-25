@@ -11,8 +11,7 @@
             <v-card :class="collapsed ? 'searchbar-collapsed' : 'searchbar-extended'"
                     class="mx-auto searchbar">
                 <v-toolbar>
-                    <v-text-field class="mx-auto" v-model="url" solo flat single-line hide-details label="Enter URL"
-                                  @input="onInput">
+                    <v-text-field class="mx-auto" v-model="url" solo flat single-line hide-details label="Enter URL">
                     </v-text-field>
                     <v-btn depressed large type="submit">
                         Watch!
@@ -24,20 +23,21 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
 @Component({})
-export default class Toolbar extends Component {
-        url = '';
+export default class Toolbar extends Vue {
+    @Prop({ type: Boolean, default: false, required: false }) collapsed!: boolean
 
-        // Called when the watch button is pressed.
-        // The url variable contains the url from the text field at this point.
-        watch() {
-            this.$store.dispatch('setUrl', this.url);
-        }
+    url = '';
 
-        @Prop({ type: Boolean, default: false, required: false }) collapsed: boolean
+    // Called when the watch button is pressed.
+    // The url variable contains the url from the text field at this point.
+    watch() {
+        this.$store.dispatch('setUrl', this.url);
+    }
 }
 </script>
 
