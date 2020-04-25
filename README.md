@@ -17,7 +17,7 @@
   </p>
 </p>
 
-![Flask CI](https://github.com/TheNerdful8/Lecture2Gether/workflows/Flask%20CI/badge.svg?branch=feature%2Fci)
+![Flask CI](https://github.com/TheNerdful8/Lecture2Gether/workflows/Flask%20CI/badge.svg?branch=master)
 
 ## About The Project
 <!-- TODO add screenshot -->
