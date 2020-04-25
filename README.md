@@ -2,7 +2,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/roshanlam/ReadMeTemplate/">
-    <img src="./lecture2gether-vue/src/assets/logo.png" alt="Logo" width="120" height="120">
+    <img src="./lecture2gether-vue/src/assets/Lecture2Gether_stroke.svg" alt="Logo" width="120" height="120">
   </a>
   <h3 align="center">Lecture2Gether</h3>
   <p align="center">
