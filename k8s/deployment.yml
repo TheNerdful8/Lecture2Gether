@@ -1,0 +1,28 @@
+---
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "deployment"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "NOT_SET"
+  template:
+    metadata:
+      labels:
+        app: "NOT_SET"
+    spec:
+      imagePullSecrets:
+        - name: "registry-credentials"
+      containers:
+        - image: "registry.mafiasi.de/lecture2gether"
+          name: "main"
+          ports:
+            - name: "http"
+              containerPort: 8000
+        - image: "docker.io/redis:buster"
+          name: "redis"
+          ports:
+            - name: "redis"
+              containerPort: 6379
