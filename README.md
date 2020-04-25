@@ -1,9 +1,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/roshanlam/ReadMeTemplate/">
-    <img src="./lecture2gether-vue/src/assets/Lecture2Gether_stroke.svg" alt="Logo" width="120" height="120">
-  </a>
+  <img src="./lecture2gether-vue/src/assets/Lecture2Gether_stroke.svg" alt="Logo" width="240" height="240">
   <h3 align="center">Lecture2Gether</h3>
   <p align="center">
     Watch online lectures together!
