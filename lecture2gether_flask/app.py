@@ -86,7 +86,7 @@ def on_create(init_state):
 def on_join(data):
     """Join a watch room"""
 
-    if 'roomId' not in data['roomId']:
+    if 'roomId' not in data:
         send({'status_code': 400}, room=request.sid)
         return
 
@@ -108,7 +108,7 @@ def on_join(data):
 @socketio.on('leave')
 def on_leave(data):
     """Leave a watch room"""
-    if 'roomId' not in data['roomId']:
+    if 'roomId' not in data:
         send({'status_code': 400}, room=request.sid)
         return
 
@@ -136,7 +136,7 @@ def on_video_state_set(state):
     """Update a watch room"""
     global ROOM_STATES
 
-    if 'roomId' not in state['roomId']:
+    if 'roomId' not in state:
         state = {'status_code': 400}
         send(state, room=request.sid)
         return
@@ -152,8 +152,6 @@ def on_video_state_set(state):
     state = add_set_time_to_state(state)
 
     ROOM_STATES[room_token] = state
-
-    join_room(room_token)
 
     emit('video_state_update', state, room=room_token)
 
