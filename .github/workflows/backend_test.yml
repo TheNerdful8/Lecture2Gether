@@ -18,9 +18,9 @@ jobs:
           python-version: 3.8
       - name: Install Dependencies
         run: |
-          cd lecture2gether_flask
           python -m pip install --upgrade pip
           pip install poetry
+          cd lecture2gether_flask
           poetry install
       - name: Run Tests
         run: |
