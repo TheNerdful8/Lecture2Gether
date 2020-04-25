@@ -12,10 +12,12 @@
 </template>
 
 <script>
+
     import videojs from 'video.js'
     window.videojs = videojs
 
-    require('videojs-contrib-hls/dist/videojs-contrib-hls.js')
+    require('videojs-contrib-hls/dist/videojs-contrib-hls.js');
+    require('videojs-youtube/dist/Youtube');
     export default {
         data() {
             return {
@@ -25,17 +27,19 @@
                     language: 'en',
                     playbackRates: [0.7, 1.0, 1.3, 1.5, 2.0],
                     sources: [{
-                        withCredentials: false,
                         type: "application/x-mpegURL",
                         src: "https://fms2.rrz.uni-hamburg.de/vod/_definst/smil:8l2gbap2029/65-301_video-27959_2020-04-24_22-33.smil/playlist.m3u8"
+                        //type: "video/youtube",
+                        //src: "https://www.youtube.com/watch?v=7y1xJAVZxXg",
+                        //type: "video/mp4",
+                        //src: "https://www.math.uni-hamburg.de/home/reiher/lehre/SoSe20/Graphentheorie1/Vorlesungen/Grth1-VL1.mp4"
                     }],
-                    html5: { hls: { withCredentials: false }},
+                    techOrder: ["youtube", "html5"],
                     poster: "/static/images/author.jpg",
                 }
             }
         },
         mounted() {
-            console.log('this is current player instance object', this.player)
         },
         computed: {
             player() {

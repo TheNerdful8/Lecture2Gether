@@ -4,13 +4,10 @@ import './registerServiceWorker';
 import router from './plugins/router';
 import store from './plugins/store';
 import vuetify from './plugins/vuetify';
+import './plugins/player';
 
 
 Vue.config.productionTip = false;
-
-import 'video.js/dist/video-js.css'
-import VueVideoPlayer from 'vue-video-player'
-Vue.use(VueVideoPlayer)
 
 new Vue({
     router,
