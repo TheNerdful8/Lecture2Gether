@@ -1,0 +1,21 @@
+@use "colors";
+
+/**
+ * Un-styles anchor tags when the a-unstyle class is applied
+ */
+a.a-unstyle:link, a.a-unstyle:visited, a.a-unstyle:hover, a.a-unstyle:active {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/**
+ * Generate .theme-<color>-fg and .theme-<color>-bg classes
+ */
+@each $name, $value in colors.$all-colors {
+  .theme-#{$name}-fg {
+    color: $value !important;
+  }
+  .theme-#{$name}-bg {
+    background-color: $value !important;
+  }
+}

@@ -9,16 +9,20 @@
 <script lang="ts">
 import Component from 'vue-class-component';
 import Vue from 'vue';
+import { connect } from '@/plugins/socket.io';
 
 @Component({})
 export default class App extends Vue {
     created(): void {
         this.$store.dispatch('fetchSettings');
+        connect();
     }
 }
 </script>
 
 <style lang="scss">
+    @use "src/styles/global_style";
+
     #app {
         font-family: Avenir, Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;

@@ -1,5 +1,7 @@
-import {Module} from 'vuex';
-import {NewRoomRequest, NewRoomResponse} from '@/apiTypes';
+import { Module } from 'vuex';
+import { NewRoomRequest, NewRoomResponse } from '@/api';
+import * as socketio from '@/plugins/socket.io';
+
 
 export class RoomsState {
     roomId = ''
@@ -24,5 +26,11 @@ export const roomsModule: Module<RoomsState, any> = {
             .then((response: NewRoomResponse) => {
                 context.commit('setRoomId', response.roomId);
             }),
+
+        joinRoom: (context, roomId: string) => {
+            socketio.joinRoom(roomId).then((response) => {
+                context.commit('setRoomId', response.roomId);
+            });
+        },
     },
 };

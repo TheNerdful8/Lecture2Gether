@@ -14,6 +14,7 @@
     "roboto-fontface": "*",
     "videojs-contrib-hls": "^5.15.0",
     "videojs-youtube": "^2.6.1",
+    "socket.io-client": "^2.3.0",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.3",
     "vue-property-decorator": "^8.4.2",
@@ -25,6 +26,7 @@
   },
   "devDependencies": {
     "@types/video.js": "^7.3.8",
+    "@types/socket.io-client": "^1.4.32",
     "@typescript-eslint/eslint-plugin": "^2.26.0",
     "@typescript-eslint/parser": "^2.26.0",
     "@vue/cli": "^4.3.1",

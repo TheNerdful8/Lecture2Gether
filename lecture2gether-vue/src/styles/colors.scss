@@ -1,0 +1,29 @@
+// Colors generated from theme in vuetify.ts
+$_theme-colors: (
+        "primary": var(--v-primary-base),
+        "secondary": var(--v-secondary-base),
+        "accent": var(--v-accent-base),
+        "info": var(--v-info-base),
+        "warning": var(--v-warning-base),
+        "error": var(--v-error-base),
+        "success": var(--v-success-base),
+        "anchor": var(--v-anchor-base),
+
+        "white": var(--v-white-base),
+);
+
+// Material design colors (only add if needed because of size)
+//@use "node_modules/vuetify/src/styles/settings/colors";
+
+//$all-colors: map-merge($theme-colors);
+$all-colors: $_theme-colors;
+
+@function get-color($name) {
+  @if(map-has_key($all-colors, $name)) {
+    @return map-get($all-colors, $name);
+  }
+  @else {
+    @warn "Unknown color #{$name}";
+    @return red;
+  }
+}
