@@ -23,12 +23,18 @@ ACTIVE_CLIENTS = 0
 
 socketio = SocketIO(app, cors_allowed_origins="*")
 app.secret_key = os.getenv("SECRET_KEY", "codenames")
-db = Redis(host='localhost', port=6379, db=0, password=None)
+
+# INIT REDIS DATEBASE
+redis_host = os.getenv('REDIS_HOST', 'localhost')
+redis_port = os.getenv('REDIS_PORT', 6379)
+redis_db = os.getenv('REDIS_DB', 0)
+redis_password = os.getenv('REDIS_PASSWORD', None)
+db = Redis(host=redis_host, port=redis_port, db=redis_db, password=redis_password)
 
 if db.ping():
-    print("SUCCESS: Connected to Redis database.")
+    logging.info("SUCCESS: Connected to Redis database.")
 else:
-    print("ERROR: Connection to Redis database failed!")
+    logging.error("ERROR: Connection to Redis database failed!")
 
 @app.route('/l2go', methods=['POST'])
 def decode_l2go_path():
@@ -66,7 +72,7 @@ def on_disconnect():
     ACTIVE_CLIENTS -= 1
 
     for room_token in rooms(sid=request.sid):  # For all rooms of user
-        if db.hexists('rooms', room_token):  # If room exists  # TODO: Return 404?
+        if db.hexists('rooms', room_token):  # If room exists
             room = json.loads(db.hget('rooms', room_token))
             room['count'] -= 1
             db.hset('rooms', room_token, json.dumps(room))
@@ -77,8 +83,12 @@ def on_disconnect():
 @socketio.on('create')
 def on_create(init_state):
     """Create a watch room"""
-    room_token = token_urlsafe(24)
-    # TODO: Check for allready used token
+    while True:
+        token = token_urlsafe(24)
+        if not db.hexists('rooms', token):
+            break
+
+    room_token = token
 
     state = add_current_time_to_state(init_state)
     state = add_set_time_to_state(state)
@@ -88,9 +98,9 @@ def on_create(init_state):
 
     join_room(room_token)
 
-    emit('join_room', {'roomId': room_token}, room=room_token)
+    emit('join_room', {'roomId': room_token}, room=request.sid)
     emit('video_state_update', state, room=room_token)
-
+    send({'status_code': 200}, room=request.sid)
 
 @socketio.on('join')
 def on_join(data):
@@ -101,16 +111,23 @@ def on_join(data):
         return
 
     room_token = data['roomId']
-    # TODO: Only join if room exists -> 404
-    # TODO Only join, if user not already in room -> Only return data
 
-    room = json.loads(db.hget('rooms', room_token))
-    room['state'] = add_current_time_to_state(room['state'])
-    room['count'] += 1
-    db.hset('rooms', room_token, json.dumps(room))
+    if db.hexists('rooms', room_token):  # If room exists
+        if room_token not in rooms(sid=request.sid):  # If user NOT allready in room
+            room = json.loads(db.hget('rooms', room_token))
+            room['state'] = add_current_time_to_state(room['state'])
+            room['count'] += 1
+            db.hset('rooms', room_token, json.dumps(room))
 
-    join_room(room_token)
-    emit('video_state_update', room['state'], room=room_token)
+            join_room(room_token)
+        
+        # Send response anyway
+        emit('video_state_update', room['state'], room=request.sid)
+        send({'status_code': 200}, room=request.sid)
+        
+    else:  # Room does not exist
+        send({'status_code': 404}, room=request.sid)
+        return
 
 @socketio.on('leave')
 def on_leave(data):
@@ -121,17 +138,25 @@ def on_leave(data):
 
     room_token = data['roomId']
 
-    # TODO: Only leave, if user in room -> 403
-    if db.hexists('rooms', room_token):  # TODO: -> 404
-        room = json.loads(db.hget('rooms', room_token))
-        room['count'] -= 1
-        db.hset('rooms', room_token, json.dumps(room))
+    if db.hexists('rooms', room_token):  # If room exists
+        if room_token in rooms(sid=request.sid):  # If user in room
+            room = json.loads(db.hget('rooms', room_token))
+            room['count'] -= 1
+            db.hset('rooms', room_token, json.dumps(room))
 
-        if room['count'] <= 0:  # Delete empty rooms
-            db.hdel('rooms', room_token)
+            if room['count'] <= 0:  # Delete empty rooms
+                db.hdel('rooms', room_token)
 
-    leave_room(room)
-    send({'status_code': 200}, room=request.sid)  # TODO: Is this needed on other lines?
+            leave_room(room)
+            send({'status_code': 200}, room=request.sid)
+        
+        else:  # User not in room
+            send({'status_code': 403}, room=request.sid)
+            return
+
+    else:  # Room does not exist
+        send({'status_code': 404}, room=request.sid)
+        return
 
 @socketio.on('video_state_set')
 def on_video_state_set(state):
@@ -142,17 +167,26 @@ def on_video_state_set(state):
         return
 
     room_token = state['roomId']
-    # TODO: Only set, if user in room -> 403
-    # TODO: Only set, if room exists -> 404
 
-    state = add_current_time_to_state(state)
-    state = add_set_time_to_state(state)
+    if db.hexists('rooms', room_token):  # If room exists
+        if room_token in rooms(sid=request.sid):  # If user in room
+            state = add_current_time_to_state(state)
+            state = add_set_time_to_state(state)
 
-    room = json.loads(db.hget('rooms', room_token))
-    room['state'] = state
-    db.hset('rooms', room_token, json.dumps(room))
+            room = json.loads(db.hget('rooms', room_token))
+            room['state'] = state
+            db.hset('rooms', room_token, json.dumps(room))
 
-    emit('video_state_update', state, room=room_token)
+            emit('video_state_update', state, room=room_token)
+            send({'status_code': 200}, room=request.sid)
+
+        else:  # User not in room
+            send({'status_code': 403}, room=request.sid)
+            return
+
+    else:  # Room does not exist
+        send({'status_code': 404}, room=request.sid)
+        return
 
 def add_current_time_to_state(state):
     state['currentTime'] = datetime.now().timestamp()
