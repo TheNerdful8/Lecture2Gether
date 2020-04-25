@@ -13,6 +13,10 @@ from flask_socketio import SocketIO, join_room, leave_room, close_room, send, em
 from redis.client import Redis
 
 
+logging.basicConfig(level=os.getenv('LOGLEVEL', 'INFO'))
+# TODO: logger log file
+# TODO: readme redis
+
 app = Flask(__name__)
 app.config['DEBUG'] = True
 
@@ -80,15 +84,15 @@ def on_disconnect():
             if room['count'] <= 0:  # Delete empty rooms
                 db.hdel('rooms', room_token)
 
+            # TODO: leave_room(room_token) ???
+
 @socketio.on('create')
 def on_create(init_state):
     """Create a watch room"""
     while True:
-        token = token_urlsafe(24)
-        if not db.hexists('rooms', token):
+        room_token = token_urlsafe(24)
+        if not db.hexists('rooms', room_token):
             break
-
-    room_token = token
 
     state = add_current_time_to_state(init_state)
     state = add_set_time_to_state(state)
@@ -112,22 +116,23 @@ def on_join(data):
 
     room_token = data['roomId']
 
-    if db.hexists('rooms', room_token):  # If room exists
-        if room_token not in rooms(sid=request.sid):  # If user NOT allready in room
-            room = json.loads(db.hget('rooms', room_token))
-            room['state'] = add_current_time_to_state(room['state'])
-            room['count'] += 1
-            db.hset('rooms', room_token, json.dumps(room))
-
-            join_room(room_token)
-        
-        # Send response anyway
-        emit('video_state_update', room['state'], room=request.sid)
-        send({'status_code': 200}, room=request.sid)
-        
-    else:  # Room does not exist
+    if not db.hexists('rooms', room_token):  # Room does not exist
         send({'status_code': 404}, room=request.sid)
         return
+
+    room = json.loads(db.hget('rooms', room_token))
+
+    if room_token not in rooms(sid=request.sid):  # If user NOT allready in room
+        room['state'] = add_current_time_to_state(room['state'])
+        room['count'] += 1
+        db.hset('rooms', room_token, json.dumps(room))
+
+        join_room(room_token)
+
+    # Send response anyway
+    emit('join_room', {'roomId': room_token}, room=request.sid)
+    emit('video_state_update', room['state'], room=request.sid)
+    send({'status_code': 200}, room=request.sid)
 
 @socketio.on('leave')
 def on_leave(data):
@@ -138,55 +143,52 @@ def on_leave(data):
 
     room_token = data['roomId']
 
-    if db.hexists('rooms', room_token):  # If room exists
-        if room_token in rooms(sid=request.sid):  # If user in room
-            room = json.loads(db.hget('rooms', room_token))
-            room['count'] -= 1
-            db.hset('rooms', room_token, json.dumps(room))
-
-            if room['count'] <= 0:  # Delete empty rooms
-                db.hdel('rooms', room_token)
-
-            leave_room(room)
-            send({'status_code': 200}, room=request.sid)
-        
-        else:  # User not in room
-            send({'status_code': 403}, room=request.sid)
-            return
-
-    else:  # Room does not exist
+    if not db.hexists('rooms', room_token):  # Room does not exist
         send({'status_code': 404}, room=request.sid)
         return
 
+    if not room_token in rooms(sid=request.sid):  # User not in room
+        send({'status_code': 403}, room=request.sid)
+        return
+
+    room = json.loads(db.hget('rooms', room_token))
+    room['count'] -= 1
+    db.hset('rooms', room_token, json.dumps(room))
+
+    if room['count'] <= 0:  # Delete empty rooms
+        db.hdel('rooms', room_token)
+
+    leave_room(room_token)
+    send({'status_code': 200}, room=request.sid)
+
 @socketio.on('video_state_set')
 def on_video_state_set(state):
+    # TODO: Only update params, not delete old params
     """Update a watch room"""
     if 'roomId' not in state:
-        state = {'status_code': 400}
-        send(state, room=request.sid)
+        send({'status_code': 400}, room=request.sid)
         return
 
     room_token = state['roomId']
 
-    if db.hexists('rooms', room_token):  # If room exists
-        if room_token in rooms(sid=request.sid):  # If user in room
-            state = add_current_time_to_state(state)
-            state = add_set_time_to_state(state)
 
-            room = json.loads(db.hget('rooms', room_token))
-            room['state'] = state
-            db.hset('rooms', room_token, json.dumps(room))
-
-            emit('video_state_update', state, room=room_token)
-            send({'status_code': 200}, room=request.sid)
-
-        else:  # User not in room
-            send({'status_code': 403}, room=request.sid)
-            return
-
-    else:  # Room does not exist
+    if not db.hexists('rooms', room_token):  # Room does not exist
         send({'status_code': 404}, room=request.sid)
         return
+
+    if not room_token in rooms(sid=request.sid):  # User not in room
+        send({'status_code': 403}, room=request.sid)
+        return
+
+    state = add_current_time_to_state(state)
+    state = add_set_time_to_state(state)
+
+    room = json.loads(db.hget('rooms', room_token))
+    room['state'] = state
+    db.hset('rooms', room_token, json.dumps(room))
+
+    emit('video_state_update', state, room=room_token)
+    send({'status_code': 200}, room=request.sid)
 
 def add_current_time_to_state(state):
     state['currentTime'] = datetime.now().timestamp()
@@ -195,6 +197,7 @@ def add_current_time_to_state(state):
 def add_set_time_to_state(state):
     state['setTime'] = datetime.now().timestamp()
     return state
+
 
 if __name__ == '__main__':
     app.config['JSON_SORT_KEYS'] = False
