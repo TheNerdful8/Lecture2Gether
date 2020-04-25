@@ -18,8 +18,10 @@ import Toolbar from '@/components/Toolbar.vue';
 })
 export default class App extends Vue {
     created(): void {
-        this.$store.dispatch('fetchSettings');
-        connect();
+        this.$store.dispatch('fetchSettings')
+            .then(() => {
+                connect(this.$store);
+            });
     }
 
     get isCollapsed(): boolean {
