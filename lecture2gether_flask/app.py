@@ -14,7 +14,6 @@ from redis.client import Redis
 
 
 logging.basicConfig(level=os.getenv('LOGLEVEL', 'INFO'))
-# TODO: readme redis
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
