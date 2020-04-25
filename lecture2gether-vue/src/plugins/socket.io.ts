@@ -9,13 +9,23 @@ import {Store} from "vuex";
 export let socket: Socket | null = null;
 
 export const connect = (store: Store<any>) => {
-    socket = io({
-        path: `${store.state.settings.apiRoot}/socket.io`,
-        autoConnect: false,
-    });
+    if (store.state.settings.apiRoot.includes('://')) {
+        const url = new URL(store.state.settings.apiRoot)
+        socket = io(url.host, {
+            path: `${url.pathname}socket.io`,
+            autoConnect: false,
+        })
+
+    } else {
+        socket = io({
+            path: `${store.state.settings.apiRoot}/socket.io`,
+            autoConnect: false,
+        });
+    }
 
     socket.on('connect', () => {
-        console.log('socket.io connected');
+        console.debug('socket.io connected');
+        store.commit('toggleConnected', true);
     });
     socket.on('connect_error', (e: Error) => {
         console.error(`socket.io connection error: ${e}`);
@@ -28,6 +38,7 @@ export const connect = (store: Store<any>) => {
     });
     socket.on('disconnect', (reason: string) => {
         console.error(`socket.io disconnected because ${reason}`);
+        store.commit('toggleConnected', false);
     });
     socket.on('reconnect', (attemptNumber: number) => {
         console.error(`socket.io reconnected after ${attemptNumber} attempts`);
@@ -46,15 +57,17 @@ const getSafeSocket = (): Socket => {
 
 
 const onVideoStateUpdate = (state: any) => {
-    console.log(`received state: ${state}`);
+    console.warn('received state (cannot do anything with it)', state);
 }
 
 
 export const joinRoom = (roomId: string): Promise<JoinRoomResponse> => {
+    console.debug('socket.io joining room', roomId)
     const socket = getSafeSocket();
     return new Promise((resolve, reject) => {
         socket.once(receivedEvents.roomJoined, (response: JoinRoomResponse) => {
-            if (response.status_code !== 0) reject(response);
+            console.debug(`socket.io response from joining room`, response)
+            if (response.status_code !== 200) reject(response);
             else resolve(response);
         });
 
@@ -66,10 +79,12 @@ export const joinRoom = (roomId: string): Promise<JoinRoomResponse> => {
 
 
 export const createRoom = (): Promise<JoinRoomResponse> => {
+    console.debug('socket.io creating room')
     const socket = getSafeSocket();
     return new Promise<JoinRoomResponse>((resolve, reject) => {
         socket.once(receivedEvents.roomJoined, (response: JoinRoomResponse) => {
-            if (response.status_code !== 0) reject(response)
+            console.debug('socket.io response from creating room', response)
+            if (response.status_code !== 200) resolve(response)     // TODO Change back to reject
             else resolve(response)
         });
 

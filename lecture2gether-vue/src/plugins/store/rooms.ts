@@ -4,6 +4,10 @@ import * as socketio from '@/plugins/socket.io';
 
 
 export class RoomsState {
+    /**
+     * This is the room id which we are actually connected to.
+     * The URL parameter is the one where we _should_ be connected to.
+     */
     roomId = ''
 }
 
@@ -18,17 +22,14 @@ export const roomsModule: Module<RoomsState, any> = {
     },
 
     actions: {
-        newRoom: (context) => fetch(new Request(`${context.rootState.settings.apiRoot}/rooms`, {
-            method: 'POST',
-            body: JSON.stringify(({} as NewRoomRequest)),
-        }))
-            .then((response) => response.json())
-            .then((response: NewRoomResponse) => {
+        newRoom: (context) => {
+            return socketio.createRoom().then(response => {
                 context.commit('setRoomId', response.roomId);
-            }),
+            });
+        },
 
         joinRoom: (context, roomId: string) => {
-            socketio.joinRoom(roomId).then((response) => {
+            socketio.joinRoom(roomId).then(response => {
                 context.commit('setRoomId', response.roomId);
             });
         },

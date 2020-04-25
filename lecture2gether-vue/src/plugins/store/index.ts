@@ -8,9 +8,20 @@ import { playerModule } from '@/plugins/store/player';
 Vue.use(Vuex);
 
 
+export class RootState {
+    isConnected = false
+}
+
+
 export default new Vuex.Store({
-    state: {},
-    mutations: {},
+    state: () => new RootState(),
+    mutations: {
+        toggleConnected: (state, payload?: boolean) => {
+            if (payload == null)
+                payload = !state.isConnected
+            state.isConnected = payload
+        }
+    },
     actions: {},
     modules: {
         rooms: roomsModule,

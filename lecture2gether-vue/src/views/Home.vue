@@ -8,17 +8,25 @@
     </v-container>
 </template>
 
-<script>
+<script lang="ts">
 // @ is an alias to /src
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import { Watch } from 'vue-property-decorator';
 
 @Component({
     components: {},
 })
 export default class L2gHome extends Vue {
-    mounted() {
-        this.$store.dispatch('newRoom').finally(console.log);
+    @Watch('$store.state.isConnected')
+    async onConnectedChanged() {
+        await this.$store.dispatch('newRoom');
+        await this.$router.push({
+            name: 'player',
+            params: {
+                roomId: this.$store.state.rooms.roomId,
+            },
+        });
     }
 }
 </script>

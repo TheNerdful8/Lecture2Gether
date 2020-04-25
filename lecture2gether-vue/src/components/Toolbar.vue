@@ -9,7 +9,7 @@
             >
                 <h1 v-if="!collapsed" class="lecture2gether-heading display-4">Lecture&#x200b;2Gether</h1>
         </v-card>
-        <v-form @submit.prevent="watch">
+        <v-form @submit.prevent="onWatch">
             <v-card :class="collapsed ? 'searchbar-collapsed' : 'searchbar-extended'"
                     class="mx-auto searchbar">
                 <v-toolbar>
@@ -37,8 +37,9 @@ export default class Toolbar extends Vue {
 
     // Called when the watch button is pressed.
     // The url variable contains the url from the text field at this point.
-    watch() {
-        this.$store.dispatch('setUrl', this.url);
+    onWatch() {
+        if (this.$store.state.isConnected) this.$store.dispatch('setUrl', this.url);
+        else console.warn('Not setting url because we are not connected');
     }
 }
 </script>
