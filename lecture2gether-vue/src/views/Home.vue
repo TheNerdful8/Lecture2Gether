@@ -13,7 +13,7 @@
 // @ is an alias to /src
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import Toolbar from "@/components/Toolbar.vue";
+import Toolbar from '@/components/Toolbar.vue';
 
 @Component({
     components: { Toolbar },

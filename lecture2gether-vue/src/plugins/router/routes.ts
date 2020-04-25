@@ -12,5 +12,5 @@ export default [
         path: '/sync/debug',
         name: 'syncdebug',
         component: () => import(/* webpackChunkName: "syncdebug" */ '@/views/SyncControl.vue'),
-    }
+    },
 ] as Array<RouteConfig>;

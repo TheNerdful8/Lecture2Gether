@@ -1,15 +1,15 @@
 interface BaseResponse {
-    error_code: number
+    error_code: number;
 }
 
 
 export const sentEvents = {
-    joinRoom: 'join'
-}
+    joinRoom: 'join',
+};
 
 export const receivedEvents = {
-    roomJoined: 'join_room'
-}
+    roomJoined: 'join_room',
+};
 
 
 export type NewRoomRequest = {}
@@ -19,9 +19,9 @@ export interface NewRoomResponse extends BaseResponse{
 }
 
 export interface JoinRoomRequest {
-    roomId: string
+    roomId: string;
 }
 
 export interface JoinRoomResponse extends BaseResponse {
-    roomId: string
+    roomId: string;
 }

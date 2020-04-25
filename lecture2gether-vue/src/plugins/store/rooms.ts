@@ -1,5 +1,5 @@
-import {Module} from 'vuex';
-import {NewRoomRequest, NewRoomResponse} from '@/api';
+import { Module } from 'vuex';
+import { NewRoomRequest, NewRoomResponse } from '@/api';
 import * as socketio from '@/plugins/socket.io';
 
 
@@ -28,9 +28,9 @@ export const roomsModule: Module<RoomsState, any> = {
             }),
 
         joinRoom: (context, roomId: string) => {
-            socketio.joinRoom(roomId).then(response => {
+            socketio.joinRoom(roomId).then((response) => {
                 context.commit('setRoomId', response.roomId);
-            })
-        }
+            });
+        },
     },
 };
