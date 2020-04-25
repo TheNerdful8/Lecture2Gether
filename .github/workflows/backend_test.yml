@@ -25,4 +25,5 @@ jobs:
           poetry install
       - name: Run Tests
         run: |
+          cd lecture2gether_flask
           poetry run ./app.py
