@@ -19,6 +19,8 @@ export default class L2gHome extends Vue {
 </script>
 
 <style lang="scss">
+    @use "src/styles/global_style";
+
     #app {
         font-family: Avenir, Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
