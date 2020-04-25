@@ -4,7 +4,7 @@
   <img src="./lecture2gether-vue/src/assets/Lecture2Gether_stroke.svg" alt="Logo" width="240" height="240">
   <h3 align="center">Lecture2Gether</h3>
   <p align="center">
-    Watch online lectures together!
+    Watch online lectures together!  
     <br />
     <br />
     <a href="https://lecture2gether.eu">View Demo</a>
@@ -16,6 +16,8 @@
     <a href="https://github.com/TheNerdful8/Lecture2Gether/pulls">Send a Pull Request</a>
   </p>
 </p>
+
+![Flask CI](https://github.com/TheNerdful8/Lecture2Gether/workflows/Flask%20CI/badge.svg?branch=master)
 
 ## About The Project
 <!-- TODO add screenshot -->
