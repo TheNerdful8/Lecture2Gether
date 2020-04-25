@@ -1,6 +1,6 @@
 <template>
     <v-container class="searchbar-cover">
-        <v-toolbar class="searchbar-background" color="primary" prominent flat>
+        <v-toolbar class="searchbar-background"  color="primary" extended flat>
         </v-toolbar>
         <v-card class="searchbar mx-auto">
             <v-toolbar>
@@ -36,9 +36,7 @@ export default class Toolbar extends Component {
     }
 
     .searchbar-background {
-        margin: 0;
-        height: 100%;
-        max-height: 100%;
+        height: 100%!important;
     }
 
     .searchbar {
