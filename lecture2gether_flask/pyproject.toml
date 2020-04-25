@@ -12,6 +12,8 @@ flask-restful = "^0.3.8"
 pyOpenSSL = "^19.1.0"
 secrets = "^1.0.2"
 requests = "^2.23.0"
+flask-socketio = "^4.3.0"
+eventlet = "^0.25.2"
 
 [tool.poetry.dev-dependencies]
 

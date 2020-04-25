@@ -1,14 +1,14 @@
 #! /usr/bin/python3
 import re
 import requests
-from flask import Flask, request, jsonify
+import eventlet
+from flask import Flask, request, jsonify, abort
 import logging
 import json
 import os
 from secrets import token_urlsafe
-from flask import Flask, render_template, jsonify, request
 from flask_socketio import SocketIO, join_room, leave_room, close_room, send, emit, rooms
-from datetime import datetime, timedelt 
+from datetime import datetime 
 
 app = Flask(__name__)
 
@@ -22,6 +22,10 @@ ROOM_USER_COUNT = {}
 @app.route('/l2go', methods=['POST'])
 def decode_l2go_path():
     data = request.get_json()
+
+    if not data or not "video_url" in data:
+        abort(400)
+
     video_url = data['video_url']
     password = data['password']
 
@@ -129,6 +133,6 @@ def add_set_time_to_state(state):
 
 if __name__ == '__main__':
     app.config['JSON_SORT_KEYS'] = False
-    app.config['DEBUG'] = os.environ.get('DEBUG', False)
+    app.config['DEBUG'] = os.environ.get('DEBUG', True)
 
     socketio.run(app, host='0.0.0.0')
