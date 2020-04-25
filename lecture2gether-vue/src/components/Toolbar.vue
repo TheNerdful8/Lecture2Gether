@@ -1,12 +1,14 @@
 <template>
-    <v-container class="searchbar-cover">
-        <v-toolbar :class="collapsed ? 'searchbar-background-collapsed' : 'searchbar-background-extended'" 
+    <v-container class="searchbar-cover"
+                 :class="collapsed ? 'searchbar-cover-collapsed' : 'searchbar-cover-extended'">
+        <v-toolbar
             class="searchbar-background"
-            color="primary" 
+            color="primary"
             flat>
+            <h1 v-if="!collapsed" class="lecture2gether-heading display-4">Lecture2Gether</h1>
         </v-toolbar>
         <v-card :class="collapsed ? 'searchbar-collapsed' : 'searchbar-extended'"
-            class="mx-auto searchbar">
+                class="mx-auto searchbar">
             <v-toolbar>
                 <v-text-field class="mx-auto" solo flat single-line hide-details label="Enter URL">
                 </v-text-field>
@@ -38,19 +40,19 @@ export default class Toolbar extends Component {
         left: 0;
         width: 100%;
         max-width: 100%;
+        transition: all 0.8s ease;
+    }
+
+    .searchbar-cover-collapsed {
+        height: 80px;
+    }
+
+    .searchbar-cover-extended {
         height: 50vh;
     }
 
-    .searchbar-background-collapsed {
-        height: 80px!important;
-    }
-
-    .searchbar-background-extended {
-        height: 100%!important;
-    }
-
     .searchbar-collapsed {
-        transform: translateY(-112%);
+        transform: translateY(-72px);
     }
 
     .searchbar-extended {
@@ -58,11 +60,18 @@ export default class Toolbar extends Component {
     }
 
     .searchbar-background {
-        transition: all 0.8s ease;
+        height: 100%!important;
     }
 
     .searchbar {
         max-width: 700px;
+        transition: all 0.8s ease;
+    }
+
+    .lecture2gether-heading {
+        color: white;
+        margin: auto;
+        padding-top: 64px;
         transition: all 0.8s ease;
     }
 </style>
