@@ -16,5 +16,16 @@ def socketio_test():
     
     assert r.status_code == 400
 
+    r = flask_test_client.post('/l2go', data={
+        'video_url': 'https://lecture2go.uni-hamburg.de/l2go/-/get/v/27934', 'password': ''})
+
+    assert r.status_code == 200
+
+    r = flask_test_client.post('/l2go', data={
+        'video_url': 'https://lecture2go.uni-hamburg.de/l2go/-/get/v/27934'})
+
+    assert r.status_code == 200
+
+
 if __name__ == '__main__':
     socketio_test()
