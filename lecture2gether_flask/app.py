@@ -175,6 +175,25 @@ def on_video_state_set(state):
     emit('video_state_update', state, room=room_token)
     return {'status_code': 200}, request.sid
 
+@socketio.on('chat_send')
+def on_chat_send(message):
+    """Update a watch room"""
+    if 'roomId' not in message:
+        return {'status_code': 400}, request.sid
+
+    room_token = message['roomId']
+
+    if not db.hexists('rooms', room_token):  # Room does not exist
+        {'status_code': 404}, request.sid
+
+    if not room_token in rooms(sid=request.sid):  # User not in room
+        return {'status_code': 403}, request.sid
+
+    message = add_current_time_to_state(message)
+
+    emit('message_update', message, room=room_token)
+    return {'status_code': 200}, 200
+
 def add_current_time_to_state(state):
     state['currentTime'] = datetime.now().timestamp()
     return state
