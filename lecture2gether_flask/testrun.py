@@ -14,17 +14,17 @@ def socketio_test():
     r = flask_test_client.post('/l2go', data={
         'username': 'python', 'password': 'is-great!'})
     
-    assert r.status_code == 400
+    assert r.status_code == 400, f"Check failed, status code as {r.status_code}, but 400 was expected."
 
     r = flask_test_client.post('/l2go', data={
         'video_url': 'https://lecture2go.uni-hamburg.de/l2go/-/get/v/27934', 'password': ''})
 
-    assert r.status_code == 200
+    assert r.status_code == 200, f"Check failed, status code as {r.status_code}, but 200 was expected."
 
     r = flask_test_client.post('/l2go', data={
         'video_url': 'https://lecture2go.uni-hamburg.de/l2go/-/get/v/27934'})
 
-    assert r.status_code == 200
+    assert r.status_code == 200, f"Check failed, status code as {r.status_code}, but 200 was expected."
 
 
 if __name__ == '__main__':
