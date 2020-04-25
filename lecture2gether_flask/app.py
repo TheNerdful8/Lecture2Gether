@@ -82,9 +82,21 @@ def on_create(init_state):
 @socketio.on('join')
 def on_join(data):
     """Join a watch room"""
+
+    if 'roomId' not in data['roomId']:
+        state = {'status_code': 400}
+        send(state, room=request.sid)
+        return
+
     room_token = data['roomId']
 
     global ROOM_STATES
+
+    if not room_token in ROOM_STATES.keys():
+        state = {'status_code': 404}
+        send(state, room=request.sid)
+        return
+
     global ROOM_USER_COUNT
     state = add_current_time_to_state(ROOM_STATES[room_token])
     ROOM_USER_COUNT[room_token] += 1
@@ -95,28 +107,50 @@ def on_join(data):
 @socketio.on('leave')
 def on_leave(data):
     """Leave a watch room"""
-    room = data['roomId']
+    if 'roomId' not in data['roomId']:
+        state = {'status_code': 400}
+        send(state, room=request.sid)
+        return
 
-    global ROOM_USER_COUNT
+    room_token = data['roomId']
+
     global ROOM_STATES
 
-    ROOM_USER_COUNT[room] -= 1
+    if not room_token in ROOM_STATES.keys():
+        state = {'status_code': 404}
+        send(state, room=request.sid)
+        return
 
-    if ROOM_USER_COUNT[room] <= 0:
-        del ROOM_USER_COUNT[room]
-        del ROOM_STATES[room]
+    global ROOM_USER_COUNT
+
+    ROOM_USER_COUNT[room_token] -= 1
+
+    if ROOM_USER_COUNT[room_token] <= 0:
+        del ROOM_USER_COUNT[room_token]
+        del ROOM_STATES[room_token]
         
-    leave_room(room)
+    leave_room(room_token)
 
 @socketio.on('video_state_set')
 def on_video_state_set(state):
-    """Join a watch room"""
+    """Update a watch room"""
+    global ROOM_STATES
+
+    if 'roomId' not in state['roomId']:
+        state = {'status_code': 400}
+        send(state, room=request.sid)
+        return
+
     room_token = state['roomId']
+
+    if not room_token in ROOM_STATES.keys():
+        state = {'status_code': 404}
+        send(state, room=request.sid)
+        return
 
     state = add_current_time_to_state(state)
     state = add_set_time_to_state(state)
 
-    global ROOM_STATES
     ROOM_STATES[room_token] = state
 
     join_room(room_token)
