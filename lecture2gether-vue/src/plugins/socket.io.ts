@@ -24,7 +24,7 @@ export const connect = (store: Store<any>) => {
     }
 
     socket.on('connect', () => {
-        console.log('socket.io connected');
+        console.debug('socket.io connected');
         store.commit('toggleConnected', true);
     });
     socket.on('connect_error', (e: Error) => {
@@ -57,7 +57,7 @@ const getSafeSocket = (): Socket => {
 
 
 const onVideoStateUpdate = (state: any) => {
-    console.log('received state', state);
+    console.warn('received state (cannot do anything with it)', state);
 }
 
 
