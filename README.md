@@ -45,7 +45,12 @@ Clone the repository (`git clone https://github.com/TheNerdful8/Lecture2Gether`)
 
 Go to the backend folder `cd Lecture2Gether/lecture2gether_flask/`.
 
-Get [Poetry](https://python-poetry.org/). 
+Get [Poetry](https://python-poetry.org/).
+
+The backend runs on a Redis Database.
+Install Redis by following [this guide](https://redis.io/topics/quickstart#installing-redis-more-properly).
+Set the environment-variables `'REDIS_HOST', 'REDIS_PORT', 'REDIS_DB', 'REDIS_PASSWORD'`
+accordingly.
 
 Run `poetry install` to install the dependencys. 
 
