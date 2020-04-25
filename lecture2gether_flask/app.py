@@ -1,16 +1,22 @@
 #!/usr/bin/env python3
-import re
-import requests
-import eventlet
-from flask import Flask, request, jsonify, abort
-import logging
-import json
 import os
-from secrets import token_urlsafe
-from flask_socketio import SocketIO, join_room, leave_room, close_room, send, emit, rooms
+import re
+import json
+import requests
+import logging
+import eventlet
 from datetime import datetime 
+from secrets import token_urlsafe
+from flask import Flask, request, jsonify, abort
+from flask_socketio import SocketIO, join_room, leave_room, close_room, send, emit, rooms
+from flask_cors import CORS
 
 app = Flask(__name__)
+
+app.config['DEBUG'] = True
+
+if app.config['DEBUG']:
+    CORS(app)
 
 socketio = SocketIO(app, cors_allowed_origins="*")
 app.secret_key = os.getenv("SECRET_KEY", "codenames")
@@ -163,6 +169,5 @@ def add_set_time_to_state(state):
 
 if __name__ == '__main__':
     app.config['JSON_SORT_KEYS'] = False
-    app.config['DEBUG'] = os.environ.get('DEBUG', True)
 
     socketio.run(app, host='0.0.0.0')
