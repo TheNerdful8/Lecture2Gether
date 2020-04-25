@@ -6,7 +6,7 @@ authors = ["Florian <florian@flova.de>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "3.8.2"
+python = "3.*"
 flask = "^1.1.2"
 flask-restful = "^0.3.8"
 pyOpenSSL = "^19.1.0"
