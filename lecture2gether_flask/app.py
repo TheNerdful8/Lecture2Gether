@@ -56,10 +56,19 @@ def decode_l2go_path():
     except requests.exceptions.RequestException as e:
         abort(404)
 
+    title = re.search('<title>(.*)</title>', r.content.decode())
+    if title.groups()[0] == 'Catalog - Lecture2Go':
+        # Redirected to catalog means video does not exist
+        abort(404)
+
     m = re.search('https://[^"]*m3u8', r.content.decode())
 
     if m is None:
-        abort(404)
+        # No m3u8 file found means wrong (or no) password
+        if password:
+            abort(403)
+        else:
+            abort(401)
 
     return jsonify(m.group())
 
