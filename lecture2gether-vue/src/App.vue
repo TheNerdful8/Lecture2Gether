@@ -11,7 +11,7 @@ import Component from 'vue-class-component';
 import Vue from 'vue';
 
 @Component({})
-export default class L2gHome extends Vue {
+export default class App extends Vue {
     created(): void {
         this.$store.dispatch('fetchSettings');
     }
