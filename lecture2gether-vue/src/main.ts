@@ -8,6 +8,9 @@ import vuetify from './plugins/vuetify';
 
 Vue.config.productionTip = false;
 
+import 'video.js/dist/video-js.css'
+import VueVideoPlayer from 'vue-video-player'
+Vue.use(VueVideoPlayer)
 
 new Vue({
     router,
