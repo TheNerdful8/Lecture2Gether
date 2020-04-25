@@ -86,6 +86,11 @@ export default class L2gPlayer extends Vue {
             };
         }
 
+        get player(): videojs.Player {
+            // @ts-ignore
+            return this.$refs.videoPlayer.player;
+        }
+
         // listen event
         onPlayerPlay() {
             console.log('send play');
