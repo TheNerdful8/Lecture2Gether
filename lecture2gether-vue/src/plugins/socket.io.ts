@@ -1,6 +1,12 @@
 import io from 'socket.io-client';
 import {
-    sentEvents, receivedEvents, JoinRoomRequest, JoinRoomResponse,
+    sentEvents,
+    receivedEvents,
+    JoinRoomRequest,
+    JoinRoomResponse,
+    LeaveRoomRequest,
+    LeaveRoomResponse,
+    CreateRoomRequest, CreateRoomResponse,
 } from '@/api';
 
 import Socket = SocketIOClient.Socket;
@@ -61,27 +67,42 @@ const onVideoStateUpdate = (state: any) => {
 }
 
 
-export const joinRoom = (roomId: string): Promise<JoinRoomResponse> => {
-    console.debug('socket.io joining room', roomId)
+const sendVideoState = (state: any) => {
+    console.warn('sending of state not yet implemented', state);
+}
+
+
+export const joinRoom = (request: JoinRoomRequest): Promise<JoinRoomResponse> => {
+    console.debug('socket.io joining room', request)
     return new Promise((resolve, reject) => {
-        getSafeSocket().emit(sentEvents.joinRoom, {
-            roomId,
-        } as JoinRoomRequest, (response: JoinRoomResponse) => {
+        getSafeSocket().emit(sentEvents.joinRoom, request, (response: JoinRoomResponse) => {
             console.debug(`socket.io response from joining room`, response)
-            if (response.status_code !== 200) reject(response);
-            else resolve(response);
+            if (response.status_code === 200) resolve(response);
+            else reject(response);
         });
     });
 };
 
 
-export const createRoom = (): Promise<JoinRoomResponse> => {
-    console.debug('socket.io creating room')
+export const createRoom = (request: CreateRoomRequest): Promise<CreateRoomResponse> => {
+    console.debug('socket.io creating room', request)
     return new Promise<JoinRoomResponse>((resolve, reject) => {
-        getSafeSocket().emit(sentEvents.createRoom, {}, (response: JoinRoomResponse) => {
+        getSafeSocket().emit(sentEvents.createRoom, request, (response: JoinRoomResponse) => {
             console.debug('socket.io response from creating room', response)
-            if (response.status_code !== 200) reject(response)
-            else resolve(response)
+            if (response.status_code === 200) resolve(response)
+            else reject(response)
         });
+    })
+}
+
+
+export const leaveRoom = (request: LeaveRoomRequest): Promise<LeaveRoomResponse> => {
+    console.debug('socket.io leaving room')
+    return new Promise<LeaveRoomResponse>((resolve, reject) => {
+        getSafeSocket().emit(sentEvents.leaveRoom, request, (response: LeaveRoomResponse) => {
+            console.debug('socket.io response from leaving room', response)
+            if (response.status_code === 200) resolve(response)
+            else reject(response)
+        })
     })
 }
