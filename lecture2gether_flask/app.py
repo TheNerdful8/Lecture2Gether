@@ -23,11 +23,14 @@ ROOM_USER_COUNT = {}
 def decode_l2go_path():
     data = request.get_json()
 
-    if not data or not "video_url" in data:
+    if not data or not 'video_url' in data:
         abort(400)
 
     video_url = data['video_url']
-    password = data['password']
+
+    password = ''
+    if 'password' in data:
+        password = data['password']
 
     response = get_m3u8(video_url, password=password)
     if response is None:
