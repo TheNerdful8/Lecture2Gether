@@ -7,7 +7,7 @@
     Watch online lectures together!
     <br />
     <br />
-    <a href="https://lecture2gether.eu">View Demo (nothing here yet)</a>
+    <a href="https://lecture2gether.eu">View Demo</a>
     ·
     <a href="https://github.com/TheNerdful8/Lecture2Gether/issues">Report Bug</a>
     ·
