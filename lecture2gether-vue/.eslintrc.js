@@ -18,5 +18,6 @@ module.exports = {
             FunctionExpression: { parameters: 'first' },
         }],
         quotes: ['warn', 'single'],
+        'max-len': ['warn', 120]
     },
 };
