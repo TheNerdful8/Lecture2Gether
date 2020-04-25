@@ -17,14 +17,13 @@
   </p>
 </p>
 
-![Flask CI](https://github.com/TheNerdful8/Lecture2Gether/workflows/Flask%20CI/badge.svg?branch=master)
-
 ## About The Project
 <!-- TODO add screenshot -->
 
 Lecture2Gether makes it possible to watch online lectures with friends by pasting a link to a [Lecture2Go](https://github.com/lecture2go/portal-6.2-ce-ga6) Video, a YouTube Video or a simple mp4 link.
 The video streams are synchronized to partially restore the social aspect of campus life.
 
+![Flask CI](https://github.com/TheNerdful8/Lecture2Gether/workflows/Flask%20CI/badge.svg?branch=master)
 
 ### Built With
 
