@@ -13,6 +13,11 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 
+app.config['DEBUG'] = True
+
+if app.config['DEBUG']:
+    CORS(app)
+
 socketio = SocketIO(app, cors_allowed_origins="*")
 app.secret_key = os.getenv("SECRET_KEY", "codenames")
 
@@ -164,6 +169,5 @@ def add_set_time_to_state(state):
 
 if __name__ == '__main__':
     app.config['JSON_SORT_KEYS'] = False
-    app.config['DEBUG'] = os.environ.get('DEBUG', True)
 
     socketio.run(app, host='0.0.0.0')
