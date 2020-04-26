@@ -109,6 +109,13 @@ def on_disconnect():
     global ACTIVE_CLIENTS
     ACTIVE_CLIENTS -= 1
 
+    # Decrease room client counts
+    for room_token in rooms(sid=request.sid):  # For all rooms of user
+        if db.hexists('rooms', room_token):  # If room exists
+            room = json.loads(db.hget('rooms', room_token))
+            room['count'] -= 1
+            db.hset('rooms', room_token, json.dumps(room))
+
 @socketio.on('create')
 def on_create(init_state):
     """Create a watch room"""
