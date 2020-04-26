@@ -100,6 +100,7 @@ export default class Toolbar extends Vue {
             this.urlIsValid = true;
             const password = this.$store.state.player.password;
             url = await getL2goPlaylist(this.$store, url, password);
+            if (url === '') return;
         }
         if (this.isValidVideoUrl(url)) {
             this.urlIsValid = true;
