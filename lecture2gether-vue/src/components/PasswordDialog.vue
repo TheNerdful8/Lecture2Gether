@@ -30,12 +30,11 @@
 <script lang="ts">
     import Vue from 'vue';
     import Component from 'vue-class-component';
+    import {AuthState} from "@/plugins/store/player";
 
     @Component({})
     export default class PasswordDialog extends Vue {
         password = '';
-
-        loading = false;
 
         valid = false;
 
@@ -43,8 +42,17 @@
             required: value => !!value || 'Required.',
         }
 
+        get authState() {
+            return this.$store.state.player.auth;
+        }
+
+        get loading() {
+            return this.authState === AuthState.CHECKING;
+        }
+
         sendPassword() {
-            this.loading = true;
+            this.$store.commit('setAuthState', AuthState.CHECKING);
+            this.$store.commit('setPassword', this.password);
         }
     }
 </script>
