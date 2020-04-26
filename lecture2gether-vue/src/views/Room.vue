@@ -12,7 +12,7 @@ import Component from 'vue-class-component';
 import L2gPlayer from '@/components/Player.vue';
 import { Watch } from 'vue-property-decorator';
 import { AuthState } from '@/plugins/store/player';
-import PasswordDialog from "@/components/PasswordDialog.vue";
+import PasswordDialog from '@/components/PasswordDialog.vue';
 
 @Component({
     components: { PasswordDialog, L2gPlayer },

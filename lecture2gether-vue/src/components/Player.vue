@@ -3,9 +3,11 @@
                   ref="videoPlayer"
                   :options="playerOptions"
                   :playsinline="true"
+                  :events="['seeked']"
 
                   @play="onPlayerPlay"
-                  @pause="onPlayerPause">
+                  @pause="onPlayerPause"
+                  @seeked="onPlayerSeeked">
     </video-player>
 </template>
 
@@ -49,7 +51,9 @@ export default class L2gPlayer extends Vue {
             playbackRates: [0.7, 1.0, 1.3, 1.5, 2.0],
             sources,
             techOrder: ['youtube', 'html5'],
-            poster: '/static/images/author.jpg',
+            youtube: {
+                ytControls: 0,
+            },
         };
     }
 
@@ -108,6 +112,13 @@ export default class L2gPlayer extends Vue {
         });
     }
 
+    onPlayerSeeked() {
+        this.$store.dispatch('setVideoState', {
+            paused: this.player.paused(),
+            seconds: this.player.currentTime(),
+        });
+    }
+
     @Watch('$store.state.player.paused')
     async onPausedChange() {
         this.player.currentTime(this.$store.state.player.seconds);
@@ -115,6 +126,13 @@ export default class L2gPlayer extends Vue {
             this.player.pause();
         } else {
             this.player.play();
+        }
+    }
+
+    @Watch('$store.state.player.seconds')
+    async onSecondsChange() {
+        if (Math.abs(this.player.currentTime() - this.$store.state.player.seconds) > 1) {
+            this.player.currentTime(this.$store.state.player.seconds);
         }
     }
 
