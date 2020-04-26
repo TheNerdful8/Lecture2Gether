@@ -34,3 +34,9 @@ export type LeaveRoomRequest = {
 }
 
 export interface LeaveRoomResponse extends BaseResponse {}
+
+export type SendVideoStateRequest = {}
+
+export interface SendVideoStateResponse extends BaseResponse {
+    roomId: string;
+}
