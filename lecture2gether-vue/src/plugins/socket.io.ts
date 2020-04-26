@@ -6,7 +6,7 @@ import {
     JoinRoomResponse,
     LeaveRoomRequest,
     LeaveRoomResponse,
-    CreateRoomRequest, CreateRoomResponse, SendVideoStateResponse, SendVideoStateRequest,
+    CreateRoomRequest, CreateRoomResponse, SendVideoStateResponse, SendVideoStateRequest, VideoStateEvent,
 } from '@/api';
 
 import Socket = SocketIOClient.Socket;
@@ -50,7 +50,7 @@ export const connect = (store: Store<any>) => {
         console.error(`socket.io reconnected after ${attemptNumber} attempts`);
     });
 
-    socket.on(receivedEvents.videoStateUpdated, (state: any) => {
+    socket.on(receivedEvents.videoStateUpdated, (state: VideoStateEvent) => {
         store.commit('setVideoState', {
             seconds: state.seconds,
             paused: state.paused,
