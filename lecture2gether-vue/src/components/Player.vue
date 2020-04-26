@@ -14,7 +14,7 @@
 import videojs from 'video.js';
 import Component from 'vue-class-component';
 import Vue from 'vue';
-import { Prop } from 'vue-property-decorator';
+import { Prop, Watch } from 'vue-property-decorator';
 import VueTypes from 'vue-types';
 import videoPlayer from 'vue-video-player/src/player.vue';
 
@@ -32,10 +32,35 @@ export default class L2gPlayer extends Vue {
         @Prop(VueTypes.string.isRequired) url!: string;
 
         get playerOptions() {
+            const sources = [];
+            try {
+                sources.push(this.getSourceFromURL(this.url));
+            } catch (e) {
+                // Show error page
+            }
+
+            return {
+                // videojs options
+                muted: true,
+                language: 'en',
+                width: '750px',
+                playbackRates: [0.7, 1.0, 1.3, 1.5, 2.0],
+                sources,
+                techOrder: ['youtube', 'html5'],
+                poster: '/static/images/author.jpg',
+            };
+        }
+
+        get player(): videojs.Player {
+            // @ts-ignore
+            return this.$refs.videoPlayer.player;
+        }
+
+        getSourceFromURL(url: string): {type: string; src: string} {
             let type = 'video/mp4';
 
             // First, try extension based file types
-            const extension = this.url.split('.').pop();
+            const extension = url.split('.').pop();
             switch (extension) {
             case 'm3u8':
                 type = 'application/x-mpegURL';
@@ -55,42 +80,22 @@ export default class L2gPlayer extends Vue {
             }
 
             // Then, try hostname based types
-            try {
-                const url = new URL(this.url);
-                switch (url.hostname) {
-                case 'youtube.com':
-                case 'www.youtube.com':
-                case 'youtu.be':
-                    type = 'video/youtube';
-                    break;
-                default:
-                    throw new Error('URL not supported');
-                }
-            } catch (e) {
-                // Show error page, the url was invalid
+            const parsedUrl = new URL(this.url);
+            switch (parsedUrl.hostname) {
+            case 'youtube.com':
+            case 'www.youtube.com':
+            case 'youtu.be':
+                type = 'video/youtube';
+                break;
+            default:
+                throw new Error('URL not supported');
             }
-
             return {
-                // videojs options
-                muted: true,
-                language: 'en',
-                width: '750px',
-                playbackRates: [0.7, 1.0, 1.3, 1.5, 2.0],
-                sources: [{
-                    type,
-                    src: this.url,
-                }],
-                techOrder: ['youtube', 'html5'],
-                poster: '/static/images/author.jpg',
+                type,
+                src: url,
             };
         }
 
-        get player(): videojs.Player {
-            // @ts-ignore
-            return this.$refs.videoPlayer.player;
-        }
-
-        // listen event
         onPlayerPlay() {
             this.$store.dispatch('setVideoState', {
                 paused: false,
@@ -103,6 +108,21 @@ export default class L2gPlayer extends Vue {
                 paused: true,
                 seconds: this.player.currentTime(),
             });
+        }
+
+        @Watch('$store.state.player.paused')
+        async onPausedChange() {
+            this.player.currentTime(this.$store.state.player.seconds);
+            if (this.$store.state.player.paused) {
+                this.player.pause();
+            } else {
+                this.player.play();
+            }
+        }
+
+        @Watch('$store.state.player.videoURL')
+        async onURLChange() {
+            this.player.selectSource([this.getSourceFromURL(this.$store.state.player.videoUrl)]);
         }
 }
 </script>
