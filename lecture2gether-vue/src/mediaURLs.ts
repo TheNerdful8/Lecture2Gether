@@ -28,7 +28,6 @@ export function checkURL(url: string): {type: string, src: URL,} | undefined {
     //check type based on extension first
     type = assoc(extensions2types, extension);
     //check type based on hostname next
-    type = assoc(extensions2types, extension);
     if (type === undefined) type = assoc(host2types, host);
     if (type === undefined) return undefined;
 
