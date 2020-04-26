@@ -119,6 +119,17 @@ export default class L2gPlayer extends Vue {
         });
     }
 
+    mounted(): void {
+        // Player was mounted, set state
+        this.player.src(this.getSourceFromURL(this.$store.state.player.videoUrl));
+        this.player.currentTime(this.$store.state.player.seconds);
+        if (this.$store.state.player.paused) {
+            this.player.pause();
+        } else {
+            this.player.play();
+        }
+    }
+
     @Watch('$store.state.player.paused')
     async onPausedChange() {
         this.player.currentTime(this.$store.state.player.seconds);
