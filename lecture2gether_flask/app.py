@@ -49,8 +49,8 @@ while True:
         break
 
 # Create cleanup thread
-cleanup_interval = os.getenv('CLEANUP_INTERVAL', 60*15)
-cleanup_room_expire_time = os.getenv('CLEANUP_ROOM_EXPIRE_TIME', 60*60)
+cleanup_interval = int(os.getenv('CLEANUP_INTERVAL', 60*15))
+cleanup_room_expire_time = int(os.getenv('CLEANUP_ROOM_EXPIRE_TIME', 60*60))
 
 def room_cleanup():
     while True:
