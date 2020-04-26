@@ -21,5 +21,6 @@ module.exports = {
         'max-len': ['warn', 120],
         '@typescript-eslint/ban-ts-ignore': 'off',
         'prefer-destructuring': 'off',
+        'class-methods-use-this': 'off',
     },
 };
