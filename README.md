@@ -48,8 +48,8 @@ Go to the backend folder `cd Lecture2Gether/lecture2gether_flask/`.
 
 Get [Poetry](https://python-poetry.org/) `pip3 install poetry --user`.
 
-The backend runs on a Redis Database.
-Install Redis by following [this guide](https://redis.io/topics/quickstart#installing-redis-more-properly).
+The backend runs on a redis database.
+Run the redis docker `docker run -it -p 6379:6379 redis:buster` or install manually by following [this guide](https://redis.io/topics/quickstart#installing-redis-more-properly).
 Set the environment-variables `'REDIS_HOST', 'REDIS_PORT', 'REDIS_DB', 'REDIS_PASSWORD'`
 accordingly.
 
