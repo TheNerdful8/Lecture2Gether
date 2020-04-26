@@ -35,7 +35,10 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { Watch, Prop } from 'vue-property-decorator';
+import { Store } from 'vuex';
+import { AuthState } from '@/plugins/store/player';
+
 
 @Component({})
 export default class Toolbar extends Vue {
@@ -46,26 +49,54 @@ export default class Toolbar extends Vue {
 
     // Called when the watch button is pressed.
     // The url variable contains the url from the text field at this point.
+    @Watch('$store.state.player.password')
     async onWatch() {
-        async function getL2goPlaylist(store, url) {
-            const apiUrl = new URL('l2go', store.state.settings.apiRoot);
-            const response = await fetch(apiUrl, {
+        async function getL2goPlaylist(store: Store<any>, url: string, pass = '') {
+            const apiUrl = `${store.state.settings.apiRoot}l2go`;
+            return fetch(apiUrl, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    'video_url': url,
-                })
+                    // eslint-disable-next-line @typescript-eslint/camelcase
+                    video_url: url,
+                    password: pass,
+                }),
+            }).then((response) => {
+                switch (response.status) {
+                case 200:
+                    store.commit('setAuthState', AuthState.UNNECESSARY);
+                    return response.json();
+                case 401:
+                    store.commit(
+                        'setAuthState',
+                        pass === '' ? AuthState.NECESSARY : AuthState.FAILURE,
+                    );
+                    return '';
+                case 403:
+                    store.commit(
+                        'setAuthState',
+                        AuthState.FAILURE,
+                    );
+                    return '';
+                default:
+                    console.log(`${response.status}: Unexpected return code from l2go endpoint`);
+                    return '';
+                }
+            }).catch((response) => {
+                console.log(response);
+                throw new Error(`${response.status}: Resource not available`);
             });
-            return response.json();
         }
-        //update the url to point to the lecture2go playlist when it is a
-        //lecture2go url
-        if (this.url.includes("lecture2go") || this.url.includes("l2go")) {
-            this.url = await getL2goPlaylist(this.$store, this.url);
+        // update the url to point to the lecture2go playlist when it is a
+        // lecture2go url
+        let url: string = this.url;
+        if (url.includes('lecture2go') || url.includes('/l2go/')) {
+            const password = this.$store.state.player.password;
+            url = await getL2goPlaylist(this.$store, url, password);
         }
-        if (this.$store.state.isConnected) this.$store.dispatch('setUrl', this.url);
+        if (this.$store.state.isConnected && url !== '') this.$store.dispatch('setUrl', url);
         else console.warn('Not setting url because we are not connected');
     }
 
@@ -116,6 +147,7 @@ export default class Toolbar extends Vue {
         align-items: flex-end;
         flex-direction: column;
         height: 100% !important;
+        border-radius: 0 !important;
     }
 
     .searchbar {

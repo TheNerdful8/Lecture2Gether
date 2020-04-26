@@ -4,7 +4,7 @@ import { Module } from 'vuex';
 
 export class SettingsState {
     apiRoot = '/api'
-
+    socketioHost = ''
     environment = 'dev'
 }
 
