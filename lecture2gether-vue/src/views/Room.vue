@@ -1,20 +1,20 @@
 <template>
     <div>
         <PasswordDialog v-if="authRequired" class="password-dialog"></PasswordDialog>
-        <l2g-player v-if="!authRequired" class="l2g-player" url="https://www.youtube.com/watch?v=gkC6YEinomA"></l2g-player>
+        <l2g-player v-if="!authRequired" class="l2g-player"></l2g-player>
     </div>
 </template>
 
 <script lang="ts">
-    // @ is an alias to /src
-    import Vue from 'vue';
-    import Component from 'vue-class-component';
-    import L2gPlayer from '@/components/Player.vue';
-    import {Watch} from 'vue-property-decorator';
-    import {AuthState} from '@/plugins/store/player';
-    import PasswordDialog from "@/components/PasswordDialog.vue";
+// @ is an alias to /src
+import Vue from 'vue';
+import Component from 'vue-class-component';
+import L2gPlayer from '@/components/Player.vue';
+import { Watch } from 'vue-property-decorator';
+import { AuthState } from '@/plugins/store/player';
+import PasswordDialog from "@/components/PasswordDialog.vue";
 
-    @Component({
+@Component({
     components: { PasswordDialog, L2gPlayer },
 })
 export default class L2gPlayerView extends Vue {

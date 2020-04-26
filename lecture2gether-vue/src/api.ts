@@ -15,7 +15,22 @@ export const receivedEvents = {
 };
 
 
-export type CreateRoomRequest = {}
+export interface VideoStateRequest {
+    videoUrl: string;
+    paused: boolean;
+    seconds: number;
+}
+
+export interface VideoStateEvent {
+    videoUrl: string;
+    paused: boolean;
+    seconds: number;
+    currentTime: number;
+    setTime: number;
+}
+
+
+export interface CreateRoomRequest extends VideoStateRequest {}
 
 export interface CreateRoomResponse extends BaseResponse{
     roomId: string;
@@ -34,3 +49,9 @@ export type LeaveRoomRequest = {
 }
 
 export interface LeaveRoomResponse extends BaseResponse {}
+
+export interface SendVideoStateRequest extends VideoStateRequest {
+    roomId:string;
+}
+
+export interface SendVideoStateResponse extends BaseResponse {}

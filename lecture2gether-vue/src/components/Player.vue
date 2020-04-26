@@ -5,8 +5,7 @@
                   :playsinline="true"
 
                   @play="onPlayerPlay"
-                  @pause="onPlayerPause"
-                  @ready="playerReadied">
+                  @pause="onPlayerPause">
     </video-player>
 </template>
 
@@ -15,8 +14,7 @@
 import videojs from 'video.js';
 import Component from 'vue-class-component';
 import Vue from 'vue';
-import { Prop } from 'vue-property-decorator';
-import VueTypes from 'vue-types';
+import { Watch } from 'vue-property-decorator';
 import videoPlayer from 'vue-video-player/src/player.vue';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
@@ -30,81 +28,100 @@ require('videojs-youtube/dist/Youtube');
     components: { videoPlayer },
 })
 export default class L2gPlayer extends Vue {
-        @Prop(VueTypes.string.isRequired) url!: string;
+    get url() {
+        return this.$store.state.player.videoUrl;
+    }
 
-        get playerOptions() {
-            let type = 'video/mp4';
+    get playerOptions() {
+        const sources = [];
+        try {
+            sources.push(this.getSourceFromURL(this.url));
+        } catch (e) {
+            console.error(e);
+            // Show error page
+        }
 
-            // First, try extension based file types
-            const extension = this.url.split('.').pop();
-            switch (extension) {
-            case 'm3u8':
-                type = 'application/x-mpegURL';
-                break;
-            case 'mp4':
-                type = 'video/mp4';
-                break;
-            case 'ogg':
-                type = 'video/ogg';
-                break;
-            case 'webm':
-                type = 'video/webm';
+        return {
+            // videojs options
+            muted: false,
+            language: 'en',
+            width: '750px',
+            playbackRates: [0.7, 1.0, 1.3, 1.5, 2.0],
+            sources,
+            techOrder: ['youtube', 'html5'],
+            poster: '/static/images/author.jpg',
+        };
+    }
+
+    get player(): videojs.Player {
+        // @ts-ignore
+        return this.$refs.videoPlayer.player;
+    }
+
+    getSourceFromURL(url: string): {type: string; src: string} {
+        let type = '';
+
+        // First, try extension based file types
+        const extension = url.split('.').pop();
+        switch (extension) {
+        case 'm3u8':
+            type = 'application/x-mpegURL';
+            break;
+        case 'mp4':
+            type = 'video/mp4';
+            break;
+        case 'ogg':
+            type = 'video/ogg';
+            break;
+        case 'webm':
+            type = 'video/webm';
+            break;
+        default:
+            // Then, try hostname based types
+            switch (new URL(this.url).hostname) {
+            case 'youtube.com':
+            case 'www.youtube.com':
+            case 'youtu.be':
+                type = 'video/youtube';
                 break;
             default:
-                // Set a known type for an unknown url results in a useful error message
-                type = 'video/mp4';
+                throw new Error('URL not supported');
             }
-
-            // Then, try hostname based types
-            try {
-                const url = new URL(this.url);
-                switch (url.hostname) {
-                case 'youtube.com':
-                case 'www.youtube.com':
-                case 'youtu.be':
-                    type = 'video/youtube';
-                    break;
-                default:
-                    throw new Error('URL not supported');
-                }
-            } catch (e) {
-                // Show error page, the url was invalid
-            }
-
-            return {
-                // videojs options
-                muted: true,
-                language: 'en',
-                width: '750px',
-                playbackRates: [0.7, 1.0, 1.3, 1.5, 2.0],
-                sources: [{
-                    type,
-                    src: this.url,
-                }],
-                techOrder: ['youtube', 'html5'],
-                poster: '/static/images/author.jpg',
-            };
         }
+        return {
+            type,
+            src: url,
+        };
+    }
 
-        get player(): videojs.Player {
-            // @ts-ignore
-            return this.$refs.videoPlayer.player;
-        }
+    onPlayerPlay() {
+        this.$store.dispatch('setVideoState', {
+            paused: false,
+            seconds: this.player.currentTime(),
+        });
+    }
 
-        // listen event
-        onPlayerPlay() {
-            console.log('send play');
-        }
+    onPlayerPause() {
+        this.$store.dispatch('setVideoState', {
+            paused: true,
+            seconds: this.player.currentTime(),
+        });
+    }
 
-        onPlayerPause() {
-            console.log('send pause');
+    @Watch('$store.state.player.paused')
+    async onPausedChange() {
+        this.player.currentTime(this.$store.state.player.seconds);
+        if (this.$store.state.player.paused) {
+            this.player.pause();
+        } else {
+            this.player.play();
         }
+    }
 
-        // player is ready
-        playerReadied() {
-            console.log('send player ready');
-            // player.[methods]
-        }
+    @Watch('$store.state.player.videoURL')
+    async onURLChange() {
+        this.player.src(this.getSourceFromURL(this.$store.state.player.videoUrl));
+    }
 }
 </script>
 

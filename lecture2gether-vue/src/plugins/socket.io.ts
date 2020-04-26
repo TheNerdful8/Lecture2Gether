@@ -6,7 +6,7 @@ import {
     JoinRoomResponse,
     LeaveRoomRequest,
     LeaveRoomResponse,
-    CreateRoomRequest, CreateRoomResponse,
+    CreateRoomRequest, CreateRoomResponse, SendVideoStateResponse, SendVideoStateRequest, VideoStateEvent,
 } from '@/api';
 
 import Socket = SocketIOClient.Socket;
@@ -50,7 +50,13 @@ export const connect = (store: Store<any>) => {
         console.error(`socket.io reconnected after ${attemptNumber} attempts`);
     });
 
-    socket.on(receivedEvents.videoStateUpdated, onVideoStateUpdate);
+    socket.on(receivedEvents.videoStateUpdated, (state: VideoStateEvent) => {
+        store.commit('setVideoState', {
+            seconds: state.seconds,
+            paused: state.paused,
+        })
+        store.commit('setUrl', state.videoUrl)
+    });
 
     socket.connect();
 };
@@ -62,14 +68,16 @@ const getSafeSocket = (): Socket => {
 };
 
 
-const onVideoStateUpdate = (state: any) => {
-    console.warn('received state (cannot do anything with it)', state);
-}
-
-
-const sendVideoState = (state: any) => {
-    console.warn('sending of state not yet implemented', state);
-}
+export const sendVideoState = (state: SendVideoStateRequest) => {
+    console.debug('socket.io send state', state);
+    return new Promise((resolve, reject) => {
+            getSafeSocket().emit(sentEvents.setVideoState, state, (response: SendVideoStateResponse) => {
+            console.debug('socket.io response from sending video state', response)
+            if (response.status_code === 200) resolve(response);
+            else reject(response);
+        });
+    });
+};
 
 
 export const joinRoom = (request: JoinRoomRequest): Promise<JoinRoomResponse> => {

@@ -23,7 +23,7 @@ export const roomsModule: Module<RoomsState, any> = {
 
     actions: {
         newRoom: (context) => {
-            return socketio.createRoom({}).then(response => {
+            return socketio.createRoom(context.rootState.player).then(response => {
                 context.commit('setRoomId', response.roomId);
             });
         },
