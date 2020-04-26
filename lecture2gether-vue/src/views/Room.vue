@@ -1,5 +1,5 @@
 <template>
-    <l2g-player class="l2g-player" url="https://www.youtube.com/watch?v=gkC6YEinomA"></l2g-player>
+    <l2g-player class="l2g-player"></l2g-player>
 </template>
 
 <script lang="ts">
