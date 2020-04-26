@@ -40,23 +40,25 @@ export default class Toolbar extends Vue {
     async onWatch() {
         async function getL2goPlaylist(store, url) {
             const apiUrl = new URL('l2go', store.state.settings.apiRoot);
-            const response = await fetch(apiUrl, {
+            const response = await fetch(apiUrl.toString(), {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    'video_url': url,
-                })
+                    // eslint-disable-next-line @typescript-eslint/camelcase
+                    video_url: url,
+                }),
             });
             return response.json();
         }
-        //update the url to point to the lecture2go playlist when it is a
-        //lecture2go url
-        if (this.url.includes("lecture2go") || this.url.includes("l2go")) {
-            this.url = await getL2goPlaylist(this.$store, this.url);
+        // update the url to point to the lecture2go playlist when it is a
+        // lecture2go url
+        let url = this.url;
+        if (url.includes("lecture2go") || url.includes("l2go")) {
+            url = await getL2goPlaylist(this.$store, url);
         }
-        if (this.$store.state.isConnected) this.$store.dispatch('setUrl', this.url);
+        if (this.$store.state.isConnected) this.$store.dispatch('setUrl', url);
         else console.warn('Not setting url because we are not connected');
     }
 }

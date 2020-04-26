@@ -20,5 +20,6 @@ module.exports = {
         quotes: ['warn', 'single'],
         'max-len': ['warn', 120],
         '@typescript-eslint/ban-ts-ignore': 'off',
+        'prefer-destructuring': 'off',
     },
 };
