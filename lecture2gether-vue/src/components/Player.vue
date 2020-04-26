@@ -132,7 +132,6 @@ export default class L2gPlayer extends Vue {
 
     @Watch('$store.state.player.paused')
     async onPausedChange() {
-        this.player.currentTime(this.$store.state.player.seconds);
         if (this.$store.state.player.paused) {
             this.player.pause();
         } else {
