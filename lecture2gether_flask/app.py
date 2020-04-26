@@ -54,7 +54,7 @@ cleanup_room_expire_time = os.getenv('CLEANUP_ROOM_EXPIRE_TIME', 60*60)
 
 def room_cleanup():
     while True:
-        for room_token, room in db.hgetall('rooms'):  # For all rooms in db
+        for room_token, room in db.hgetall('rooms').items():  # For all rooms in db
             room = json.loads(room)
             if room['count'] <= 0 and datetime.now().timestamp() - room['state']['setTime'] > cleanup_room_expire_time:  # Delete empty old rooms
                 db.hdel('rooms', room_token)
