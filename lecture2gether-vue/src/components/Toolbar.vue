@@ -49,7 +49,7 @@ export default class Toolbar extends Vue {
                     'video_url': url,
                 })
             });
-            return response.json(); 
+            return response.json();
         }
         //update the url to point to the lecture2go playlist when it is a
         //lecture2go url
@@ -96,6 +96,7 @@ export default class Toolbar extends Vue {
         align-items: flex-end;
         flex-direction: column;
         height: 100% !important;
+        border-radius: 0 !important;
     }
 
     .searchbar {
