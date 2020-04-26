@@ -123,7 +123,7 @@ export default class L2gPlayer extends Vue {
 
     @Watch('$store.state.player.videoURL')
     async onURLChange() {
-        this.player.selectSource([this.getSourceFromURL(this.$store.state.player.videoUrl)]);
+        this.player.src(this.getSourceFromURL(this.$store.state.player.videoUrl));
     }
 }
 </script>
