@@ -55,7 +55,7 @@ export default class Toolbar extends Vue {
         // update the url to point to the lecture2go playlist when it is a
         // lecture2go url
         let url = this.url;
-        if (url.includes("lecture2go") || url.includes("l2go")) {
+        if (url.includes('lecture2go') || url.includes('/l2go/')) {
             url = await getL2goPlaylist(this.$store, url);
         }
         if (this.$store.state.isConnected) this.$store.dispatch('setUrl', url);
