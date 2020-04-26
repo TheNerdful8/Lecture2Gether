@@ -1,7 +1,7 @@
 <template>
     <div>
         <PasswordDialog v-if="authRequired" class="password-dialog"></PasswordDialog>
-        <l2g-player v-if="!authRequired" class="l2g-player"></l2g-player>
+        <l2g-player v-if="!authRequired && this.$store.state.player.videoUrl" class="l2g-player"></l2g-player>
     </div>
 </template>
 
