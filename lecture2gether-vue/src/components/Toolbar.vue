@@ -103,13 +103,11 @@ export default class Toolbar extends Vue {
     // Save url to clipboard
     async saveUrlClipboard() {
         this.showingTooltip = true;
-        const data = window.location.href;
+        const data = window.location.host + this.$route.path;
         console.debug('Saved to clipboard: ', data);
         await navigator.clipboard.writeText(data);
         setTimeout(() => this.showingTooltip = false, 1000);
     }
-
-    // TODO: Update disable of share button on room change
 }
 </script>
 
