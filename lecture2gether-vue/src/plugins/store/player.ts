@@ -5,6 +5,7 @@ export class PlayerState {
     videoUrl: string = '';
     paused: boolean = false;
     seconds: number = 0;
+    playbackRate: number = 0;
     password = ''
     auth = AuthState.UNNECESSARY
 }
@@ -30,6 +31,7 @@ export const playerModule: Module<PlayerState, any> = {
         setVideoState: (state, payload) => {
             state.paused = payload.paused;
             state.seconds = payload.seconds;
+            state.playbackRate = payload.playbackRate;
         },
     },
 
@@ -37,20 +39,30 @@ export const playerModule: Module<PlayerState, any> = {
         setUrl: async (ctx, payload: string) => {
             ctx.commit('setUrl', payload);
             sendVideoState({
+                roomId: ctx.rootState.rooms.roomId,
                 videoUrl: ctx.state.videoUrl,
                 paused: ctx.state.paused,
                 seconds: ctx.state.seconds,
-                roomId: ctx.rootState.rooms.roomId
+                playbackRate: ctx.state.playbackRate,
             });
         },
         setVideoState: async (ctx, state) => {
             ctx.commit('setVideoState', state)
             sendVideoState({
+                roomId: ctx.rootState.rooms.roomId,
                 videoUrl: ctx.state.videoUrl,
                 paused: ctx.state.paused,
                 seconds: ctx.state.seconds,
-                roomId: ctx.rootState.rooms.roomId
+                playbackRate: ctx.state.playbackRate,
             });
         },
     },
+
+    getters: {
+        authRequired: state =>  {
+            return state.auth === AuthState.NECESSARY
+                || state.auth === AuthState.CHECKING
+                || state.auth === AuthState.FAILURE;
+        }
+    }
 };

@@ -13,10 +13,8 @@ spec:
       labels:
         app: "NOT_SET"
     spec:
-      imagePullSecrets:
-        - name: "registry-credentials"
       containers:
-        - image: "registry.mafiasi.de/lecture2gether"
+        - image: "docker.io/thenerdful8/lecture2gether"
           name: "main"
           ports:
             - name: "http"

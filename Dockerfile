@@ -40,6 +40,7 @@ ADD docker/settings.json /app/config/settings.json
 RUN ln -sf /app/config/settings.json /app/static/settings.json
 ADD docker/nginx.conf /etc/nginx/sites-enabled/default
 
-EXPOSE 8000/tcp     # http
+# http
+EXPOSE 8000/tcp
     
 CMD supervisord -n -c /etc/supervisor/supervisord.conf -u root

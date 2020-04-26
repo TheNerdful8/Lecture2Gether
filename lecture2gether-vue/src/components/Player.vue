@@ -3,11 +3,12 @@
                   ref="videoPlayer"
                   :options="playerOptions"
                   :playsinline="true"
-                  :events="['seeked']"
+                  :events="['seeked', 'ratechange']"
 
                   @play="onPlayerPlay"
                   @pause="onPlayerPause"
-                  @seeked="onPlayerSeeked">
+                  @seeked="onPlayerSeeked"
+                  @ratechange="onPlayerRate">
     </video-player>
 </template>
 
@@ -102,6 +103,7 @@ export default class L2gPlayer extends Vue {
         this.$store.dispatch('setVideoState', {
             paused: false,
             seconds: this.player.currentTime(),
+            playbackRate: this.player.playbackRate(),
         });
     }
 
@@ -109,6 +111,7 @@ export default class L2gPlayer extends Vue {
         this.$store.dispatch('setVideoState', {
             paused: true,
             seconds: this.player.currentTime(),
+            playbackRate: this.player.playbackRate(),
         });
     }
 
@@ -116,12 +119,31 @@ export default class L2gPlayer extends Vue {
         this.$store.dispatch('setVideoState', {
             paused: this.player.paused(),
             seconds: this.player.currentTime(),
+            playbackRate: this.player.playbackRate(),
         });
+    }
+
+    onPlayerRate() {
+        this.$store.dispatch('setVideoState', {
+            paused: this.player.paused(),
+            seconds: this.player.currentTime(),
+            playbackRate: this.player.playbackRate(),
+        });
+    }
+
+    mounted(): void {
+        // Player was mounted, set state
+        this.player.src(this.getSourceFromURL(this.$store.state.player.videoUrl));
+        this.player.currentTime(this.$store.state.player.seconds);
+        if (this.$store.state.player.paused) {
+            this.player.pause();
+        } else {
+            this.player.play();
+        }
     }
 
     @Watch('$store.state.player.paused')
     async onPausedChange() {
-        this.player.currentTime(this.$store.state.player.seconds);
         if (this.$store.state.player.paused) {
             this.player.pause();
         } else {
@@ -139,6 +161,11 @@ export default class L2gPlayer extends Vue {
     @Watch('$store.state.player.videoURL')
     async onURLChange() {
         this.player.src(this.getSourceFromURL(this.$store.state.player.videoUrl));
+    }
+
+    @Watch('$store.state.player.playbackRate')
+    async onPlayerRateChange() {
+        this.player.playbackRate(this.$store.state.player.playbackRate);
     }
 }
 </script>

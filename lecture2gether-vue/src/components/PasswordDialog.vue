@@ -5,11 +5,11 @@
                 <h2 class="display-3">
                     Video is password protected!
                 </h2>
-                <v-form @submit.prevent="sendPassword" class="ma-12" v-model="valid">
+                <v-form ref="form" @submit.prevent="sendPassword" class="ma-12" v-model="valid">
                     <v-layout row justify-space-between>
                         <v-flex md9 class="d-flex align-center">
                             <v-text-field v-model="password" label="Password" type="password"
-                                          :rules="[rules.required]"></v-text-field>
+                                          :rules="[rules.required, rules.passwordWrong]"></v-text-field>
                         </v-flex>
                         <v-flex md2 class="d-flex align-center">
                             <v-btn type="submit" color="secondary" class="password-button" :disabled="!valid">
@@ -31,6 +31,7 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { AuthState } from '@/plugins/store/player';
+import { Watch } from 'vue-property-decorator';
 
     @Component({})
 export default class PasswordDialog extends Vue {
@@ -39,6 +40,7 @@ export default class PasswordDialog extends Vue {
         valid = false;
 
         rules = {
+            passwordWrong: (value: string) => value !== this.$store.state.player.password || 'Password is wrong.',
             required: (value: string): boolean | string => !!value || 'Required.',
         }
 
@@ -48,6 +50,13 @@ export default class PasswordDialog extends Vue {
 
         get loading() {
             return this.authState === AuthState.CHECKING;
+        }
+
+        @Watch('$store.state.player.auth')
+        validatePasswordField() {
+            if (this.authState === AuthState.FAILURE) {
+                (this.$refs.form as any).validate();
+            }
         }
 
         sendPassword() {
