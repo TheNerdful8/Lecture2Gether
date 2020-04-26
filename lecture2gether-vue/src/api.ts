@@ -29,6 +29,7 @@ export interface VideoStateEvent {
     playbackRate: number;
     currentTime: number;
     setTime: number;
+    sender: string;
 }
 
 

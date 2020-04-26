@@ -28,6 +28,7 @@ export const connect = (store: Store<any>) => {
     socket.on('connect', () => {
         console.debug('socket.io connected');
         store.commit('toggleConnected', true);
+        store.commit('setSocketId', getSafeSocket().id)
     });
     socket.on('connect_error', (e: Error) => {
         console.error(`socket.io connection error: ${e}`);
@@ -51,6 +52,7 @@ export const connect = (store: Store<any>) => {
         if (!state.paused) {
             seconds = (state.currentTime - state.setTime) * state.playbackRate + state.seconds;
         }
+        store.commit('setSender', state.sender);
         store.commit('setVideoState', {
             seconds,
             paused: state.paused,
@@ -70,9 +72,13 @@ const getSafeSocket = (): Socket => {
 
 
 export const sendVideoState = (state: SendVideoStateRequest) => {
-    console.debug('socket.io send state', state);
+    let sendState = {
+        ...state,
+        sender: getSafeSocket().id,
+    }
+    console.debug('socket.io send state', sendState);
     return new Promise((resolve, reject) => {
-            getSafeSocket().emit(sentEvents.setVideoState, state, (response: SendVideoStateResponse) => {
+            getSafeSocket().emit(sentEvents.setVideoState, sendState, (response: SendVideoStateResponse) => {
             console.debug('socket.io response from sending video state', response)
             if (response.status_code === 200) resolve(response);
             else reject(response);

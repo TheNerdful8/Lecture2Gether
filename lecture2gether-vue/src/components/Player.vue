@@ -65,12 +65,12 @@ export default class L2gPlayer extends Vue {
     }
 
     getSourceFromURL(url: string): {type: string; src: string} {
-        //shared media logic in src/mediaURLs.ts checkURL
-        let res = checkURL(url);
+        // shared media logic in src/mediaURLs.ts checkURL
+        const res = checkURL(url);
         if (res === undefined) {
-            throw new Error("URL not supported");
+            throw new Error('URL not supported');
         } else {
-            return { 
+            return {
                 type: res.type,
                 src: res.src.toString(),
             };
@@ -124,6 +124,8 @@ export default class L2gPlayer extends Vue {
 
     @Watch('$store.state.player.paused')
     async onPausedChange() {
+        console.log(this.$store.state.player.sender, this.$store.state.socketId);
+        if (this.$store.state.player.sender === this.$store.state.socketId) return;
         if (this.$store.state.player.paused) {
             this.player.pause();
         } else {
@@ -133,6 +135,7 @@ export default class L2gPlayer extends Vue {
 
     @Watch('$store.state.player.seconds')
     async onSecondsChange() {
+        if (this.$store.state.player.sender === this.$store.state.socketId) return;
         if (Math.abs(this.player.currentTime() - this.$store.state.player.seconds) > 1) {
             this.player.currentTime(this.$store.state.player.seconds);
         }
@@ -140,11 +143,13 @@ export default class L2gPlayer extends Vue {
 
     @Watch('$store.state.player.videoURL')
     async onURLChange() {
+        if (this.$store.state.player.sender === this.$store.state.socketId) return;
         this.player.src(this.getSourceFromURL(this.$store.state.player.videoUrl));
     }
 
     @Watch('$store.state.player.playbackRate')
     async onPlayerRateChange() {
+        if (this.$store.state.player.sender === this.$store.state.socketId) return;
         this.player.playbackRate(this.$store.state.player.playbackRate);
     }
 }

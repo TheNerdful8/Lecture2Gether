@@ -8,6 +8,7 @@ export class PlayerState {
     playbackRate: number = 0;
     password = ''
     auth = AuthState.UNNECESSARY
+    sender = '';
 }
 
 export enum AuthState {
@@ -33,6 +34,9 @@ export const playerModule: Module<PlayerState, any> = {
             state.seconds = payload.seconds;
             state.playbackRate = payload.playbackRate;
         },
+        setSender: (state, payload) => {
+            state.sender = payload;
+        }
     },
 
     actions: {

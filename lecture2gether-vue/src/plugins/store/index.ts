@@ -11,6 +11,7 @@ Vue.use(Vuex);
 export class RootState {
     isConnected = false
     isCollapsed = false
+    socketId = ''
 }
 
 
@@ -24,6 +25,9 @@ export default new Vuex.Store({
         },
         collapse: (state) => {
             state.isCollapsed = true;
+        },
+        setSocketId: (state, id: string) => {
+            state.socketId = id;
         }
     },
     actions: {},
