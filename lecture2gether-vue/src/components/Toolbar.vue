@@ -18,11 +18,10 @@
                     <v-btn depressed large color="secondary" type="submit">
                         Watch!
                     </v-btn>
-                    <v-divider class="mx-4" inset vertical></v-divider>
                     <v-tooltip bottom v-model="showingTooltip">
                         <template v-slot:activator>
-                            <v-btn @click="saveUrlClipboard()" class="canCopy share" color="primary" depressed large type="button">
-                                Share link
+                            <v-btn @click="saveUrlClipboard()" class="canCopy share ml-4" color="primary" depressed outlined large type="button">
+                                <v-icon>mdi-share</v-icon>
                             </v-btn>
                         </template>
                         <span>Copied share link</span>
@@ -59,7 +58,7 @@ export default class Toolbar extends Vue {
                     'video_url': url,
                 })
             });
-            return response.json(); 
+            return response.json();
         }
         //update the url to point to the lecture2go playlist when it is a
         //lecture2go url
