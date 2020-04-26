@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import time
 from app import app, socketio
 
 def socketio_test():
@@ -10,7 +11,9 @@ def socketio_test():
     #socketio_test_client = socketio.test_client(
     #    app, flask_test_client=flask_test_client)
 
-    # log in via HTTP
+    # Hopefully fix weird ci behaviour
+    time.sleep(5)
+
     r = flask_test_client.post('/l2go', data={
         'username': 'python', 'password': 'is-great!'})
     
@@ -31,6 +34,7 @@ def socketio_test():
 
     assert r.status_code == 200, f"Check failed, status code as {r.status_code}, but 200 was expected."
 
+    
 
 if __name__ == '__main__':
     socketio_test()
