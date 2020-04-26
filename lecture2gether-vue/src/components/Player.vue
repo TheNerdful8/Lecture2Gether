@@ -77,26 +77,16 @@ export default class L2gPlayer extends Vue {
             type = 'video/webm';
             break;
         default:
-            // Set a known type for an unknown url results in a useful error message
-            type = 'video/mp4';
-        }
-        if (type !== '') {
-            return {
-                type,
-                src: url,
-            };
-        }
-
-        // Then, try hostname based types
-        const parsedUrl = new URL(this.url);
-        switch (parsedUrl.hostname) {
-        case 'youtube.com':
-        case 'www.youtube.com':
-        case 'youtu.be':
-            type = 'video/youtube';
-            break;
-        default:
-            throw new Error('URL not supported');
+            // Then, try hostname based types
+            switch (new URL(this.url).hostname) {
+            case 'youtube.com':
+            case 'www.youtube.com':
+            case 'youtu.be':
+                type = 'video/youtube';
+                break;
+            default:
+                throw new Error('URL not supported');
+            }
         }
         return {
             type,
