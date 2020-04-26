@@ -78,11 +78,7 @@ export default class Toolbar extends Vue {
         setTimeout(() => this.showingTooltip = false, 1000);
     }
 
-    // get not_in_room() {  # TODO: Update disable of share button on room change
-    //     const url = window.location.href;
-    //     const in_room = url.includes("/l/");
-    //     return !(in_room);
-    // }
+    // TODO: Update disable of share button on room change
 }
 </script>
 
