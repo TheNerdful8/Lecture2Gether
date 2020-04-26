@@ -28,18 +28,18 @@
 </template>
 
 <script lang="ts">
-    import Vue from 'vue';
-    import Component from 'vue-class-component';
-    import {AuthState} from "@/plugins/store/player";
+import Vue from 'vue';
+import Component from 'vue-class-component';
+import { AuthState } from '@/plugins/store/player';
 
     @Component({})
-    export default class PasswordDialog extends Vue {
+export default class PasswordDialog extends Vue {
         password = '';
 
         valid = false;
 
         rules = {
-            required: value => !!value || 'Required.',
+            required: (value: string): boolean | string => !!value || 'Required.',
         }
 
         get authState() {
@@ -54,7 +54,7 @@
             this.$store.commit('setAuthState', AuthState.CHECKING);
             this.$store.commit('setPassword', this.password);
         }
-    }
+}
 </script>
 
 <style scoped lang="scss">

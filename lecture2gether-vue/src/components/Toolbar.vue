@@ -28,6 +28,7 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
+import { Store } from 'vuex';
 
 @Component({})
 export default class Toolbar extends Vue {
@@ -38,7 +39,7 @@ export default class Toolbar extends Vue {
     // Called when the watch button is pressed.
     // The url variable contains the url from the text field at this point.
     async onWatch() {
-        async function getL2goPlaylist(store, url) {
+        async function getL2goPlaylist(store: Store<any>, url: string) {
             const apiUrl = new URL('l2go', store.state.settings.apiRoot);
             const response = await fetch(apiUrl.toString(), {
                 method: 'POST',
