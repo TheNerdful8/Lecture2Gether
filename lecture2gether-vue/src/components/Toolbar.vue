@@ -45,9 +45,9 @@ export default class Toolbar extends Vue {
         //Collapse Toolbar if there is some url entered
         if (this.url !== "") this.$store.commit('collapse');
 
-        async function getL2goPlaylist(store: Store<any>, url: string) {
-            const apiUrl = `${store.state.settings.apiRoot}/l2go`;
-            const response = await fetch(apiUrl, {
+        async function getL2goPlaylist(store: Store<any>, url: string, pass = '') {
+            const apiUrl = `${store.state.settings.apiRoot}l2go`;
+            return fetch(apiUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -87,7 +87,7 @@ export default class Toolbar extends Vue {
         }
         // update the url to point to the lecture2go playlist when it is a
         // lecture2go url
-        let url = this.url;
+        let url: string = this.url;
         if (url.includes('lecture2go') || url.includes('/l2go/')) {
             let password = this.$store.state.player.password;
             url = await getL2goPlaylist(this.$store, url, password);
