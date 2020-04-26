@@ -1,4 +1,5 @@
 import { Module } from 'vuex';
+import { sendVideoState } from '@/plugins/socket.io'
 
 export class PlayerState {
     videoUrl: string = '';
@@ -23,9 +24,17 @@ export const playerModule: Module<PlayerState, any> = {
     actions: {
         setUrl: async (ctx, payload: string) => {
             ctx.commit('setUrl', payload);
+            sendVideoState({
+                ...ctx.state,
+                roomId: ctx.rootState.rooms.roomId
+            });
         },
         setVideoState: async (ctx, state) => {
             ctx.commit('setVideoState', state)
+            sendVideoState({
+                ...ctx.state,
+                roomId: ctx.rootState.rooms.roomId
+            });
         },
     },
 };

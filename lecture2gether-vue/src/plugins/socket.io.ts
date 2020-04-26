@@ -6,7 +6,7 @@ import {
     JoinRoomResponse,
     LeaveRoomRequest,
     LeaveRoomResponse,
-    CreateRoomRequest, CreateRoomResponse, SendVideoStateResponse,
+    CreateRoomRequest, CreateRoomResponse, SendVideoStateResponse, SendVideoStateRequest,
 } from '@/api';
 
 import Socket = SocketIOClient.Socket;
@@ -67,14 +67,18 @@ const onVideoStateUpdate = (state: any) => {
 }
 
 
-const sendVideoState = (state: any) => {
+export const sendVideoState = (state: SendVideoStateRequest) => {
     console.debug('socket.io send state', state);
     return new Promise((resolve, reject) => {
-        getSafeSocket().emit(sentEvents.setVideoState, state, (response: SendVideoStateResponse) => {
+        try {
+            getSafeSocket().emit(sentEvents.setVideoState, state, (response: SendVideoStateResponse) => {
             console.debug('socket.io response from sending video state', response)
             if (response.status_code === 200) resolve(response);
             else reject(response);
         });
+    }
+    catch (e) {console.log(e);
+    };
     });
 };
 
