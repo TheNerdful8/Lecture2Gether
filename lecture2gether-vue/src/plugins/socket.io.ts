@@ -50,6 +50,7 @@ export const connect = (store: Store<any>) => {
         store.commit('setVideoState', {
             seconds: state.seconds,
             paused: state.paused,
+            playbackRate: state.playbackRate,
         })
         store.commit('setUrl', state.videoUrl)
     });

@@ -8,7 +8,7 @@
                   @play="onPlayerPlay"
                   @pause="onPlayerPause"
                   @seeked="onPlayerSeeked"
-                  @ratechange="onPlayerRateChange">
+                  @ratechange="onPlayerRate">
     </video-player>
 </template>
 
@@ -103,7 +103,7 @@ export default class L2gPlayer extends Vue {
         this.$store.dispatch('setVideoState', {
             paused: false,
             seconds: this.player.currentTime(),
-            playbackRates: this.player.playbackRates(),
+            playbackRate: this.player.playbackRate(),
         });
     }
 
@@ -111,7 +111,7 @@ export default class L2gPlayer extends Vue {
         this.$store.dispatch('setVideoState', {
             paused: true,
             seconds: this.player.currentTime(),
-            playbackRates: this.player.playbackRates(),
+            playbackRate: this.player.playbackRate(),
         });
     }
 
@@ -119,16 +119,16 @@ export default class L2gPlayer extends Vue {
         this.$store.dispatch('setVideoState', {
             paused: this.player.paused(),
             seconds: this.player.currentTime(),
-            playbackRates: this.player.playbackRates(),
+            playbackRate: this.player.playbackRate(),
         });
     }
 
-    onPlayerRateChange() {
+    onPlayerRate() {
         this.$store.dispatch('setVideoState', {
             paused: this.player.paused(),
             seconds: this.player.currentTime(),
-            playbackRates: this.player.playbackRates(),
-        })
+            playbackRate: this.player.playbackRate(),
+        });
     }
 
     mounted(): void {
@@ -161,6 +161,11 @@ export default class L2gPlayer extends Vue {
     @Watch('$store.state.player.videoURL')
     async onURLChange() {
         this.player.src(this.getSourceFromURL(this.$store.state.player.videoUrl));
+    }
+
+    @Watch('$store.state.player.playbackRate')
+    async onPlayerRateChange() {
+        this.player.playbackRate(this.$store.state.player.playbackRate);
     }
 }
 </script>
