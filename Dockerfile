@@ -2,7 +2,7 @@ FROM debian:buster AS base
 
 # Install normal dependencies
 RUN apt-get update
-RUN apt-get -y --no-install-recommends install uwsgi uwsgi-plugin-python3 python3 python3-pip python3-setuptools python3-openssl netbase
+RUN apt-get -y --no-install-recommends install python3 python3-pip python3-setuptools python3-openssl netbase nginx redis-server supervisor
 
 # Clean apt
 RUN apt-get -y autoremove
@@ -29,13 +29,17 @@ RUN npm install
 RUN npm run build
 
 
+# Combine final image
 FROM base as final
 COPY --from=frontend /app/src/frontend/dist/ /app/static
 # Setup configs
-ADD docker/uwsgi-lecture2gether.ini /etc/uwsgi/lecture2gether.ini
+#ADD docker/uwsgi.ini /etc/uwsgi/lecture2gether.ini
+ADD docker/supervisor.conf /etc/supervisor/conf.d/app.conf
 RUN mkdir /app/config
-RUN cp /app/static/settings.json /app/config/settings.json
+ADD docker/settings.json /app/config/settings.json
 RUN ln -sf /app/config/settings.json /app/static/settings.json
-    
+ADD docker/nginx.conf /etc/nginx/sites-enabled/default
 
-CMD uwsgi /etc/uwsgi/lecture2gether.ini
+EXPOSE 8000/tcp     # http
+    
+CMD supervisord -n -c /etc/supervisor/supervisord.conf -u root

@@ -14,6 +14,8 @@ from flask_socketio import SocketIO, join_room, leave_room, close_room, emit, ro
 from redis.client import Redis
 from redis.exceptions import ConnectionError
 
+import eventlet
+eventlet.monkey_patch()
 
 logging.basicConfig(level=os.getenv('LOGLEVEL', 'INFO'))
 
@@ -46,7 +48,7 @@ while True:
         break
 
 
-@app.route('/l2go', methods=['POST'])
+@app.route('/api/l2go', methods=['POST'])
 def decode_l2go_path():
     data = request.get_json()
 

@@ -15,18 +15,14 @@ import {Store} from "vuex";
 export let socket: Socket | null = null;
 
 export const connect = (store: Store<any>) => {
-    if (store.state.settings.apiRoot.includes('://')) {
-        const url = new URL(store.state.settings.apiRoot)
-        socket = io(url.host, {
-            path: `${url.pathname}socket.io`,
-            autoConnect: false,
-        })
-
-    } else {
+    if (store.state.settings.socketioHost === '') {
         socket = io({
-            path: `${store.state.settings.apiRoot}/socket.io`,
-            autoConnect: false,
+            autoConnect: false
         });
+    } else {
+        socket = io(store.state.settings.socketioHost, {
+            autoConnect: false
+        })
     }
 
     socket.on('connect', () => {
