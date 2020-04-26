@@ -37,6 +37,7 @@ export default class L2gPlayer extends Vue {
         try {
             sources.push(this.getSourceFromURL(this.url));
         } catch (e) {
+            console.error(e);
             // Show error page
         }
 
@@ -58,7 +59,7 @@ export default class L2gPlayer extends Vue {
     }
 
     getSourceFromURL(url: string): {type: string; src: string} {
-        let type = 'video/mp4';
+        let type = '';
 
         // First, try extension based file types
         const extension = url.split('.').pop();
@@ -78,6 +79,12 @@ export default class L2gPlayer extends Vue {
         default:
             // Set a known type for an unknown url results in a useful error message
             type = 'video/mp4';
+        }
+        if (type !== '') {
+            return {
+                type,
+                src: url,
+            };
         }
 
         // Then, try hostname based types
