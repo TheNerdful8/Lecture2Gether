@@ -10,6 +10,7 @@ Vue.use(Vuex);
 
 export class RootState {
     isConnected = false
+    isCollapsed = false
 }
 
 
@@ -20,6 +21,9 @@ export default new Vuex.Store({
             if (payload == null)
                 payload = !state.isConnected
             state.isConnected = payload
+        },
+        collapse: (state) => {
+            state.isCollapsed = true;
         }
     },
     actions: {},

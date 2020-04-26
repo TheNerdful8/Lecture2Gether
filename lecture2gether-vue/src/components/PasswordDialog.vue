@@ -15,7 +15,7 @@
                             <v-btn type="submit" color="secondary" class="password-button" :disabled="!valid">
                                 <span v-if="!loading">Submit</span>
                                 <span v-if="loading">
-                                    <v-progress-circular color="white" indeterminate="true" size="24" width="3">
+                                    <v-progress-circular color="white" indeterminate size="24" width="3">
                                     </v-progress-circular>
                                 </span>
                             </v-btn>
@@ -51,8 +51,8 @@ export default class PasswordDialog extends Vue {
         }
 
         sendPassword() {
-            this.$store.commit('setAuthState', AuthState.CHECKING);
             this.$store.commit('setPassword', this.password);
+            this.$store.commit('setAuthState', AuthState.CHECKING);
         }
 }
 </script>
