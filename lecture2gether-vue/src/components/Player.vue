@@ -19,6 +19,7 @@ import Component from 'vue-class-component';
 import Vue from 'vue';
 import { Watch } from 'vue-property-decorator';
 import videoPlayer from 'vue-video-player/src/player.vue';
+import { checkURL } from '@/mediaURLs';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
@@ -64,39 +65,16 @@ export default class L2gPlayer extends Vue {
     }
 
     getSourceFromURL(url: string): {type: string; src: string} {
-        let type = '';
-
-        // First, try extension based file types
-        const extension = url.split('.').pop();
-        switch (extension) {
-        case 'm3u8':
-            type = 'application/x-mpegURL';
-            break;
-        case 'mp4':
-            type = 'video/mp4';
-            break;
-        case 'ogg':
-            type = 'video/ogg';
-            break;
-        case 'webm':
-            type = 'video/webm';
-            break;
-        default:
-            // Then, try hostname based types
-            switch (new URL(this.url).hostname) {
-            case 'youtube.com':
-            case 'www.youtube.com':
-            case 'youtu.be':
-                type = 'video/youtube';
-                break;
-            default:
-                throw new Error('URL not supported');
-            }
+        //shared media logic in src/mediaURLs.ts checkURL
+        let res = checkURL(url);
+        if (res === undefined) {
+            throw new Error("URL not supported");
+        } else {
+            return { 
+                type: res.type,
+                src: res.src.toString(),
+            };
         }
-        return {
-            type,
-            src: url,
-        };
     }
 
     onPlayerPlay() {
