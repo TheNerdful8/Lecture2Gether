@@ -12,12 +12,17 @@ def socketio_test():
     #    app, flask_test_client=flask_test_client)
 
     # Hopefully fix weird ci behaviour
-    time.sleep(10)
+    time.sleep(1)
+
+    r = flask_test_client.post('/l2go', json={
+        'username': 'python', 'password': 'is-great!'})
+    
+    assert r.status_code == 400, f"Check failed, status code as {r.status_code}, but 400 was expected."
 
     r = flask_test_client.post('/l2go', data={
         'username': 'python', 'password': 'is-great!'})
     
-    assert r.status_code == 400, f"Check failed, status code as {r.status_code}, but 400 was expected."
+    assert r.status_code == 404, f"Check failed, status code as {r.status_code}, but 400 was expected."
 
     r = flask_test_client.post('/l2go', json={
         'username': 'python', 'password': 'is-great!'})
