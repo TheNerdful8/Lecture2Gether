@@ -41,7 +41,23 @@ The video streams are synchronized to partially restore the social aspect of cam
 
 <!-- TODO: Installation for frontend -->
 ## Install
-### Install Backend
+### Using docker (or podman)
+You can either build the image from source or use one of the provided versions from our
+[Docker Hub Repository](https://hub.docker.com/r/thenerdful8/lecture2gether).
+
+```
+# for building from source
+docker build -t lecture2gether
+docker run -e 8000:8000 lecture2gether
+
+# for running from docker hub
+docker run -e 8000:8000 thenerdful8/lecture2gether
+```
+
+This will start the whole application stack and expose it at
+[http://localhost:8000/](http://localhost:8000).
+
+### Install single Backend
 Clone the repository `git clone https://github.com/TheNerdful8/Lecture2Gether`.
 
 Go to the backend folder `cd Lecture2Gether/lecture2gether_flask/`.
@@ -53,12 +69,44 @@ Run the redis docker `docker run -it -p 6379:6379 redis:buster` or install manua
 Set the environment-variables `'REDIS_HOST', 'REDIS_PORT', 'REDIS_DB', 'REDIS_PASSWORD'`
 accordingly.
 
-Run `poetry install` to install the dependencys. 
+Run `poetry install` to install the dependencies. 
 
 To start the server manually type `poetry run python app.py`.
 
-The installation will also be provided via Docker in the future.
 
+### Install single Frontend
+0. Get [npm](https://nodejs.org/en/download/)
+1. Clone the repository `git clone https://github.com/TheNerdful8/Lecture2Gether`
+2. Go to the frontend folder `cd Lecture2Gether/lecture2gether-vue/`
+3. Install required dependencies by running `npm install`
+4. Run the application with `npm run serve`
+
+## Configuration
+There are two main ways of configuring the application.
+While the defaults were chosen in such a way that they work in a development environment
+(the docker container has different [ones](./docker/settings.json)) they might need change in a production setup.
+
+The server can be configured via the following environment variables
+Name | Default Value | Description
+-----|---------------|------------
+SECRET\_KEY | codenames | **Change this in production**
+REDIS\_HOST | localhost | Hostname of the redis database which should be used
+REDIS\_PORT | 6379 | Port on which redis listens on the redis-host
+REDIS\_DB | 0 | Which database on the  redis server should be used
+REDIS\_PASSWORD | *empty* | Password to authenticate at the redis server
+LOGLEVEL | INFO | Configures the python logging loglevel
+
+The frontend is configured via a `settings.json` file which should be reachable on a
+request to `/` from the running browser application.
+The format is as follows:
+```
+{
+    "apiRoot": <string>,        // Under which url the server is reachable for http api calls
+    "socketioHost": <string>,   // Under which host the socket.io endpoint is served. 
+                                // Can be empty which results in the same as one as where the frontend is deployed
+    "environment": <string>     // Not yet used but necessary
+}
+```
 
 ## License
 
