@@ -39,6 +39,7 @@ import Component from 'vue-class-component';
 import { Watch, Prop } from 'vue-property-decorator';
 import { Store } from 'vuex';
 import { AuthState } from '@/plugins/store/player';
+import { checkURL } from '@/mediaURLs';
 
 
 @Component({})
@@ -112,10 +113,7 @@ export default class Toolbar extends Vue {
     }
 
     isValidVideoUrl(url: string) {
-        const substrings = ['youtube', 'youtu.be', 'lecture2go', '/l2go/'];
-        const endings = ['.mp4', '.m3u8'];
-        return substrings.some((s) => url.includes(s))
-               || endings.some((s) => url.endsWith(s));
+        return checkURL(url) !== undefined;
     }
 
     // Save url to clipboard

@@ -2,7 +2,7 @@
     <div>
         <PasswordDialog v-if="this.$store.getters.authRequired" class="password-dialog"></PasswordDialog>
         <l2g-player v-if="!this.$store.getters.authRequired && this.$store.state.player.videoUrl" class="l2g-player"></l2g-player>
-        <v-overlay :value="!roomExists" light dark=false>
+        <v-overlay :value="!roomExists" light>
             <v-card class="room-card pa-12">
                 <h2 class="display-1 heading ">Room does not exist (anymore)!</h2>
                 <router-link :to="{ name: 'home' }">
@@ -28,14 +28,11 @@ import PasswordDialog from '@/components/PasswordDialog.vue';
 export default class L2gPlayerView extends Vue {
     roomExists = true;
 
-    async mounted() {
+    @Watch('$route.params.roomId')
+    async onRouteChange() {
         if (this.$store.state.isConnected) {
             await this.syncRoomId();
         }
-    }
-
-    async updated() {
-        await this.syncRoomId();
     }
 
     @Watch('$store.state.isConnected')
