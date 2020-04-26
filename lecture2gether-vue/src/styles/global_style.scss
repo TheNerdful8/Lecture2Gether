@@ -19,3 +19,18 @@ a.a-unstyle:link, a.a-unstyle:visited, a.a-unstyle:hover, a.a-unstyle:active {
     background-color: $value !important;
   }
 }
+
+.vjs-big-play-button {
+  $big-play-width: 3em;
+  /* 1.5em = 45px default */
+  $big-play-height: 1.5em;
+
+  line-height: $big-play-height !important;
+  height: $big-play-height !important;
+  width: $big-play-width !important;
+
+  left: 50% !important;
+  top: 50% !important;
+  margin-left: -($big-play-width / 2) !important;
+  margin-top: -($big-play-height / 2) !important;
+}
