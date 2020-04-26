@@ -58,28 +58,42 @@ This will start the whole application stack and expose it at
 [http://localhost:8000/](http://localhost:8000).
 
 ### Install single Backend
-Clone the repository `git clone https://github.com/TheNerdful8/Lecture2Gether`.
-
-Go to the backend folder `cd Lecture2Gether/lecture2gether_flask/`.
-
-Get [Poetry](https://python-poetry.org/) `pip3 install poetry --user`.
-
 The backend runs on a redis database.
 Run the redis docker `docker run -it -p 6379:6379 redis:buster` or install manually by following [this guide](https://redis.io/topics/quickstart#installing-redis-more-properly).
 Set the environment-variables `'REDIS_HOST', 'REDIS_PORT', 'REDIS_DB', 'REDIS_PASSWORD'`
 accordingly.
+```bash
+#Clone the repository 
+git clone https://github.com/TheNerdful8/Lecture2Gether
 
-Run `poetry install` to install the dependencies. 
+#Go to the backend folder 
+cd Lecture2Gether/lecture2gether_flask/
 
-To start the server manually type `poetry run python app.py`.
+#Get Poetry
+pip3 install poetry --user
 
+#install the dependencies
+poetry install
+
+#start the server manually 
+poetry run python app.py
+```
 
 ### Install single Frontend
-0. Get [npm](https://nodejs.org/en/download/)
-1. Clone the repository `git clone https://github.com/TheNerdful8/Lecture2Gether`
-2. Go to the frontend folder `cd Lecture2Gether/lecture2gether-vue/`
-3. Install required dependencies by running `npm install`
-4. Run the application with `npm run serve`
+Install [npm](https://nodejs.org/en/download) on your machine
+```bash
+#Clone the repository 
+git clone https://github.com/TheNerdful8/Lecture2Gether
+
+#Go to the frontend folder 
+cd Lecture2Gether/lecture2gether-vue/
+
+#Install required npm dependencies
+npm install
+
+#Run the application with 
+npm run serve
+```
 
 ## Configuration
 There are two main ways of configuring the application.
