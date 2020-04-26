@@ -2,9 +2,9 @@
 import os
 import re
 import json
+import time
 import requests
 import logging
-import eventlet
 from datetime import datetime 
 from secrets import token_urlsafe
 from time import sleep
@@ -13,6 +13,7 @@ from flask_cors import CORS
 from flask_socketio import SocketIO, join_room, leave_room, close_room, emit, rooms
 from redis.client import Redis
 from redis.exceptions import ConnectionError
+from threading import Thread
 
 import eventlet
 eventlet.monkey_patch()
@@ -47,6 +48,22 @@ while True:
         logging.info("SUCCESS: Connected to Redis database.")
         break
 
+# Create cleanup thread
+cleanup_interval = os.getenv('CLEANUP_INTERVAL', 60*15)
+cleanup_room_expire_time = os.getenv('CLEANUP_ROOM_EXPIRE_TIME', 60*60)
+
+def room_cleanup():
+    while True:
+        for room_token, room in db.hgetall('rooms').items():  # For all rooms in db
+            room = json.loads(room)
+            if room['count'] <= 0 and datetime.now().timestamp() - room['state']['setTime'] > cleanup_room_expire_time:  # Delete empty old rooms
+                db.hdel('rooms', room_token)
+                logging.info("Delete Room {}".format(room_token))
+        logging.info("Waiting for room cleanup")
+        time.sleep(cleanup_interval)
+
+cleanup_thread = Thread(target=room_cleanup, daemon=True)
+cleanup_thread.start()
 
 @app.route('/api/l2go', methods=['POST'])
 def decode_l2go_path():
@@ -92,14 +109,12 @@ def on_disconnect():
     global ACTIVE_CLIENTS
     ACTIVE_CLIENTS -= 1
 
+    # Decrease room client counts
     for room_token in rooms(sid=request.sid):  # For all rooms of user
         if db.hexists('rooms', room_token):  # If room exists
             room = json.loads(db.hget('rooms', room_token))
             room['count'] -= 1
             db.hset('rooms', room_token, json.dumps(room))
-
-            if room['count'] <= 0:  # Delete empty rooms
-                db.hdel('rooms', room_token)
 
 @socketio.on('create')
 def on_create(init_state):
@@ -163,9 +178,6 @@ def on_leave(data):
     room['count'] -= 1
     db.hset('rooms', room_token, json.dumps(room))
 
-    if room['count'] <= 0:  # Delete empty rooms
-        db.hdel('rooms', room_token)
-
     leave_room(room_token)
     return {'status_code': 200}, 200
 
@@ -219,7 +231,6 @@ def add_current_time_to_state(state):
 def add_set_time_to_state(state):
     state['setTime'] = datetime.now().timestamp()
     return state
-
 
 if __name__ == '__main__':
     app.config['JSON_SORT_KEYS'] = False
