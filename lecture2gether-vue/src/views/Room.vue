@@ -28,14 +28,11 @@ import PasswordDialog from '@/components/PasswordDialog.vue';
 export default class L2gPlayerView extends Vue {
     roomExists = true;
 
-    async mounted() {
+    @Watch('$route.params.roomId')
+    async onRouteChange() {
         if (this.$store.state.isConnected) {
             await this.syncRoomId();
         }
-    }
-
-    async updated() {
-        await this.syncRoomId();
     }
 
     @Watch('$store.state.isConnected')
