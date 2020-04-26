@@ -15,8 +15,12 @@
                 <v-toolbar>
                     <v-text-field class="mx-auto" v-model="url" solo flat single-line hide-details label="Enter URL">
                     </v-text-field>
-                    <v-btn depressed large type="submit">
+                    <v-btn depressed large color="accent" type="submit">
                         Watch!
+                    </v-btn>
+                    <v-divider class="mx-4" inset vertical></v-divider>
+                    <v-btn class="canCopy share" depressed large type="button" @click="save_url_clipboard()">
+                        Copy room link
                     </v-btn>
                 </v-toolbar>
             </v-card>
@@ -59,6 +63,19 @@ export default class Toolbar extends Vue {
         if (this.$store.state.isConnected) this.$store.dispatch('setUrl', this.url);
         else console.warn('Not setting url because we are not connected');
     }
+
+    // Save url to clipboard
+    async save_url_clipboard() {
+        const data = window.location.href;
+        console.debug('Saved to clipboard: ', data);
+        await navigator.clipboard.writeText(data);
+    }
+
+    // get not_in_room() {  # TODO: Update disable of share button on room change
+    //     const url = window.location.href;
+    //     const in_room = url.includes("/l/");
+    //     return !(in_room);
+    // }
 }
 </script>
 
@@ -72,7 +89,7 @@ export default class Toolbar extends Vue {
         width: 100%;
         max-width: 100%;
         transition: all 0.8s ease;
-        margin-bottom: 64px;
+        margin-bottom: 128px;
     }
 
     .searchbar-cover-collapsed {
