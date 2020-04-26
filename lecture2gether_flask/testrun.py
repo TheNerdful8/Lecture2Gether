@@ -12,7 +12,7 @@ def socketio_test():
     #    app, flask_test_client=flask_test_client)
 
     # Hopefully fix weird ci behaviour
-    time.sleep(5)
+    time.sleep(10)
 
     r = flask_test_client.post('/l2go', data={
         'username': 'python', 'password': 'is-great!'})
