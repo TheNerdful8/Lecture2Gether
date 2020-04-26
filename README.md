@@ -45,7 +45,7 @@ The video streams are synchronized to partially restore the social aspect of cam
 You can either build the image from source or use one of the provided versions from our
 [Docker Hub Repository](https://hub.docker.com/r/thenerdful8/lecture2gether).
 
-```
+```bash
 # for building from source
 docker build -t lecture2gether
 docker run -e 8000:8000 lecture2gether
