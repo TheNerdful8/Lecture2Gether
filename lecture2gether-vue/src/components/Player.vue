@@ -124,11 +124,13 @@ export default class L2gPlayer extends Vue {
     }
 
     onPlayerRate() {
-        this.$store.dispatch('setVideoState', {
-            paused: this.player.paused(),
-            seconds: this.player.currentTime(),
-            playbackRate: this.player.playbackRate(),
-        });
+        if (this.player.playbackRate() !== this.$store.state.player.playbackRate) {
+            this.$store.dispatch('setVideoState', {
+                paused: this.player.paused(),
+                seconds: this.player.currentTime(),
+                playbackRate: this.player.playbackRate(),
+            });
+        }
     }
 
     mounted(): void {
