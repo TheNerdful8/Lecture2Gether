@@ -1,7 +1,7 @@
 <template>
     <v-app>
         <v-content>
-            <Toolbar :collapsed="isCollapsed"></Toolbar>
+            <Toolbar></Toolbar>
             <router-view/>
         </v-content>
     </v-app>
@@ -22,10 +22,6 @@ export default class App extends Vue {
             .then(() => {
                 connect(this.$store);
             });
-    }
-
-    get isCollapsed(): boolean {
-        return this.$store.state.player.videoUrl !== '';
     }
 }
 </script>
