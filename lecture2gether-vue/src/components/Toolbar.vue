@@ -15,13 +15,18 @@
                 <v-toolbar>
                     <v-text-field class="mx-auto" v-model="url" solo flat single-line hide-details label="Enter URL">
                     </v-text-field>
-                    <v-btn depressed large color="accent" type="submit">
+                    <v-btn depressed large color="secondary" type="submit">
                         Watch!
                     </v-btn>
                     <v-divider class="mx-4" inset vertical></v-divider>
-                    <v-btn class="canCopy share" depressed large type="button" @click="save_url_clipboard()">
-                        Copy room link
-                    </v-btn>
+                    <v-tooltip bottom v-model="showingTooltip">
+                        <template v-slot:activator>
+                            <v-btn @click="saveUrlClipboard()" class="canCopy share" color="primary" depressed large type="button">
+                                Share link
+                            </v-btn>
+                        </template>
+                        <span>Copied share link</span>
+                    </v-tooltip>
                 </v-toolbar>
             </v-card>
         </v-form>
@@ -38,6 +43,7 @@ export default class Toolbar extends Vue {
     @Prop({ type: Boolean, default: false, required: false }) collapsed!: boolean
 
     url = '';
+    showingTooltip = false;
 
     // Called when the watch button is pressed.
     // The url variable contains the url from the text field at this point.
@@ -65,10 +71,12 @@ export default class Toolbar extends Vue {
     }
 
     // Save url to clipboard
-    async save_url_clipboard() {
+    async saveUrlClipboard() {
+        this.showingTooltip = true;
         const data = window.location.href;
         console.debug('Saved to clipboard: ', data);
         await navigator.clipboard.writeText(data);
+        setTimeout(() => this.showingTooltip = false, 1000);
     }
 
     // get not_in_room() {  # TODO: Update disable of share button on room change
