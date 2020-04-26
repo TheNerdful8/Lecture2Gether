@@ -40,8 +40,8 @@ export default class Toolbar extends Vue {
     // The url variable contains the url from the text field at this point.
     async onWatch() {
         async function getL2goPlaylist(store: Store<any>, url: string) {
-            const apiUrl = new URL('l2go', store.state.settings.apiRoot);
-            const response = await fetch(apiUrl.toString(), {
+            const apiUrl = `${store.state.settings.apiRoot}/l2go`;
+            const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
