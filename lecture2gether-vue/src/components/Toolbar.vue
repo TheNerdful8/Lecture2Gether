@@ -27,13 +27,14 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { Watch } from 'vue-property-decorator';
+import { Watch, Prop } from 'vue-property-decorator';
 import { Store } from 'vuex';
 import { AuthState } from '@/plugins/store/player';
 
 
 @Component({})
 export default class Toolbar extends Vue {
+    @Prop({ type: Boolean, default: false, required: false }) collapsed!: boolean
 
     url = '';
 
@@ -41,9 +42,6 @@ export default class Toolbar extends Vue {
     // The url variable contains the url from the text field at this point.
     @Watch('$store.state.player.password')
     async onWatch() {
-        // Collapse Toolbar if there is some url entered
-        if (this.url !== '') this.$store.commit('collapse');
-
         async function getL2goPlaylist(store: Store<any>, url: string, pass = '') {
             const apiUrl = `${store.state.settings.apiRoot}l2go`;
             return fetch(apiUrl, {
@@ -79,7 +77,7 @@ export default class Toolbar extends Vue {
                 }
             }).catch((response) => {
                 console.log(response);
-                throw new Error(`${response.status}: Resoure not available`);
+                throw new Error(`${response.status}: Resource not available`);
             });
         }
         // update the url to point to the lecture2go playlist when it is a
@@ -91,10 +89,6 @@ export default class Toolbar extends Vue {
         }
         if (this.$store.state.isConnected && url !== '') this.$store.dispatch('setUrl', url);
         else console.warn('Not setting url because we are not connected');
-    }
-
-    get collapsed() {
-        return this.$store.state.isCollapsed;
     }
 }
 </script>

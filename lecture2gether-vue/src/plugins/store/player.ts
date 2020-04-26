@@ -53,4 +53,12 @@ export const playerModule: Module<PlayerState, any> = {
             });
         },
     },
+
+    getters: {
+        authRequired: state =>  {
+            return state.auth === AuthState.NECESSARY
+                || state.auth === AuthState.CHECKING
+                || state.auth === AuthState.FAILURE;
+        }
+    }
 };
