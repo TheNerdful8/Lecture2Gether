@@ -9,7 +9,6 @@ def socketio_test():
     flask_test_client = app.test_client()
 
     # Hopefully fix weird ci behaviour
-    time.sleep(1)
 
     # TEST HTTP STUFF
 
@@ -39,19 +38,12 @@ def socketio_test():
     room_count = 1000
 
     socketio_test_clients = [socketio.test_client(app, flask_test_client=flask_test_client) for i in range(user_count)]
-
-    rooms=[]
     
-    [client.emit("create", {'foo': 'bar'}, callback=print) for client in socketio_test_clients[:room_count]]
+    room_responses = ([client.emit("create", {'foo': 'bar'}, callback=True)[0] for client in socketio_test_clients[:room_count]])
 
-    print("Waiting for rooms to be created")
-    while len(rooms) != room_count:
-        rooms.extend([client.get_received() for client in socketio_test_clients[:room_count]])
-        time.sleep(0.1)
+    assert all([True for response in room_responses if response["status_code"] == 200]), "Check failed, invalid status code while room creation."
 
-
-
-    
+    rooms = [response['roomId'] for response in room_responses]
 
 if __name__ == '__main__':
     socketio_test()
