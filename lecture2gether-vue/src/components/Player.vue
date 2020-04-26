@@ -5,8 +5,7 @@
                   :playsinline="true"
 
                   @play="onPlayerPlay"
-                  @pause="onPlayerPause"
-                  @ready="playerReadied">
+                  @pause="onPlayerPause">
     </video-player>
 </template>
 
@@ -93,17 +92,17 @@ export default class L2gPlayer extends Vue {
 
         // listen event
         onPlayerPlay() {
-            console.log('send play');
+            this.$store.dispatch('setVideoState', {
+                paused: false,
+                seconds: this.player.currentTime(),
+            });
         }
 
         onPlayerPause() {
-            console.log('send pause');
-        }
-
-        // player is ready
-        playerReadied() {
-            console.log('send player ready');
-            // player.[methods]
+            this.$store.dispatch('setVideoState', {
+                paused: true,
+                seconds: this.player.currentTime(),
+            });
         }
 }
 </script>
