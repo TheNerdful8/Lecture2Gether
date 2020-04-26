@@ -47,8 +47,12 @@ export const connect = (store: Store<any>) => {
     });
 
     socket.on(receivedEvents.videoStateUpdated, (state: VideoStateEvent) => {
+        let seconds = state.seconds;
+        if (!state.paused) {
+            seconds = (state.currentTime - state.setTime) * state.playbackRate + state.seconds;
+        }
         store.commit('setVideoState', {
-            seconds: state.seconds,
+            seconds,
             paused: state.paused,
             playbackRate: state.playbackRate,
         })
