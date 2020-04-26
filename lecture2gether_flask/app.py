@@ -193,7 +193,7 @@ def on_video_state_set(state):
 
 @socketio.on('chat_send')
 def on_chat_send(message):
-    """Update a watch room"""
+    """Broadcast chat message to a watch room"""
     if 'roomId' not in message:
         return {'status_code': 400}, request.sid
 
