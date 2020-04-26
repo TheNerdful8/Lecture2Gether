@@ -19,12 +19,14 @@ export interface VideoStateRequest {
     videoUrl: string;
     paused: boolean;
     seconds: number;
+    playbackRate: number;
 }
 
 export interface VideoStateEvent {
     videoUrl: string;
     paused: boolean;
     seconds: number;
+    playbackRate: number;
     currentTime: number;
     setTime: number;
 }

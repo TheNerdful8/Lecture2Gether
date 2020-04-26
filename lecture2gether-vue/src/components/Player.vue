@@ -3,11 +3,12 @@
                   ref="videoPlayer"
                   :options="playerOptions"
                   :playsinline="true"
-                  :events="['seeked']"
+                  :events="['seeked', 'ratechange']"
 
                   @play="onPlayerPlay"
                   @pause="onPlayerPause"
-                  @seeked="onPlayerSeeked">
+                  @seeked="onPlayerSeeked"
+                  @ratechange="onPlayerRateChange">
     </video-player>
 </template>
 
@@ -102,6 +103,7 @@ export default class L2gPlayer extends Vue {
         this.$store.dispatch('setVideoState', {
             paused: false,
             seconds: this.player.currentTime(),
+            playbackRates: this.player.playbackRates(),
         });
     }
 
@@ -109,6 +111,7 @@ export default class L2gPlayer extends Vue {
         this.$store.dispatch('setVideoState', {
             paused: true,
             seconds: this.player.currentTime(),
+            playbackRates: this.player.playbackRates(),
         });
     }
 
@@ -116,7 +119,16 @@ export default class L2gPlayer extends Vue {
         this.$store.dispatch('setVideoState', {
             paused: this.player.paused(),
             seconds: this.player.currentTime(),
+            playbackRates: this.player.playbackRates(),
         });
+    }
+
+    onPlayerRateChange() {
+        this.$store.dispatch('setVideoState', {
+            paused: this.player.paused(),
+            seconds: this.player.currentTime(),
+            playbackRates: this.player.playbackRates(),
+        })
     }
 
     mounted(): void {
