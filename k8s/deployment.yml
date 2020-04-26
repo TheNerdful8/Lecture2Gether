@@ -21,8 +21,3 @@ spec:
           ports:
             - name: "http"
               containerPort: 8000
-        - image: "docker.io/redis:buster"
-          name: "redis"
-          ports:
-            - name: "redis"
-              containerPort: 6379
