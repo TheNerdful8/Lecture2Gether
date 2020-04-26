@@ -6,7 +6,6 @@ import time
 import requests
 import logging
 from datetime import datetime 
-from secrets import token_urlsafe
 from time import sleep
 from flask import Flask, request, jsonify, abort
 from flask_cors import CORS
@@ -14,6 +13,7 @@ from flask_socketio import SocketIO, join_room, leave_room, close_room, emit, ro
 from redis.client import Redis
 from redis.exceptions import ConnectionError
 from threading import Thread
+from coolname import generate_slug
 
 import eventlet
 eventlet.monkey_patch()
@@ -120,7 +120,7 @@ def on_disconnect():
 def on_create(init_state):
     """Create a watch room"""
     while True:
-        room_token = token_urlsafe(24)
+        room_token = generate_slug(3)
         if not db.hexists('rooms', room_token):
             break
 
