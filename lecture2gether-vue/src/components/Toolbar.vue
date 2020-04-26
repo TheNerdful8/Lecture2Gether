@@ -13,9 +13,10 @@
             <v-card :class="collapsed ? 'searchbar-collapsed' : 'searchbar-extended'"
                     class="mx-auto searchbar">
                 <v-toolbar>
-                    <v-text-field class="mx-auto" v-model="url" solo flat single-line hide-details label="Enter URL">
+                    <v-text-field class="mx-auto" v-model="url" single-line hide-details label="Enter URL"
+                                  :error="!urlIsValid">
                     </v-text-field>
-                    <v-btn depressed large color="secondary" type="submit">
+                    <v-btn depressed large class="ml-4" color="secondary" type="submit">
                         Watch!
                     </v-btn>
                     <v-tooltip bottom v-model="showingTooltip">
@@ -45,7 +46,10 @@ export default class Toolbar extends Vue {
     @Prop({ type: Boolean, default: false, required: false }) collapsed!: boolean
 
     url = '';
+
     showingTooltip = false;
+
+    urlIsValid = true;
 
     // Called when the watch button is pressed.
     // The url variable contains the url from the text field at this point.
@@ -93,11 +97,24 @@ export default class Toolbar extends Vue {
         // lecture2go url
         let url: string = this.url;
         if (url.includes('lecture2go') || url.includes('/l2go/')) {
+            this.urlIsValid = true;
             const password = this.$store.state.player.password;
             url = await getL2goPlaylist(this.$store, url, password);
         }
-        if (this.$store.state.isConnected && url !== '') this.$store.dispatch('setUrl', url);
-        else console.warn('Not setting url because we are not connected');
+        if (this.isValidVideoUrl(url)) {
+            this.urlIsValid = true;
+            if (this.$store.state.isConnected) this.$store.dispatch('setUrl', url);
+            else console.warn('Not setting url because we are not connected');
+        } else {
+            this.urlIsValid = false;
+        }
+    }
+
+    isValidVideoUrl(url: string) {
+        const substrings = ['youtube', 'youtu.be', 'lecture2go', '/l2go/'];
+        const endings = ['.mp4', '.m3u8'];
+        return substrings.some((s) => url.includes(s))
+               || endings.some((s) => url.endsWith(s));
     }
 
     // Save url to clipboard
