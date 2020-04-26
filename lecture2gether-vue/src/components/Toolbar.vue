@@ -27,14 +27,13 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { Watch } from 'vue-property-decorator';
 import { Store } from 'vuex';
 import { AuthState } from '@/plugins/store/player';
-import { Watch } from 'vue-property-decorator';
+
 
 @Component({})
 export default class Toolbar extends Vue {
-    //@Prop({ type: Boolean, default: false, required: false }) collapsed!: boolean
 
     url = '';
 
@@ -42,8 +41,8 @@ export default class Toolbar extends Vue {
     // The url variable contains the url from the text field at this point.
     @Watch('$store.state.player.password')
     async onWatch() {
-        //Collapse Toolbar if there is some url entered
-        if (this.url !== "") this.$store.commit('collapse');
+        // Collapse Toolbar if there is some url entered
+        if (this.url !== '') this.$store.commit('collapse');
 
         async function getL2goPlaylist(store: Store<any>, url: string, pass = '') {
             const apiUrl = `${store.state.settings.apiRoot}l2go`;
@@ -59,37 +58,35 @@ export default class Toolbar extends Vue {
                 }),
             }).then((response) => {
                 switch (response.status) {
-                    case 200: {
-                        store.commit('setAuthState', AuthState.UNNECESSARY);
-                        return response.json();
-                    }
-                    case 401: {
-                        store.commit(
-                            'setAuthState',
-                            pass === '' ? AuthState.NECESSARY : AuthState.FAILURE
-                        );
-                        return '';
-                    }
-                    case 403: {
-                        store.commit(
-                            'setAuthState',
-                            AuthState.FAILURE
-                        );
-                        return '';
-                    }
+                case 200:
+                    store.commit('setAuthState', AuthState.UNNECESSARY);
+                    return response.json();
+                case 401:
+                    store.commit(
+                        'setAuthState',
+                        pass === '' ? AuthState.NECESSARY : AuthState.FAILURE,
+                    );
+                    return '';
+                case 403:
+                    store.commit(
+                        'setAuthState',
+                        AuthState.FAILURE,
+                    );
+                    return '';
+                default:
+                    console.log(`${response.status}: Unexpected return code from l2go endpoint`);
+                    return '';
                 }
-                console.log(`${response.status}: Unexpected return code from l2go endpoint`);
-                return '';
             }).catch((response) => {
                 console.log(response);
                 throw new Error(`${response.status}: Resoure not available`);
-            })
+            });
         }
         // update the url to point to the lecture2go playlist when it is a
         // lecture2go url
         let url: string = this.url;
         if (url.includes('lecture2go') || url.includes('/l2go/')) {
-            let password = this.$store.state.player.password;
+            const password = this.$store.state.player.password;
             url = await getL2goPlaylist(this.$store, url, password);
         }
         if (this.$store.state.isConnected && url !== '') this.$store.dispatch('setUrl', url);
