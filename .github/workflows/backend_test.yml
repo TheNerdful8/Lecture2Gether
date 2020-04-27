@@ -25,4 +25,4 @@ jobs:
           pip3 install -r requirements.txt
       - name: Run Tests
         run: |
-          python3 lecture2gether_flask/testrun.py
+          python3 lecture2gether_flask/test.py
