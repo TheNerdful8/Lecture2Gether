@@ -1,7 +1,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <img src="https://github.com/TheNerdful8/Lecture2Gether/lecture2gether-vue/src/assets/Lecture2Gether_stroke.svg" alt="Logo" width="240" height="240">
+  <img src="https://github.com/TheNerdful8/Lecture2Gether/blob/master/lecture2gether-vue/src/assets/Lecture2Gether_stroke.svg" alt="Logo" width="240" height="240">
   <h3 align="center">Lecture2Gether</h3>
   <p align="center">
     Watch online lectures together!  
