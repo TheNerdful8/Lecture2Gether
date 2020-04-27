@@ -20,14 +20,18 @@ eventlet.monkey_patch()
 
 logging.basicConfig(level=os.getenv('LOGLEVEL', 'INFO'))
 
+# Crete app
 app = Flask(__name__)
 app.config['DEBUG'] = True
 
+# Enable cross origin resource sharing in debug mode
 if app.config['DEBUG']:
     CORS(app)
 
+# Count active clients
 ACTIVE_CLIENTS = 0
 
+# Init socket.io websockets, which are used for state sync
 socketio = SocketIO(app, cors_allowed_origins="*")
 app.secret_key = os.getenv("SECRET_KEY", "codenames")
 
@@ -38,6 +42,7 @@ redis_db = os.getenv('REDIS_DB', 0)
 redis_password = os.getenv('REDIS_PASSWORD', None)
 db = Redis(host=redis_host, port=redis_port, db=redis_db, password=redis_password)
 
+# Wait for redis connection
 while True:
     try:
         db.ping()
@@ -48,25 +53,28 @@ while True:
         logging.info("SUCCESS: Connected to Redis database.")
         break
 
-# Create cleanup thread
+# Create cleanup deamon, that deletes abandoned rooms from the database
+# Get params
 cleanup_interval = int(os.getenv('CLEANUP_INTERVAL', 60*15))
 cleanup_room_expire_time = int(os.getenv('CLEANUP_ROOM_EXPIRE_TIME', 60*60))
-
+# Define function that cleans abandoned rooms in an interval
 def room_cleanup():
     while True:
         for room_token, room in db.hgetall('rooms').items():  # For all rooms in db
-            room = json.loads(room)
+            room = json.loads(room) # Deserialize room data
             if room['count'] <= 0 and datetime.now().timestamp() - room['state']['setTime'] > cleanup_room_expire_time:  # Delete empty old rooms
-                db.hdel('rooms', room_token)
+                db.hdel('rooms', room_token) # Delete room
                 logging.info("Delete Room {}".format(room_token))
         logging.info("Waiting for room cleanup")
         time.sleep(cleanup_interval)
-
+        
+#Create deamon itself
 cleanup_thread = Thread(target=room_cleanup, daemon=True)
 cleanup_thread.start()
 
 @app.route('/api/l2go', methods=['POST'])
 def decode_l2go_path():
+    """Decodes a lecture2go video url"""
     data = request.get_json()
 
     if not data or not 'video_url' in data:
@@ -101,11 +109,13 @@ def decode_l2go_path():
 
 @socketio.on('connect')
 def on_connect():
+    """Handles websocket creation event"""
     global ACTIVE_CLIENTS
     ACTIVE_CLIENTS += 1
 
 @socketio.on('disconnect')
 def on_disconnect():
+    """Handles websocket disconnection event"""
     global ACTIVE_CLIENTS
     ACTIVE_CLIENTS -= 1
 
@@ -118,117 +128,153 @@ def on_disconnect():
 
 @socketio.on('create')
 def on_create(init_state):
-    """Create a watch room"""
+    """Create and join a watch room"""
+    # Create unique token
     while True:
         room_token = generate_slug(3)
         if not db.hexists('rooms', room_token):
             break
-
+    
+    # Annotate state with timestamp
     state = add_current_time_to_state(init_state)
     state = add_set_time_to_state(state)
 
+    # Create room in db
     room = {'state': state, 'count': 1}
     db.hset('rooms', room_token, json.dumps(room))
 
+    # Join socket.io room
     join_room(room_token)
-
+    
+    # Publish init state
     emit('video_state_update', state, room=room_token)
+    # Return response
     return {'roomId': room_token, 'status_code': 200}, 200
 
 @socketio.on('join')
 def on_join(data):
     """Join a watch room"""
-
+    # Check if all params are set
     if 'roomId' not in data:
         return {'status_code': 400}, 400
-
+    
     room_token = data['roomId']
 
-    if not db.hexists('rooms', room_token):  # Room does not exist
+    # Check if room exist
+    if not db.hexists('rooms', room_token):
         return {'status_code': 404}, 404
 
+    # Get room from db
     room = json.loads(db.hget('rooms', room_token))
 
-    if room_token not in rooms(sid=request.sid):  # If user NOT allready in room
+    # Check if user is in the room
+    if room_token not in rooms(sid=request.sid):
+        # Add current server time to state
         room['state'] = add_current_time_to_state(room['state'])
+        # Increase clients in room
         room['count'] += 1
+        # Save data in db
         db.hset('rooms', room_token, json.dumps(room))
-
+        # Join the socket.io room
         join_room(room_token)
-
-    # Emit response anyway
+        
+    # Emit room state
     emit('video_state_update', room['state'], room=request.sid)
+    # Return response
     return {'roomId': room_token,'status_code': 200}, 200
 
 @socketio.on('leave')
 def on_leave(data):
     """Leave a watch room"""
+    # Check if all params are set
     if 'roomId' not in data:
         return {'status_code': 400}, 400
 
     room_token = data['roomId']
 
-    if not db.hexists('rooms', room_token):  # Room does not exist
+    # Check if room exist
+    if not db.hexists('rooms', room_token):
         return {'status_code': 404}, 404
-
-    if not room_token in rooms(sid=request.sid):  # User not in room
+    
+    # Check if user wasnt in the room
+    if not room_token in rooms(sid=request.sid):
         return {'status_code': 403}, 403
 
+    # Get room from db
     room = json.loads(db.hget('rooms', room_token))
+    # Deacrease active users in room
     room['count'] -= 1
+    # Save in db
     db.hset('rooms', room_token, json.dumps(room))
-
+    # Leave the socket.io room
     leave_room(room_token)
+    # Return status
     return {'status_code': 200}, 200
 
 @socketio.on('video_state_set')
 def on_video_state_set(state):
     """Update a watch room"""
+    # Check if all params are set
     if 'roomId' not in state:
         return {'status_code': 400}, 400
 
     room_token = state['roomId']
-
-    if not db.hexists('rooms', room_token):  # Room does not exist
+    
+    # Check if room exist
+    if not db.hexists('rooms', room_token):
         {'status_code': 404}, 404
 
-    if not room_token in rooms(sid=request.sid):  # User not in room
+    # Check if user wasnt in the room
+    if not room_token in rooms(sid=request.sid):
         return {'status_code': 403}, 403
 
+    # Annotate state with server timestamp
     state = add_current_time_to_state(state)
     state = add_set_time_to_state(state)
 
+    # Get room from db
     room = json.loads(db.hget('rooms', room_token))
+    # Update last state in db with new state
     room['state'] = state
+    # Save db
     db.hset('rooms', room_token, json.dumps(room))
-
+    # Publish new state to everybody in the room
     emit('video_state_update', state, room=room_token)
+    # Response
     return {'status_code': 200}, 200
 
 @socketio.on('chat_send')
 def on_chat_send(message):
     """Broadcast chat message to a watch room"""
+    # Check if params are correct
     if 'roomId' not in message:
         return {'status_code': 400}, request.sid
 
     room_token = message['roomId']
 
-    if not db.hexists('rooms', room_token):  # Room does not exist
+    # Check if room exist
+    if not db.hexists('rooms', room_token):
         {'status_code': 404}, request.sid
 
-    if not room_token in rooms(sid=request.sid):  # User not in room
+    # Check if user wasnt in the room
+    if not room_token in rooms(sid=request.sid):
         return {'status_code': 403}, request.sid
-
+    
+    # Add current sever timestamp to the state
     message = add_current_time_to_state(message)
 
+    # Send message to everybody in the room
     emit('message_update', message, room=room_token)
+    # Response
     return {'status_code': 200}, 200
 
 def add_current_time_to_state(state):
+    """Annotate state with the latest server time"""
     state['currentTime'] = datetime.now().timestamp()
     return state
 
 def add_set_time_to_state(state):
+    """Annotate state the time of state creation"""
     state['setTime'] = datetime.now().timestamp()
     return state
 
