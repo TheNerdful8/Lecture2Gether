@@ -32,6 +32,8 @@ require('videojs-youtube/dist/Youtube');
     components: { videoPlayer },
 })
 export default class L2gPlayer extends Vue {
+    // To avoid re-sending the received events to the other users, we set the following flags
+    // They are set to true when the user interacts with the player and set to false when he receives his own state
     skipNextPauseSend = false;
 
     skipNextPlaySend = false;
@@ -41,6 +43,16 @@ export default class L2gPlayer extends Vue {
     skipNextPlaybackRateSend = false;
 
     skipNextVideoURLSend = false;
+
+    // The first play and first seek happen when the big play button is pressed
+    // We do not want to send these events
+    firstPlay = true;
+
+    firstSeek = true;
+
+    // After the first seek, the player time is set to the current time in the video.
+    // This calls the play/pause event again.
+    playPauseAfterFirstSeek = false;
 
     get url() {
         return this.$store.state.player.videoUrl;
@@ -88,12 +100,24 @@ export default class L2gPlayer extends Vue {
     }
 
     onPlayerPlay() {
-        if (this.skipNextPlaySend) {
-            this.skipNextPlaySend = false;
-            console.log('this.skipNextPlaySend = false');
+        if (this.firstPlay) {
+            // re-join room to re-receive current state
+            // this is necessary to recalculate the time we should have reached in the video
+            this.firstPlay = false;
+            this.$store.dispatch('joinRoom', this.$store.state.rooms.roomId);
             return;
         }
-        console.log('pl');
+        if (this.playPauseAfterFirstSeek) {
+            // We now have the correct time and pause state and can set the player's pause state accordingly.
+            // Then, we are ready to be a regular player and the setup is finished.
+            this.onPausedChange();
+            this.playPauseAfterFirstSeek = false;
+            return;
+        }
+        if (this.skipNextPlaySend) {
+            this.skipNextPlaySend = false;
+            return;
+        }
         this.$store.dispatch('setVideoState', {
             paused: false,
             seconds: this.player.currentTime(),
@@ -102,12 +126,14 @@ export default class L2gPlayer extends Vue {
     }
 
     onPlayerPause() {
-        if (this.skipNextPauseSend) {
-            this.skipNextPauseSend = false;
-            console.log('this.skipNextPauseSend = false');
+        if (this.playPauseAfterFirstSeek) {
+            this.playPauseAfterFirstSeek = false;
             return;
         }
-        console.log('pa');
+        if (this.skipNextPauseSend) {
+            this.skipNextPauseSend = false;
+            return;
+        }
         this.$store.dispatch('setVideoState', {
             paused: true,
             seconds: this.player.currentTime(),
@@ -116,12 +142,19 @@ export default class L2gPlayer extends Vue {
     }
 
     onPlayerSeeked() {
-        if (this.skipNextSecondsSend) {
-            this.skipNextSecondsSend = false;
-            console.log('this.skipNextSecondsSend = false');
+        if (this.firstSeek) {
+            // firstSeek happens after the big play button was pressed.
+            // Next, the response from asking for the current state will be received.
+            // That triggers an update of onSecondsChange to set the player to the correct time.
+            // Finally, we have to adjust the play state. That's what playPauseAfterFirstSeek is for.
+            this.firstSeek = false;
+            this.playPauseAfterFirstSeek = true;
             return;
         }
-        console.log('se');
+        if (this.skipNextSecondsSend) {
+            this.skipNextSecondsSend = false;
+            return;
+        }
         this.$store.dispatch('setVideoState', {
             paused: this.player.paused(),
             seconds: this.player.currentTime(),
@@ -133,10 +166,8 @@ export default class L2gPlayer extends Vue {
         if (this.player.playbackRate() !== this.$store.state.player.playbackRate) {
             if (this.skipNextPlaybackRateSend) {
                 this.skipNextPlaybackRateSend = false;
-                console.log('this.skipNextPlaybackRateSend = false');
                 return;
             }
-            console.log('ra');
             this.$store.dispatch('setVideoState', {
                 paused: this.player.paused(),
                 seconds: this.player.currentTime(),
@@ -147,7 +178,6 @@ export default class L2gPlayer extends Vue {
 
     mounted(): void {
         // Player was mounted, set state
-        console.log('mounted', this.$store.state.player.seconds);
         this.player.src(this.getSourceFromURL(this.$store.state.player.videoUrl));
         this.player.currentTime(this.$store.state.player.seconds);
         this.player.playbackRate(this.$store.state.player.playbackRate);
@@ -160,7 +190,6 @@ export default class L2gPlayer extends Vue {
 
     @Watch('$store.state.player.paused')
     async onPausedChange() {
-        console.log(this.$store.state.player.sender, this.$store.state.socketId);
         if (this.$store.state.player.sender === this.$store.state.socketId) {
             this.skipNextPauseSend = false;
             this.skipNextPlaySend = false;
@@ -177,7 +206,6 @@ export default class L2gPlayer extends Vue {
 
     @Watch('$store.state.player.seconds')
     async onSecondsChange() {
-        console.log('seconds change')
         if (this.$store.state.player.sender === this.$store.state.socketId) {
             this.skipNextSecondsSend = false;
             return;
