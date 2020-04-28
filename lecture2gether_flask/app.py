@@ -166,11 +166,12 @@ def on_join(data):
 
     # Get room from db
     room = json.loads(db.hget('rooms', room_token))
+    
+    # Add current server time to state
+    room['state'] = add_current_time_to_state(room['state'])
 
     # Check if user is in the room
     if room_token not in rooms(sid=request.sid):
-        # Add current server time to state
-        room['state'] = add_current_time_to_state(room['state'])
         # Increase clients in room
         room['count'] += 1
         # Save data in db
