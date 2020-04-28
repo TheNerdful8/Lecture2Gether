@@ -48,7 +48,6 @@ export const connect = (store: Store<any>) => {
     });
 
     socket.on(receivedEvents.videoStateUpdated, (state: VideoStateEvent) => {
-        console.debug('recv', state);
         let seconds = state.seconds;
         if (store.state.player.seconds === seconds) {
             // You might ask what happens here, and I cannot blame you.
@@ -56,12 +55,9 @@ export const connect = (store: Store<any>) => {
             // It is necessary to set the video to the correct time after you join a paused video.
             seconds += 0.000001
         }
-        console.debug('getting seconds', seconds, state.currentTime, state.setTime);
         if (!state.paused) {
-            console.log('calc');
             seconds = (state.currentTime - state.setTime) * state.playbackRate + state.seconds;
         }
-        console.debug('setting seconds to', seconds);
         store.commit('setSender', state.sender);
         store.commit('setVideoState', {
             seconds,

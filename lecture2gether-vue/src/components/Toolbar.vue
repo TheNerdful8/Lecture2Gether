@@ -86,11 +86,11 @@ export default class Toolbar extends Vue {
                     );
                     return '';
                 default:
-                    console.log(`${response.status}: Unexpected return code from l2go endpoint`);
+                    console.warn(`${response.status}: Unexpected return code from l2go endpoint`);
                     return '';
                 }
             }).catch((response) => {
-                console.log(response);
+                console.debug(response);
                 throw new Error(`${response.status}: Resource not available`);
             });
         }
