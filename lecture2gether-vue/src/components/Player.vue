@@ -32,6 +32,16 @@ require('videojs-youtube/dist/Youtube');
     components: { videoPlayer },
 })
 export default class L2gPlayer extends Vue {
+    skipNextPauseSend = false;
+
+    skipNextPlaySend = false;
+
+    skipNextSecondsSend = false;
+
+    skipNextPlaybackRateSend = false;
+
+    skipNextVideoURLSend = false;
+
     get url() {
         return this.$store.state.player.videoUrl;
     }
@@ -78,6 +88,12 @@ export default class L2gPlayer extends Vue {
     }
 
     onPlayerPlay() {
+        if (this.skipNextPlaySend) {
+            this.skipNextPlaySend = false;
+            console.log('this.skipNextPlaySend = false');
+            return;
+        }
+        console.log('pl');
         this.$store.dispatch('setVideoState', {
             paused: false,
             seconds: this.player.currentTime(),
@@ -86,6 +102,12 @@ export default class L2gPlayer extends Vue {
     }
 
     onPlayerPause() {
+        if (this.skipNextPauseSend) {
+            this.skipNextPauseSend = false;
+            console.log('this.skipNextPauseSend = false');
+            return;
+        }
+        console.log('pa');
         this.$store.dispatch('setVideoState', {
             paused: true,
             seconds: this.player.currentTime(),
@@ -94,6 +116,12 @@ export default class L2gPlayer extends Vue {
     }
 
     onPlayerSeeked() {
+        if (this.skipNextSecondsSend) {
+            this.skipNextSecondsSend = false;
+            console.log('this.skipNextSecondsSend = false');
+            return;
+        }
+        console.log('se');
         this.$store.dispatch('setVideoState', {
             paused: this.player.paused(),
             seconds: this.player.currentTime(),
@@ -103,6 +131,12 @@ export default class L2gPlayer extends Vue {
 
     onPlayerRate() {
         if (this.player.playbackRate() !== this.$store.state.player.playbackRate) {
+            if (this.skipNextPlaybackRateSend) {
+                this.skipNextPlaybackRateSend = false;
+                console.log('this.skipNextPlaybackRateSend = false');
+                return;
+            }
+            console.log('ra');
             this.$store.dispatch('setVideoState', {
                 paused: this.player.paused(),
                 seconds: this.player.currentTime(),
@@ -113,8 +147,10 @@ export default class L2gPlayer extends Vue {
 
     mounted(): void {
         // Player was mounted, set state
+        console.log('mounted', this.$store.state.player.seconds);
         this.player.src(this.getSourceFromURL(this.$store.state.player.videoUrl));
         this.player.currentTime(this.$store.state.player.seconds);
+        this.player.playbackRate(this.$store.state.player.playbackRate);
         if (this.$store.state.player.paused) {
             this.player.pause();
         } else {
@@ -125,31 +161,50 @@ export default class L2gPlayer extends Vue {
     @Watch('$store.state.player.paused')
     async onPausedChange() {
         console.log(this.$store.state.player.sender, this.$store.state.socketId);
-        if (this.$store.state.player.sender === this.$store.state.socketId) return;
+        if (this.$store.state.player.sender === this.$store.state.socketId) {
+            this.skipNextPauseSend = false;
+            this.skipNextPlaySend = false;
+            return;
+        }
         if (this.$store.state.player.paused) {
+            this.skipNextPauseSend = true;
             this.player.pause();
         } else {
+            this.skipNextPlaySend = true;
             this.player.play();
         }
     }
 
     @Watch('$store.state.player.seconds')
     async onSecondsChange() {
-        if (this.$store.state.player.sender === this.$store.state.socketId) return;
+        console.log('seconds change')
+        if (this.$store.state.player.sender === this.$store.state.socketId) {
+            this.skipNextSecondsSend = false;
+            return;
+        }
         if (Math.abs(this.player.currentTime() - this.$store.state.player.seconds) > 1) {
+            this.skipNextSecondsSend = true;
             this.player.currentTime(this.$store.state.player.seconds);
         }
     }
 
     @Watch('$store.state.player.videoURL')
     async onURLChange() {
-        if (this.$store.state.player.sender === this.$store.state.socketId) return;
+        if (this.$store.state.player.sender === this.$store.state.socketId) {
+            this.skipNextVideoURLSend = false;
+            return;
+        }
+        this.skipNextVideoURLSend = true;
         this.player.src(this.getSourceFromURL(this.$store.state.player.videoUrl));
     }
 
     @Watch('$store.state.player.playbackRate')
     async onPlayerRateChange() {
-        if (this.$store.state.player.sender === this.$store.state.socketId) return;
+        if (this.$store.state.player.sender === this.$store.state.socketId) {
+            this.skipNextPlaybackRateSend = false;
+            return;
+        }
+        this.skipNextPlaybackRateSend = true;
         this.player.playbackRate(this.$store.state.player.playbackRate);
     }
 }
