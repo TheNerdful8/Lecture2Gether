@@ -5,7 +5,7 @@ export class PlayerState {
     videoUrl: string = '';
     paused: boolean = false;
     seconds: number = 0;
-    playbackRate: number = 0;
+    playbackRate: number = 1;
     password = ''
     auth = AuthState.UNNECESSARY
     sender = '';
