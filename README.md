@@ -37,6 +37,8 @@ The video streams are synchronized to partially restore the social aspect of cam
 * [Flask-SocketIO](https://flask-socketio.readthedocs.io)
 * [Flask-RESTful](https://flask-restful.readthedocs.io)
 * [Eventlet](http://eventlet.net)
+* [Redis](https://redis.io/)
+* [coolname](https://github.com/alexanderlukanin13/coolname)
 
 
 <!-- TODO: Installation for frontend -->
