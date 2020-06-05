@@ -4,7 +4,7 @@
   <img src="https://github.com/TheNerdful8/Lecture2Gether/blob/master/lecture2gether-vue/src/assets/Lecture2Gether_stroke.svg" alt="Logo" width="240" height="240">
   <h3 align="center">Lecture2Gether</h3>
   <p align="center">
-    Watch online lectures together!  
+    Watch online lectures together!
     <br />
     <br />
     <a href="https://lecture2gether.eu">View Demo</a>
@@ -36,6 +36,8 @@ The video streams are synchronized to partially restore the social aspect of cam
 * [Flask](https://flask.palletsprojects.com)
 * [Flask-SocketIO](https://flask-socketio.readthedocs.io)
 * [Flask-RESTful](https://flask-restful.readthedocs.io)
+* [Prometheus Flask exporter](https://github.com/rycus86/prometheus_flask_exporter)
+* [Prometheus Python Client](https://github.com/prometheus/client_python)
 * [Eventlet](http://eventlet.net)
 * [Redis](https://redis.io/)
 * [coolname](https://github.com/alexanderlukanin13/coolname)
@@ -65,10 +67,10 @@ Run the redis docker `docker run -it -p 6379:6379 redis:buster` or install manua
 Set the environment-variables `'REDIS_HOST', 'REDIS_PORT', 'REDIS_DB', 'REDIS_PASSWORD'`
 accordingly.
 ```bash
-#Clone the repository 
+#Clone the repository
 git clone https://github.com/TheNerdful8/Lecture2Gether
 
-#Go to the backend folder 
+#Go to the backend folder
 cd Lecture2Gether/lecture2gether_flask/
 
 #Get Poetry
@@ -77,23 +79,23 @@ pip3 install poetry --user
 #install the dependencies
 poetry install --no-root
 
-#start the server manually 
+#start the server manually
 poetry run python app.py
 ```
 
 ### Install single Frontend
 Install [npm](https://nodejs.org/en/download) on your machine
 ```bash
-#Clone the repository 
+#Clone the repository
 git clone https://github.com/TheNerdful8/Lecture2Gether
 
-#Go to the frontend folder 
+#Go to the frontend folder
 cd Lecture2Gether/lecture2gether-vue/
 
 #Install required npm dependencies
 npm install
 
-#Run the application with 
+#Run the application with
 npm run serve
 ```
 
@@ -120,7 +122,7 @@ The format is as follows:
 ```
 {
     "apiRoot": <string>,        // Under which url the server is reachable for http api calls
-    "socketioHost": <string>,   // Under which host the socket.io endpoint is served. 
+    "socketioHost": <string>,   // Under which host the socket.io endpoint is served.
                                 // Can be empty which results in the same as one as where the frontend is deployed
     "environment": <string>     // Not yet used but necessary
 }

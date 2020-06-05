@@ -14,6 +14,8 @@ from redis.client import Redis
 from redis.exceptions import ConnectionError
 from threading import Thread
 from coolname import generate_slug
+from prometheus_flask_exporter import PrometheusMetrics
+from prometheus_client import Gauge, Counter
 
 import eventlet
 eventlet.monkey_patch()
@@ -24,12 +26,17 @@ logging.basicConfig(level=os.getenv('LOGLEVEL', 'INFO'))
 app = Flask(__name__)
 app.config['DEBUG'] = True
 
+# Create prometheus metrics for e.g. grafana
+os.environ["DEBUG_METRICS"] = "false" # This needs to be false (see doc)
+metrics = PrometheusMetrics(app=app, path='/metrics')
+
+# Create non decorator defined metrics
+active_clients_metric = Gauge('l2g_clients_active', 'Number of active clients')
+room_clean_metric = Counter('l2g_room_cleaned', 'Number of rooms cleaned by the room cleaner')
+
 # Enable cross origin resource sharing in debug mode
 if app.config['DEBUG']:
     CORS(app)
-
-# Count active clients
-ACTIVE_CLIENTS = 0
 
 # Init socket.io websockets, which are used for state sync
 socketio = SocketIO(app, cors_allowed_origins="*")
@@ -65,6 +72,7 @@ def room_cleanup():
             if room['count'] <= 0 and datetime.now().timestamp() - room['state']['setTime'] > cleanup_room_expire_time:  # Delete empty old rooms
                 db.hdel('rooms', room_token) # Delete room
                 logging.info("Delete Room {}".format(room_token))
+                room_clean_metric.inc()
         logging.info("Waiting for room cleanup")
         time.sleep(cleanup_interval)
 
@@ -73,6 +81,7 @@ cleanup_thread = Thread(target=room_cleanup, daemon=True)
 cleanup_thread.start()
 
 @app.route('/api/l2go', methods=['POST'])
+@metrics.counter('l2g_video_url_parsed', 'Number of Lecture2Go videos parsed')
 def decode_l2go_path():
     """Decodes a lecture2go video url"""
     data = request.get_json()
@@ -108,16 +117,15 @@ def decode_l2go_path():
     return jsonify(m.group())
 
 @socketio.on('connect')
+@metrics.counter('l2g_sockets_connected', 'Number of connections ever made')
 def on_connect():
     """Handles websocket creation event"""
-    global ACTIVE_CLIENTS
-    ACTIVE_CLIENTS += 1
+    active_clients_metric.inc()
 
 @socketio.on('disconnect')
 def on_disconnect():
     """Handles websocket disconnection event"""
-    global ACTIVE_CLIENTS
-    ACTIVE_CLIENTS -= 1
+    active_clients_metric.dec()
 
     # Decrease room client counts
     for room_token in rooms(sid=request.sid):  # For all rooms of user
@@ -128,6 +136,7 @@ def on_disconnect():
             db.hset('rooms', room_token, json.dumps(room))
 
 @socketio.on('create')
+@metrics.counter('l2g_rooms_created', 'Increases if a room is created')
 def on_create(init_state):
     """Create and join a watch room"""
     # Create unique token
@@ -152,11 +161,12 @@ def on_create(init_state):
 
     # Publish the room user count
     emit('room_user_count_update', {"users": 1}, room=room_token)
-    
+
     # Return response
     return {'roomId': room_token, 'status_code': 200}, 200
 
 @socketio.on('join')
+@metrics.counter('l2g_rooms_joined', 'Increases if a room is joined')
 def on_join(data):
     """Join a watch room"""
     # Check if all params are set
@@ -193,6 +203,7 @@ def on_join(data):
     return {'roomId': room_token,'status_code': 200}, 200
 
 @socketio.on('leave')
+@metrics.counter('l2g_rooms_left', 'Rooms actively left by the client')
 def on_leave(data):
     """Leave a watch room"""
     # Check if all params are set
@@ -223,6 +234,7 @@ def on_leave(data):
     return {'status_code': 200}, 200
 
 @socketio.on('video_state_set')
+@metrics.counter('l2g_video_state_updates', 'Number of video state updates')
 def on_video_state_set(state):
     """Update a watch room"""
     # Check if all params are set
@@ -255,6 +267,7 @@ def on_video_state_set(state):
     return {'status_code': 200}, 200
 
 @socketio.on('chat_send')
+@metrics.counter('l2g_chat_messages_send', 'Number of broadcasted chat messages')
 def on_chat_send(message):
     """Broadcast chat message to a watch room"""
     # Check if params are correct
