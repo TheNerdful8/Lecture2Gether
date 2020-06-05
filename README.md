@@ -75,7 +75,7 @@ cd Lecture2Gether/lecture2gether_flask/
 pip3 install poetry --user
 
 #install the dependencies
-poetry install
+poetry install --no-root
 
 #start the server manually 
 poetry run python app.py
