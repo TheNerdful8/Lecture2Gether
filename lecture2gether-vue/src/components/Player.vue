@@ -221,7 +221,7 @@ export default class L2gPlayer extends Vue {
         }
     }
 
-    @Watch('$store.state.player.videoMetaData')
+    @Watch('$store.state.player.videoMetaData.streamUrl')
     async onURLChange() {
         if (this.$store.state.player.sender === this.$store.state.socketId) {
             this.skipNextVideoURLSend = false;
