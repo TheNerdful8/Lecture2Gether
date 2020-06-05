@@ -72,9 +72,8 @@ export const connect = (store: Store<any>) => {
         store.commit('setUrl', state.videoUrl)
     });
 
-    socket.on(receivedEvents.roomUserCountUpdated, (state: RoomUserCountEvent) => {
-        console.log("got event!")
-        store.commit('setUserCount', state.users);
+    socket.on(receivedEvents.roomUserCountUpdated, (event: RoomUserCountEvent) => {
+        store.commit('setUserCount', event.users);
     });
 
     socket.connect();
