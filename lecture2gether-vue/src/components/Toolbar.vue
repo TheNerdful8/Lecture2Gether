@@ -94,15 +94,13 @@ export default class Toolbar extends Vue {
             });
         }
         // update the url to point to the lecture2go playlist when it is a
-        let url: string = this.url;
-        let videoMetaData: VideoMetaData;
+        const url = this.url;
         if (this.isValidVideoUrl(url) || url.includes('lecture2go') || url.includes('/l2go/')) {
             this.urlIsValid = true;
             const password = this.$store.state.player.password;
-            videoMetaData = await getVideoMetaData(this.$store, url, password);
+            const videoMetaData = await getVideoMetaData(this.$store, url, password);
             if (!videoMetaData) return;
             if (this.$store.state.isConnected) this.$store.dispatch('setVideoMetaData', videoMetaData);
-            url = videoMetaData.streamUrl;
         } else {
             this.urlIsValid = false;
         }
