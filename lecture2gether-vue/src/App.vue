@@ -4,12 +4,7 @@
             <Toolbar :collapsed="isCollapsed"></Toolbar>
             <router-view/>
         </v-content>
-        <v-footer>
-            <v-spacer></v-spacer>
-            <img src="/img/icons/GitHub.svg" alt="GitHub logo" class="mr-2"/>
-            <a href="https://github.com/TheNerdful8/Lecture2Gether" class="footer-link">Lecture2Gether on Github</a>
-            <v-spacer></v-spacer>
-        </v-footer>
+        <lecture2-gether-footer/>
     </v-app>
 </template>
 
@@ -18,9 +13,10 @@ import Component from 'vue-class-component';
 import Vue from 'vue';
 import { connect } from '@/plugins/socket.io';
 import Toolbar from '@/components/Toolbar.vue';
+import Lecture2GetherFooter from '@/components/Lecture2GetherFooter.vue';
 
 @Component({
-    components: { Toolbar },
+    components: { Lecture2GetherFooter, Toolbar },
 })
 export default class App extends Vue {
     created(): void {
@@ -60,17 +56,5 @@ export default class App extends Vue {
                 color: #42b983;
             }
         }
-    }
-
-    .footer-link {
-        color: #222222!important;
-    }
-
-    .footer-link:link {
-        text-decoration: none;
-    }
-
-    .footer-link:hover {
-        text-decoration: underline;
     }
 </style>
