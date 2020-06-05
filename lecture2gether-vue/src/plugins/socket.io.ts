@@ -71,7 +71,7 @@ export const connect = (store: Store<any>) => {
             paused: state.paused,
             playbackRate: state.playbackRate,
         })
-        store.commit('setUrl', state.videoUrl)
+        store.commit('setVideoMetaData', state.videoMetaData)
     });
 
     socket.on(receivedEvents.roomUserCountUpdated, (event: RoomUserCountEvent) => {

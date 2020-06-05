@@ -1,8 +1,9 @@
 import { Module } from 'vuex';
 import { sendVideoState } from '@/plugins/socket.io'
+import { VideoMetaData } from '@/api'
 
 export class PlayerState {
-    videoUrl: string = '';
+    videoMetaData: VideoMetaData|null = null;
     paused: boolean = false;
     seconds: number = 0;
     playbackRate: number = 1;
@@ -20,8 +21,8 @@ export const playerModule: Module<PlayerState, any> = {
     state: () => new PlayerState(),
 
     mutations: {
-        setUrl: (state, payload: string) => {
-            state.videoUrl = payload;
+        setVideoMetaData: (state, payload: VideoMetaData) => {
+            state.videoMetaData = payload;
         },
         setPassword: (state, payload: string) => {
             state.password = payload;
@@ -40,11 +41,11 @@ export const playerModule: Module<PlayerState, any> = {
     },
 
     actions: {
-        setUrl: async (ctx, payload: string) => {
-            ctx.commit('setUrl', payload);
+        setVideoMetaData: async (ctx, payload: string) => {
+            ctx.commit('setVideoMetaData', payload);
             sendVideoState({
                 roomId: ctx.rootState.rooms.roomId,
-                videoUrl: ctx.state.videoUrl,
+                videoMetaData: ctx.state.videoMetaData,
                 paused: ctx.state.paused,
                 seconds: ctx.state.seconds,
                 playbackRate: ctx.state.playbackRate,
@@ -54,7 +55,7 @@ export const playerModule: Module<PlayerState, any> = {
             ctx.commit('setVideoState', state)
             sendVideoState({
                 roomId: ctx.rootState.rooms.roomId,
-                videoUrl: ctx.state.videoUrl,
+                videoMetaData: ctx.state.videoMetaData,
                 paused: ctx.state.paused,
                 seconds: ctx.state.seconds,
                 playbackRate: ctx.state.playbackRate,
