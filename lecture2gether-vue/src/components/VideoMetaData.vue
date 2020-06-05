@@ -1,5 +1,5 @@
 <template>
-    <div class="video-meta-data">
+    <div class="video-meta-data" style="visibility: hidden;">
         <div class="title">
             {{ videoMetaData.Title }}
         </div>
