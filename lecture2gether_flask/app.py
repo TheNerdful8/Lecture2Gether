@@ -90,7 +90,7 @@ def room_cleanup():
 cleanup_thread = Thread(target=room_cleanup, daemon=True)
 cleanup_thread.start()
 
-@app.route('/api/l2go', methods=['POST'])
+@app.route('/api/metadata', methods=['POST'])
 @metrics.counter('l2g_video_url_parsed', 'Number of Lecture2Go videos parsed')
 def decode_l2go_path():
     """Decodes a lecture2go video url"""
@@ -106,19 +106,20 @@ def decode_l2go_path():
         _password = data['password']
 
     url = urlparse(_video_url)
-    if url.hostname in ['www.youtube.com', 'youtube.com', 'youtu.be']:
-        _meta_data_provider = YouTubeMetaDataProvider(_video_url)
-    elif 'lecture2go' in url.hostname or '/l2go/' in url.path:
-        _meta_data_provider = L2GoMetaDataProvider(_video_url, _password)
-    else:
-        _meta_data_provider = DefaultMetaDataProvider(_video_url)
 
     try:
-        video_meta_data = _meta_data_provider.get_meta_data()
+        if url.hostname in ['www.youtube.com', 'youtube.com', 'youtu.be']:
+            _meta_data_provider = YouTubeMetaDataProvider(_video_url)
+        elif 'lecture2go' in url.hostname or '/l2go/' in url.path:
+            _meta_data_provider = L2GoMetaDataProvider(_video_url, _password)
+        else:
+            _meta_data_provider = DefaultMetaDataProvider(_video_url)
     except VideoNotFoundException:
         abort(404)
     except VideoUnauthorizedException:
         abort(401)
+
+    video_meta_data = _meta_data_provider.get_meta_data()
 
     return jsonify(video_meta_data)
 
