@@ -24,7 +24,7 @@ jobs:
         working-directory: lecture2gether_flask
       - name: Run Tests
         run: |
-          poetry run python3 test.py
+          poetry run nosetests test.py
         env:
           L2G_TEST_PASSWD: ${{ secrets.L2G_TEST_PASSWD }}
         working-directory: lecture2gether_flask

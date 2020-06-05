@@ -1,17 +1,38 @@
 #!/usr/bin/env python3
+from datetime import datetime
 
 import os
 import time
+
 from app import app, socketio
+from meta_data_provider import youtube_video_id_from_url, L2GoMetaDataProvider, YouTubeMetaDataProvider
 
 
-def socketio_test():
+def test_socketio():
     # log the user in through Flask test client
     flask_test_client = app.test_client()
 
-    # Hopefully fix weird ci behaviour
+    # connect to Socket.IO
+    user_count = 10000
+    room_count = 1000
 
-    # TEST HTTP STUFF
+    socketio_test_clients = [socketio.test_client(app, flask_test_client=flask_test_client) for i in range(user_count)]
+    
+    room_responses = ([client.emit("create", {'foo': 'bar'}, callback=True)[0] for client in socketio_test_clients[:room_count]])
+
+    assert all([True for response in room_responses if response["status_code"] == 200]), "Check failed, invalid status code while room creation."
+
+    rooms = [response['roomId'] for response in room_responses]
+
+def test_metrics():
+    flask_test_client = app.test_client()
+
+    r = flask_test_client.get('/metrics')
+
+    assert r.status_code == 200, f"Check failed, status code was {r.status_code}, but 200 was expected."
+
+def test_video_parsing():
+    flask_test_client = app.test_client()
 
     r = flask_test_client.post('/api/l2go', json={
         'username': 'python', 'password': 'is-great!'})
@@ -40,22 +61,63 @@ def socketio_test():
 
     assert r.status_code == 200, f"Check failed, status code was {r.status_code}, but 200 was expected."
 
-    r = flask_test_client.get('/metrics')
 
-    assert r.status_code == 200, f"Check failed, status code was {r.status_code}, but 200 was expected."
+def test_l2go_metadata():
+    flask_test_client = app.test_client()
+    meta_data_provider = L2GoMetaDataProvider('https://lecture2go.uni-hamburg.de/l2go/-/get/l/4577')
+    meta_data = meta_data_provider.get_meta_data()
+    assert meta_data['Url'] == 'https://lecture2go.uni-hamburg.de/l2go/-/get/l/4577'
+    assert meta_data['StreamUrl'] == 'https://fms.rrz.uni-hamburg.de/vod/_definst/mp4:4l2gkoowiso/00.000_Prof.Dr.OlafAsbach_2016-03-24_14-37.mp4/playlist.m3u8'
+    assert meta_data['Title'] == 'Dies Academicus'
+    assert meta_data['Creator'] == 'Prof. Dr. Olaf Asbach'
+    assert meta_data['CreatorLink'] == 'https://lecture2go.uni-hamburg.de/l2go/-/get/0/0/0/0/0/?_lgopenaccessvideos_WAR_lecture2goportlet_searchQuery=Prof. Dr. Olaf Asbach'
+    assert meta_data['Date'] == datetime(year=2016, month=3, day=24)
+    assert meta_data['License'] == 'UHH-L2G'
+    assert meta_data['LicenseLink'] == 'https://lecture2go.uni-hamburg.de/license-l2go'
 
-    # TEST WEBSOCKET STUFF
-    # connect to Socket.IO
-    user_count = 10000
-    room_count = 1000
 
-    socketio_test_clients = [socketio.test_client(app, flask_test_client=flask_test_client) for i in range(user_count)]
+def test_youtube_metadata():
+    meta_data_provider = YouTubeMetaDataProvider('https://youtu.be/qxyQCD3QT6Y')
+    meta_data = meta_data_provider.get_meta_data()
+    print(meta_data)
+    assert meta_data['Url'] == 'https://www.youtube.com/watch?v=qxyQCD3QT6Y'
+    assert meta_data['StreamUrl'] == 'https://www.youtube.com/watch?v=qxyQCD3QT6Y'
+    assert meta_data['Title'] == 'Last Marble Standing E2 Balancing - Marble Race by Jelle\'s Marble Runs'
+    assert meta_data['Creator'] == 'Jelle\'s Marble Runs'
+    assert meta_data['CreatorLink'] == 'https://www.youtube.com/channel/UCYJdpnjuSWVOLgGT9fIzL0g'
+    assert meta_data['Date'] == datetime(year=2020, month=6, day=5, hour=17, minute=0, second=13)
+    assert meta_data['License'] == 'youtube'
+    assert meta_data['LicenseLink'] is None
 
-    room_responses = ([client.emit("create", {'foo': 'bar'}, callback=True)[0] for client in socketio_test_clients[:room_count]])
 
-    assert all([True for response in room_responses if response["status_code"] == 200]), "Check failed, invalid status code while room creation."
-
-    rooms = [response['roomId'] for response in room_responses]
-
-if __name__ == '__main__':
-    socketio_test()
+def test_youtube_video_id_from_url():
+    error_message = 'Wrong video id for url %s: %s'
+    id = 'qxyQCD3QT6Y'
+    url = f'https://youtu.be/{id}'
+    res = youtube_video_id_from_url(url)
+    assert res == id, error_message % (url, res)
+    url = f'https://www.youtube.com/watch?v={id}'
+    res = youtube_video_id_from_url(url)
+    assert res == id, error_message % (url, res)
+    url = f'https://www.youtube.com/watch/?v={id}'
+    res = youtube_video_id_from_url(url)
+    assert res == id, error_message % (url, res)
+    url = f'https://www.youtube.com/watch/{id}'
+    res = youtube_video_id_from_url(url)
+    assert res == id, error_message % (url, res)
+    url = f'http://youtube.com/watch?v={id}&gl=DE'
+    res = youtube_video_id_from_url(url)
+    assert res == id, error_message % (url, res)
+    url = f'https://youtu.be/{id}?t=9'
+    res = youtube_video_id_from_url(url)
+    assert res == id, error_message % (url, res)
+    listid = 'PLSmWeUDtr9fAusnPxzrAG2v1B8sMeFlbT'
+    url = f'https://www.youtube.com/watch?v={id}&list={listid}&index=2'
+    res = youtube_video_id_from_url(url)
+    assert res == id, error_message % (url, res)
+    url = 'https://www.youtube.com/channel/UCYJdpnjuSWVOLgGT9fIzL0g'
+    res = youtube_video_id_from_url(url)
+    assert res is None, error_message % (url, res)
+    url = 'https://www.youtube.com/watch'
+    res = youtube_video_id_from_url(url)
+    assert res is None, error_message % (url, res)
