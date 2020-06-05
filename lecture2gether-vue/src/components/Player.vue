@@ -11,7 +11,6 @@
                     @seeked="onPlayerSeeked"
                     @ratechange="onPlayerRate">
         </video-player>
-        <span>{{userCount}}</span>
     </div>
 </template>
 
@@ -87,11 +86,6 @@ export default class L2gPlayer extends Vue {
     get player(): videojs.Player {
         // @ts-ignore
         return this.$refs.videoPlayer.player;
-    }
-
-    get userCount(): number {
-        // @ts-ignore
-        return this.$store.state.rooms.userCount;
     }
 
     getSourceFromURL(url: string): {type: string; src: string} {
