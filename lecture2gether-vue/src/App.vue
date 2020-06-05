@@ -33,6 +33,7 @@ export default class App extends Vue {
 <style lang="scss">
     @use "src/styles/global_style";
     @import '~@mdi/font/css/materialdesignicons.css';
+    @import '../node_modules/typeface-roboto/index.css';
 
     #app {
         font-family: Avenir, Helvetica, Arial, sans-serif;
