@@ -5,6 +5,7 @@ import json
 import time
 import requests
 import logging
+import sentry_sdk
 from datetime import datetime
 from time import sleep
 from flask import Flask, request, jsonify, abort
@@ -14,6 +15,7 @@ from redis.client import Redis
 from redis.exceptions import ConnectionError
 from threading import Thread
 from coolname import generate_slug
+from sentry_sdk.integrations.flask import FlaskIntegration
 
 import eventlet
 eventlet.monkey_patch()
@@ -27,6 +29,14 @@ app.config['DEBUG'] = True
 # Enable cross origin resource sharing in debug mode
 if app.config['DEBUG']:
     CORS(app)
+
+# Enable Sentry error reporting
+if os.getenv('SENTRY_DSN', '') != '':
+    sentry_sdk.init(
+        dsn=os.getenv('SENTRY_DSN'),
+        integrations=[FlaskIntegration()]
+    )
+    
 
 # Count active clients
 ACTIVE_CLIENTS = 0
