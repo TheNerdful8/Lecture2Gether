@@ -1,13 +1,11 @@
 import os
 import re
 import requests
+import googleapiclient.discovery
 from datetime import datetime
 from bs4 import BeautifulSoup
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qs
 
-import google_auth_oauthlib.flow
-import googleapiclient.discovery
-import googleapiclient.errors
 
 
 class VideoNotFoundException(Exception):
@@ -31,13 +29,13 @@ class MetaDataProvider():
             "LicenseLink": None,
         }
 
-        self.get_meta_data()
-
     def get_meta_data(self):
         return self.video_meta_data
 
 class L2GoMetaDataProvider(MetaDataProvider):
     def __init__(self, video_url, password=''):
+        super().__init__(video_url)
+
         self._password = password
 
         try:  # Get video
@@ -57,20 +55,18 @@ class L2GoMetaDataProvider(MetaDataProvider):
         if self.soup.find("input", {"id": "_lgopenaccessvideos_WAR_lecture2goportlet_password"}):
             raise VideoUnauthorizedException()
 
-        super().__init__(video_url)
-
     def get_meta_data(self):
         self.video_meta_data["StreamUrl"] = self._parse_stream_url()
         self.video_meta_data["Title"] = self._parse_title()
         self.video_meta_data["Creator"] = self._parse_creator()
         self.video_meta_data["CreatorLink"] = self._parse_creator_link()
-        self.video_meta_data["Date"] = self._parser_date()
+        self.video_meta_data["Date"] = self._parse_date()
         self.video_meta_data["License"] = self._parse_license()
-        self.video_meta_data["LicenseLink"] = self._parse_creator_link()
+        self.video_meta_data["LicenseLink"] = self._parse_license_link()
         return super().get_meta_data()
 
     def _parse_stream_url(self):
-        return re.search('https://[^"]*m3u8', self.soup.text).group()
+        return re.search('https://[^"]*m3u8', str(self.soup)).group()
 
     def _parse_title(self):
         return self.soup.find("div", {"class": "meta-title"}).text.strip()
@@ -82,9 +78,9 @@ class L2GoMetaDataProvider(MetaDataProvider):
         _creator_link = self.soup.find("div", {"class": "meta-creators"}).find('a')['href']
         if _creator_link is None:
             return None
-        return f"{self.parsed_url.scheme}://{self.parsed_url.netloc}/{_creator_link}"
+        return f"{self.parsed_url.scheme}://{self.parsed_url.netloc}{_creator_link}"
 
-    def _parser_date(self):
+    def _parse_date(self):
         _date_string = self.soup.find("div", {"class": "meta-creators"}).find("div", "date").text.strip()
         if _date_string is None:
             return None
@@ -96,32 +92,48 @@ class L2GoMetaDataProvider(MetaDataProvider):
             return None
         return re.split(r":\s", _license_string)[1].strip()
 
-    def _parser_license_link(self):
+    def _parse_license_link(self):
         return self.soup.find("div", {"class": "license"}).find("a")['href'].strip()
 
 
 class YouTubeMetaDataProvider(MetaDataProvider):
     def __init__(self, video_url):
         super().__init__(video_url)
+        self._video_id = youtube_video_id_from_url(video_url)
 
-    def main():
-        scopes = []
-        # TODO Read API-Key from environment var
-        api_service_name = "youtube"
-        api_version = "v3"
-        client_secrets_file = "YOUR_CLIENT_SECRET_FILE.json"
-
-        # Get credentials and create an API client
-        flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
-            client_secrets_file, scopes)
-        credentials = flow.run_console()
+    def get_meta_data(self):
         youtube = googleapiclient.discovery.build(
-            api_service_name, api_version, credentials=credentials)
+            'youtube', 'v3', developerKey=os.environ['GOOGLE_API_KEY'])
 
         request = youtube.videos().list(
-            part="status",
-            id="VIDEO-ID"  # TODO
+            part="snippet,status",
+            id=self._video_id,
         )
-        response = request.execute()
+        response = request.execute()['items'][0]
+        self.video_meta_data = {
+            "Url": f'https://youtube.com/watch?v={self._video_id}',
+            "StreamUrl": f'https://youtube.com/watch?v={self._video_id}',
+            "Title": response['snippet']['title'],
+            "Creator": response['snippet']['channelTitle'],
+            "CreatorLink": f'https://youtube.com/channel/{response["snippet"]["channelId"]}',
+            "Date": datetime.strptime(response['snippet']['publishedAt'], '%Y-%m-%dT%H:%M:%SZ'),
+            "License": response['status']['license'],
+            "LicenseLink": None,
+        }
 
-        print(response)
+        return super().get_meta_data()
+
+
+def youtube_video_id_from_url(video_url):
+    url = urlparse(video_url)
+    if url.hostname == 'youtu.be':
+        # Return path without '/'
+        return url.path[1:]
+    if url.hostname in ['youtube.com', 'www.youtube.com']:
+        if url.path in ['/watch', '/watch/']:
+            query = parse_qs(url.query)
+            if 'v' in query:
+                return query['v'][0]
+    return None
+
+

@@ -24,6 +24,7 @@ flask_prometheus_metrics = "^1.0.0"
 prometheus_flask_exporter = "^0.13.0"
 prometheus_client = "^0.8.0"
 BeautifulSoup4 = "^4.9.1"
+google-api-python-client = "^1.9.1"
 
 [tool.poetry.dev-dependencies]
 
