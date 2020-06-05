@@ -80,29 +80,31 @@ def test_l2go_metadata():
     flask_test_client = app.test_client()
     meta_data_provider = L2GoMetaDataProvider('https://lecture2go.uni-hamburg.de/l2go/-/get/l/4577')
     meta_data = meta_data_provider.get_meta_data()
-    assert meta_data['Url'] == 'https://lecture2go.uni-hamburg.de/l2go/-/get/l/4577'
-    assert meta_data['StreamUrl'] == 'https://fms.rrz.uni-hamburg.de/vod/_definst/mp4:4l2gkoowiso/00.000_Prof.Dr.OlafAsbach_2016-03-24_14-37.mp4/playlist.m3u8'
-    assert meta_data['Title'] == 'Dies Academicus'
-    assert meta_data['Creator'] == 'Prof. Dr. Olaf Asbach'
-    assert meta_data['CreatorLink'] == 'https://lecture2go.uni-hamburg.de/l2go/-/get/0/0/0/0/0/?_lgopenaccessvideos_WAR_lecture2goportlet_searchQuery=Prof. Dr. Olaf Asbach'
-    assert meta_data['Date'] == datetime(year=2016, month=3, day=24)
-    assert meta_data['License'] == 'UHH-L2G'
-    assert meta_data['LicenseLink'] == 'https://lecture2go.uni-hamburg.de/license-l2go'
+    assert meta_data['url'] == 'https://lecture2go.uni-hamburg.de/l2go/-/get/l/4577'
+    assert meta_data['streamUrl'] == 'https://fms.rrz.uni-hamburg.de/vod/_definst/mp4:4l2gkoowiso/00.000_Prof.Dr.OlafAsbach_2016-03-24_14-37.mp4/playlist.m3u8'
+    assert meta_data['title'] == 'Dies Academicus'
+    assert meta_data['creator'] == 'Prof. Dr. Olaf Asbach'
+    assert meta_data['creatorLink'] == 'https://lecture2go.uni-hamburg.de/l2go/-/get/0/0/0/0/0/?_lgopenaccessvideos_WAR_lecture2goportlet_searchQuery=Prof. Dr. Olaf Asbach'
+    assert meta_data['date'] == datetime(year=2016, month=3, day=24)
+    assert meta_data['license'] == 'UHH-L2G'
+    assert meta_data['licenseLink'] == 'https://lecture2go.uni-hamburg.de/license-l2go'
 
 
 def test_youtube_metadata():
-    assert 'GOOGLE_API_KEY' in os.environ, "Please add your API key"
+    if 'GOOGLE_API_KEY' not in os.environ:
+        return
+
     meta_data_provider = YouTubeMetaDataProvider('https://youtu.be/qxyQCD3QT6Y')
     meta_data = meta_data_provider.get_meta_data()
     print(meta_data)
-    assert meta_data['Url'] == 'https://www.youtube.com/watch?v=qxyQCD3QT6Y'
-    assert meta_data['StreamUrl'] == 'https://www.youtube.com/watch?v=qxyQCD3QT6Y'
-    assert meta_data['Title'] == 'Last Marble Standing E2 Balancing - Marble Race by Jelle\'s Marble Runs'
-    assert meta_data['Creator'] == 'Jelle\'s Marble Runs'
-    assert meta_data['CreatorLink'] == 'https://www.youtube.com/channel/UCYJdpnjuSWVOLgGT9fIzL0g'
-    assert meta_data['Date'] == datetime(year=2020, month=6, day=5, hour=17, minute=0, second=13)
-    assert meta_data['License'] == 'youtube'
-    assert meta_data['LicenseLink'] is None
+    assert meta_data['url'] == 'https://www.youtube.com/watch?v=qxyQCD3QT6Y'
+    assert meta_data['streamUrl'] == 'https://www.youtube.com/watch?v=qxyQCD3QT6Y'
+    assert meta_data['title'] == 'Last Marble Standing E2 Balancing - Marble Race by Jelle\'s Marble Runs'
+    assert meta_data['creator'] == 'Jelle\'s Marble Runs'
+    assert meta_data['creatorLink'] == 'https://www.youtube.com/channel/UCYJdpnjuSWVOLgGT9fIzL0g'
+    assert meta_data['date'] == datetime(year=2020, month=6, day=5, hour=17, minute=0, second=13)
+    assert meta_data['license'] == 'youtube'
+    assert meta_data['licenseLink'] is None
 
 
 def test_youtube_metadata_no_api_key():
@@ -111,14 +113,14 @@ def test_youtube_metadata_no_api_key():
     meta_data_provider = YouTubeMetaDataProvider('https://youtu.be/qxyQCD3QT6Y')
     meta_data = meta_data_provider.get_meta_data()
     print(meta_data)
-    assert meta_data['Url'] == 'https://www.youtube.com/watch?v=qxyQCD3QT6Y'
-    assert meta_data['StreamUrl'] == 'https://www.youtube.com/watch?v=qxyQCD3QT6Y'
-    assert meta_data['Title'] is None
-    assert meta_data['Creator'] is None
-    assert meta_data['CreatorLink'] is None
-    assert meta_data['Date'] is None
-    assert meta_data['License'] is None
-    assert meta_data['LicenseLink'] is None
+    assert meta_data['url'] == 'https://www.youtube.com/watch?v=qxyQCD3QT6Y'
+    assert meta_data['streamUrl'] == 'https://www.youtube.com/watch?v=qxyQCD3QT6Y'
+    assert meta_data['title'] is None
+    assert meta_data['creator'] is None
+    assert meta_data['creatorLink'] is None
+    assert meta_data['date'] is None
+    assert meta_data['license'] is None
+    assert meta_data['licenseLink'] is None
     os.environ['GOOGLE_API_KEY'] = API_KEY
 
 

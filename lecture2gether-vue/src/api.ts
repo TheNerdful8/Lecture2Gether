@@ -1,12 +1,12 @@
 export interface VideoMetaData {
-    Url: string,
-    StreamUrl: string,
-    Title: string|null,
-    Creator: string|null,
-    CreatorLink: string|null,
-    Date: string|null,
-    License: string|null,
-    LicenseLink: string|null,
+    url: string,
+    streamUrl: string,
+    title: string|null,
+    creator: string|null,
+    creatorLink: string|null,
+    date: string|null,
+    license: string|null,
+    licenseLink: string|null,
 }
 
 interface BaseResponse {

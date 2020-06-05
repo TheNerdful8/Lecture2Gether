@@ -1,16 +1,16 @@
 <template>
-    <div class="video-meta-data" style="visibility: hidden;">
+    <div class="video-meta-data"> <!--style="visibility: hidden;"-->
         <div class="title">
-            {{ videoMetaData.Title }}
+            {{ videoMetaData.title }}
         </div>
-        <a class="creator" :href="videoMetaData.CreatorLink">
-            {{ videoMetaData.Creator }}
+        <a class="creator" :href="videoMetaData.creatorLink">
+            {{ videoMetaData.creator }}
         </a>
         <div class="date">
             {{ videoDate }}
         </div>
-        <a class="license" :href="videoMetaData.LicenseLink">
-            License: {{ videoMetaData.License }}
+        <a class="license" :href="videoMetaData.licenseLink">
+            License: {{ videoMetaData.license }}
         </a>
     </div>
 </template>
@@ -19,19 +19,15 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import Component from 'vue-class-component';
 import Vue from 'vue';
-import { Watch } from 'vue-property-decorator';
 
-@Component({
-    components: { VideoMetaData },
-})
+@Component
 export default class VideoMetaData extends Vue {
-
     get videoMetaData() {
         return this.$store.state.player.videoMetaData;
     }
 
     get videoDate() {
-        const date = new Date(Date.parse(this.$store.state.player.videoMetaData.Date));
+        const date = new Date(Date.parse(this.$store.state.player.videoMetaData.date));
         return date.toLocaleDateString();
     }
 }

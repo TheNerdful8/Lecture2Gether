@@ -60,7 +60,7 @@ export default class L2gPlayer extends Vue {
     playPauseAfterFirstSeek = false;
 
     get url() {
-        return this.$store.state.player.videoMetaData.StreamUrl;
+        return this.$store.state.player.videoMetaData.streamUrl;
     }
 
     get playerOptions() {
@@ -183,7 +183,7 @@ export default class L2gPlayer extends Vue {
 
     mounted(): void {
         // Player was mounted, set state
-        this.player.src(this.getSourceFromURL(this.$store.state.player.videoMetaData.StreamUrl));
+        this.player.src(this.getSourceFromURL(this.$store.state.player.videoMetaData.streamUrl));
         this.player.currentTime(this.$store.state.player.seconds);
         this.player.playbackRate(this.$store.state.player.playbackRate);
         if (this.$store.state.player.paused) {
@@ -228,7 +228,7 @@ export default class L2gPlayer extends Vue {
             return;
         }
         this.skipNextVideoURLSend = true;
-        this.player.src(this.getSourceFromURL(this.$store.state.player.videoMetaData.StreamUrl));
+        this.player.src(this.getSourceFromURL(this.$store.state.player.videoMetaData.streamUrl));
     }
 
     @Watch('$store.state.player.playbackRate')
