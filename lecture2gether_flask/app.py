@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from urllib.parse import urlparse
+
 from gevent import monkey
 monkey.patch_all()
 
@@ -18,7 +20,8 @@ from coolname import generate_slug
 from prometheus_flask_exporter import PrometheusMetrics
 from prometheus_client import Gauge, Counter
 
-from meta_data_provider import L2GoMetaDataProvider, VideoNotFoundException, VideoUnauthorizedException
+from meta_data_provider import L2GoMetaDataProvider, VideoNotFoundException, VideoUnauthorizedException, \
+    YouTubeMetaDataProvider, DefaultMetaDataProvider
 
 logging.basicConfig(level=os.getenv('LOGLEVEL', 'INFO'))
 
@@ -102,8 +105,15 @@ def decode_l2go_path():
     if 'password' in data:
         _password = data['password']
 
-    try:
+    url = urlparse(_video_url)
+    if url.hostname in ['www.youtube.com', 'youtube.com', 'youtu.be']:
+        _meta_data_provider = YouTubeMetaDataProvider(_video_url)
+    elif 'lecture2go' in url.hostname or '/l2go/' in url.path:
         _meta_data_provider = L2GoMetaDataProvider(_video_url, _password)
+    else:
+        _meta_data_provider = DefaultMetaDataProvider(_video_url)
+
+    try:
         video_meta_data = _meta_data_provider.get_meta_data()
     except VideoNotFoundException:
         abort(404)

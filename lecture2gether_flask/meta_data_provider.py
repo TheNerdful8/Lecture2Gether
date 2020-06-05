@@ -7,7 +7,6 @@ from bs4 import BeautifulSoup
 from urllib.parse import urlparse, parse_qs
 
 
-
 class VideoNotFoundException(Exception):
     pass
 
@@ -20,7 +19,7 @@ class MetaDataProvider():
     def __init__(self, video_url):
         self.video_meta_data = {
             "Url": video_url,
-            "StreamUrl": None,
+            "StreamUrl": video_url,
             "Title": None,
             "Creator": None,
             "CreatorLink": None,
@@ -31,6 +30,11 @@ class MetaDataProvider():
 
     def get_meta_data(self):
         return self.video_meta_data
+
+
+class DefaultMetaDataProvider(MetaDataProvider):
+    pass
+
 
 class L2GoMetaDataProvider(MetaDataProvider):
     def __init__(self, video_url, password=''):
