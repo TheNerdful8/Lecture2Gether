@@ -6,6 +6,7 @@ export class SettingsState {
     apiRoot = '/api'
     socketioHost = ''
     environment = 'dev'
+    sentry_dsn = ''
 }
 
 
