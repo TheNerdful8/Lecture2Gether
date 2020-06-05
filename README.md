@@ -128,6 +128,9 @@ The format is as follows:
 }
 ```
 
+## Statistics
+The backend publishes statistical data (No. sessions, No. joined/left rooms, server infos, ...) in the [Prometheus](https://prometheus.io/) format to `/metrics`. This can be scraped by a [Prometheus](https://prometheus.io/) server and displayed in e.g. [Grafana](https://grafana.com/).
+
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
