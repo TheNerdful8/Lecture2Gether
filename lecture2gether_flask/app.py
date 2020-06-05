@@ -16,6 +16,8 @@ from threading import Thread
 from coolname import generate_slug
 from prometheus_flask_exporter import PrometheusMetrics
 from prometheus_client import Gauge, Counter
+from bs4 import BeautifulSoup
+from urllib.parse import urlparse
 
 import eventlet
 eventlet.monkey_patch()
@@ -121,7 +123,37 @@ def decode_l2go_path():
         else:
             abort(401)
 
-    return jsonify(m.group())
+    video_m3u8 = m.group()
+
+    video_meta_data = {
+        "video_url": video_url,
+        "video_m3u8": video_m3u8,
+    }
+
+    # Parse video page HTML for additional meta data
+    try:
+        _parsed_url = urlparse(video_url)
+        _html = r.text
+        _soup = BeautifulSoup(_html, 'html.parser')
+        video_title = _soup.find("div", {"class": "meta-title"}).text
+        _creator = _soup.find("div", {"class": "meta-creators"})
+        video_creator = _creator.find("a").text
+        video_creator_link = f"{_parsed_url.scheme}://{_parsed_url.netloc}/{_creator.find('a')['href']}"
+        video_date = datetime.strptime(_creator.find("div", "date").text, "%d.%m.%Y")
+        _license = _soup.find("div", {"class": "license"}).find("a")
+        video_license = re.split(r":\s", _license.text)[1]
+        video_license_link = _license['href']
+
+        video_meta_data["video_title"] = video_title
+        video_meta_data["video_creator"] = video_creator
+        video_meta_data["video_creator_link"] = video_creator_link
+        video_meta_data["video_date"] = video_date
+        video_meta_data["video_license"] = video_license
+        video_meta_data["video_license_link"] = video_license_link
+    except:
+        pass
+
+    return jsonify(video_meta_data)
 
 @socketio.on('connect')
 @metrics.counter('l2g_sockets_connected', 'Number of connections ever made')
