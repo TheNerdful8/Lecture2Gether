@@ -9,6 +9,7 @@ export class RoomsState {
      * The URL parameter is the one where we _should_ be connected to.
      */
     roomId = ''
+    userCount = 0
 }
 
 
@@ -18,6 +19,9 @@ export const roomsModule: Module<RoomsState, any> = {
     mutations: {
         setRoomId: (state, payload: string) => {
             state.roomId = payload;
+        },
+        setUserCount: (state, payload: number) => {
+            state.userCount = payload;
         },
     },
 
