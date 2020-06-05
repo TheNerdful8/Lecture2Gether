@@ -60,6 +60,13 @@ while True:
         logging.info("SUCCESS: Connected to Redis database.")
         break
 
+# Kick dead sessions (cause socket.io reloaded) out of rooms
+for room_token, room in db.hgetall('rooms').items():  # For all rooms in db
+    room = json.loads(room) # Deserialize room data
+    room['count'] = 0 # Set connections to 0 because no body can be connected
+    db.hset('rooms', room_token, json.dumps(room))
+    logging.info("Kick dead sessions out of room {}".format(room_token))
+
 # Create cleanup deamon, that deletes abandoned rooms from the database
 # Get params
 cleanup_interval = int(os.getenv('CLEANUP_INTERVAL', 60*15))
