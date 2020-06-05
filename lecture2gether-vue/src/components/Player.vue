@@ -1,14 +1,14 @@
 <template>
     <video-player class="video-player-box"
-                ref="videoPlayer"
-                :options="playerOptions"
-                :playsinline="true"
-                :events="['seeked', 'ratechange']"
+                  ref="videoPlayer"
+                  :options="playerOptions"
+                  :playsinline="true"
+                  :events="['seeked', 'ratechange']"
 
-                @play="onPlayerPlay"
-                @pause="onPlayerPause"
-                @seeked="onPlayerSeeked"
-                @ratechange="onPlayerRate">
+                  @play="onPlayerPlay"
+                  @pause="onPlayerPause"
+                  @seeked="onPlayerSeeked"
+                  @ratechange="onPlayerRate">
     </video-player>
 </template>
 
