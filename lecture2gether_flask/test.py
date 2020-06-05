@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 from datetime import datetime
 
 import os
@@ -77,6 +78,7 @@ def test_l2go_metadata():
 
 
 def test_youtube_metadata():
+    assert 'GOOGLE_API_KEY' in os.environ, "Please add your API key"
     meta_data_provider = YouTubeMetaDataProvider('https://youtu.be/qxyQCD3QT6Y')
     meta_data = meta_data_provider.get_meta_data()
     print(meta_data)
@@ -88,6 +90,23 @@ def test_youtube_metadata():
     assert meta_data['Date'] == datetime(year=2020, month=6, day=5, hour=17, minute=0, second=13)
     assert meta_data['License'] == 'youtube'
     assert meta_data['LicenseLink'] is None
+
+
+def test_youtube_metadata_no_api_key():
+    API_KEY = os.environ['GOOGLE_API_KEY']
+    del os.environ['GOOGLE_API_KEY']
+    meta_data_provider = YouTubeMetaDataProvider('https://youtu.be/qxyQCD3QT6Y')
+    meta_data = meta_data_provider.get_meta_data()
+    print(meta_data)
+    assert meta_data['Url'] == 'https://www.youtube.com/watch?v=qxyQCD3QT6Y'
+    assert meta_data['StreamUrl'] == 'https://www.youtube.com/watch?v=qxyQCD3QT6Y'
+    assert meta_data['Title'] is None
+    assert meta_data['Creator'] is None
+    assert meta_data['CreatorLink'] is None
+    assert meta_data['Date'] is None
+    assert meta_data['License'] is None
+    assert meta_data['LicenseLink'] is None
+    os.environ['GOOGLE_API_KEY'] = API_KEY
 
 
 def test_youtube_video_id_from_url():
