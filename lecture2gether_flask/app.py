@@ -124,6 +124,7 @@ def on_disconnect():
         if db.hexists('rooms', room_token):  # If room exists
             room = json.loads(db.hget('rooms', room_token))
             room['count'] -= 1
+            emit('room_user_count_update', {"users": room['count']}, room=room_token)
             db.hset('rooms', room_token, json.dumps(room))
 
 @socketio.on('create')
@@ -178,7 +179,10 @@ def on_join(data):
         db.hset('rooms', room_token, json.dumps(room))
         # Join the socket.io room
         join_room(room_token)
-        
+        # Notify the others about the increased user count
+        message = {"users": room['count']}
+        emit('room_user_count_update', message, room=room_token)
+
     # Emit room state
     emit('video_state_update', room['state'], room=request.sid)
     # Return response
@@ -205,6 +209,8 @@ def on_leave(data):
     room = json.loads(db.hget('rooms', room_token))
     # Deacrease active users in room
     room['count'] -= 1
+    # Notify the others about the decreased user count
+    emit('room_user_count_update', {"users": room['count']}, room=room_token)
     # Save in db
     db.hset('rooms', room_token, json.dumps(room))
     # Leave the socket.io room
