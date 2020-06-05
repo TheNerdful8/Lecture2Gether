@@ -1,5 +1,7 @@
 <template>
-
+    <div class="title">
+        {{ videoMetaData.Title }}
+    </div>
 </template>
 
 <script lang="ts">
@@ -9,10 +11,13 @@ import Vue from 'vue';
 import { Watch } from 'vue-property-decorator';
 
 @Component({
-    components: { videoMetaData },
+    components: { VideoMetaData },
 })
 export default class VideoMetaData extends Vue {
 
+    get videoMetaData() {
+        return this.$store.state.player.videoMetaData;
+    }
 }
 </script>
 
