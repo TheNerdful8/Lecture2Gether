@@ -7,9 +7,9 @@
     </v-footer>
 </template>
 <script lang="ts">
-export default {
-    name: 'Lecture2GetherFooter',
-};
+import Vue from 'vue';
+
+export default class PasswordDialog extends Vue {}
 </script>
 <style lang="scss">
     .footer-link {
