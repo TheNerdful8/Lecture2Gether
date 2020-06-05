@@ -38,7 +38,10 @@ The video streams are synchronized to partially restore the social aspect of cam
 * [Flask-RESTful](https://flask-restful.readthedocs.io)
 * [Prometheus Flask exporter](https://github.com/rycus86/prometheus_flask_exporter)
 * [Prometheus Python Client](https://github.com/prometheus/client_python)
-* [Eventlet](http://eventlet.net)
+* [gevent](http://gevent.org)
+* [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/)
+* [Google API Python Client](https://github.com/googleapis/google-api-python-client/)
+* [Nose](https://nose.readthedocs.io/en/latest/)
 * [Redis](https://redis.io/)
 * [coolname](https://github.com/alexanderlukanin13/coolname)
 
