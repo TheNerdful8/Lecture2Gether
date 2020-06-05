@@ -238,6 +238,23 @@ export default class L2gPlayer extends Vue {
 }
 </script>
 
-<style scoped lang="scss">
-@import "~video.js/dist/video-js.css" ;
+<style lang="scss">
+@import "~video.js/dist/video-js.css";
+.video-js .vjs-volume-control {
+    padding-right: 1em;
+}
+.video-js .vjs-time-control {
+    padding: 0;
+}
+.video-js .vjs-current-time {
+    display: block;
+}
+.video-js .vjs-time-divider {
+    display: block;
+    padding: 0;
+    min-width: 1em;
+}
+.video-js .vjs-duration {
+    display: block;
+}
 </style>

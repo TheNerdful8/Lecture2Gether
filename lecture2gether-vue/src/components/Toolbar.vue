@@ -17,7 +17,7 @@
             <v-card :class="collapsed ? 'searchbar-collapsed' : 'searchbar-extended'"
                     class="mx-auto searchbar">
                 <v-toolbar>
-                    <v-text-field class="mx-auto" v-model="url" single-line hide-details label="Enter URL"
+                    <v-text-field autofocus class="mx-auto" v-model="url" single-line hide-details label="Enter URL"
                                   :error="!urlIsValid">
                     </v-text-field>
                     <v-btn depressed large class="ml-4" color="secondary" type="submit">

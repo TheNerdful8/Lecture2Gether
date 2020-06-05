@@ -5,7 +5,7 @@ import json
 import time
 import requests
 import logging
-from datetime import datetime 
+from datetime import datetime
 from time import sleep
 from flask import Flask, request, jsonify, abort
 from flask_cors import CORS
@@ -67,7 +67,7 @@ def room_cleanup():
                 logging.info("Delete Room {}".format(room_token))
         logging.info("Waiting for room cleanup")
         time.sleep(cleanup_interval)
-        
+
 #Create deamon itself
 cleanup_thread = Thread(target=room_cleanup, daemon=True)
 cleanup_thread.start()
@@ -135,7 +135,7 @@ def on_create(init_state):
         room_token = generate_slug(3)
         if not db.hexists('rooms', room_token):
             break
-    
+
     # Annotate state with timestamp
     state = add_current_time_to_state(init_state)
     state = add_set_time_to_state(state)
@@ -146,7 +146,7 @@ def on_create(init_state):
 
     # Join socket.io room
     join_room(room_token)
-    
+
     # Publish init state
     emit('video_state_update', state, room=room_token)
 
@@ -162,7 +162,7 @@ def on_join(data):
     # Check if all params are set
     if 'roomId' not in data:
         return {'status_code': 400}, 400
-    
+
     room_token = data['roomId']
 
     # Check if room exist
@@ -171,7 +171,7 @@ def on_join(data):
 
     # Get room from db
     room = json.loads(db.hget('rooms', room_token))
-    
+
     # Add current server time to state
     room['state'] = add_current_time_to_state(room['state'])
 
@@ -204,7 +204,7 @@ def on_leave(data):
     # Check if room exist
     if not db.hexists('rooms', room_token):
         return {'status_code': 404}, 404
-    
+
     # Check if user wasnt in the room
     if not room_token in rooms(sid=request.sid):
         return {'status_code': 403}, 403
@@ -230,7 +230,7 @@ def on_video_state_set(state):
         return {'status_code': 400}, 400
 
     room_token = state['roomId']
-    
+
     # Check if room exist
     if not db.hexists('rooms', room_token):
         {'status_code': 404}, 404
@@ -270,7 +270,7 @@ def on_chat_send(message):
     # Check if user wasnt in the room
     if not room_token in rooms(sid=request.sid):
         return {'status_code': 403}, request.sid
-    
+
     # Add current sever timestamp to the state
     message = add_current_time_to_state(message)
 

@@ -50,10 +50,10 @@ You can either build the image from source or use one of the provided versions f
 ```bash
 # for building from source
 docker build -t lecture2gether
-docker run -e 8000:8000 lecture2gether
+docker run -p 8000:8000 lecture2gether
 
 # for running from docker hub
-docker run -e 8000:8000 thenerdful8/lecture2gether
+docker run -p 8000:8000 thenerdful8/lecture2gether
 ```
 
 This will start the whole application stack and expose it at
@@ -75,7 +75,7 @@ cd Lecture2Gether/lecture2gether_flask/
 pip3 install poetry --user
 
 #install the dependencies
-poetry install
+poetry install --no-root
 
 #start the server manually 
 poetry run python app.py
