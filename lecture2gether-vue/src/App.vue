@@ -26,7 +26,7 @@ export default class App extends Vue {
     }
 
     onClose(): void {
-        this.$store.dispatch("leaveRoom").then(() => disconnect());
+        this.$store.dispatch('leaveRoom').then(() => disconnect());
     }
 
     get isCollapsed(): boolean {
