@@ -1,5 +1,5 @@
-export function checkURL(url: string): {type: string, src: URL,} | undefined {
-    const extensions2types: [string,string][] = 
+export function checkURL(url: URL): {type: string, src: URL,} | undefined {
+    const extensions2types: [string,string][] =
         [['m3u8', 'application/x-mpegURL']
         ,['mp4', 'video/mp4']
         ,['ogg', 'video/ogg']
@@ -15,24 +15,17 @@ export function checkURL(url: string): {type: string, src: URL,} | undefined {
         return res === undefined ? undefined : res[1];
     };
 
-    let host, extension, urlobj;
-    try {
-        urlobj = new URL(url);
-        host = urlobj.hostname;
-        extension = urlobj.pathname.split('.').pop();
-    } catch { 
-        return undefined;
-    }
+    let host = url.hostname;
+    let extension = url.pathname.split('.').pop();
 
-    let type;
     //check type based on extension first
-    type = assoc(extensions2types, extension);
+    let type = assoc(extensions2types, extension);
     //check type based on hostname next
     if (type === undefined) type = assoc(host2types, host);
     if (type === undefined) return undefined;
 
     return {
         type: type,
-        src: urlobj,
+        src: url,
     };
 }
