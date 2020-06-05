@@ -1,17 +1,15 @@
 <template>
-    <div>
-        <video-player class="video-player-box"
-                    ref="videoPlayer"
-                    :options="playerOptions"
-                    :playsinline="true"
-                    :events="['seeked', 'ratechange']"
+    <video-player class="video-player-box"
+                ref="videoPlayer"
+                :options="playerOptions"
+                :playsinline="true"
+                :events="['seeked', 'ratechange']"
 
-                    @play="onPlayerPlay"
-                    @pause="onPlayerPause"
-                    @seeked="onPlayerSeeked"
-                    @ratechange="onPlayerRate">
-        </video-player>
-    </div>
+                @play="onPlayerPlay"
+                @pause="onPlayerPause"
+                @seeked="onPlayerSeeked"
+                @ratechange="onPlayerRate">
+    </video-player>
 </template>
 
 <script lang="ts">
