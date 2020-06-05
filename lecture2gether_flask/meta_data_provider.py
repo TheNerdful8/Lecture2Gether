@@ -106,6 +106,11 @@ class YouTubeMetaDataProvider(MetaDataProvider):
         self._video_id = youtube_video_id_from_url(video_url)
 
     def get_meta_data(self):
+        if 'GOOGLE_API_KEY' not in os.environ:
+            self.video_meta_data["Url"] = f'https://www.youtube.com/watch?v={self._video_id}'
+            self.video_meta_data["StreamUrl"] = f'https://www.youtube.com/watch?v={self._video_id}'
+            return super().get_meta_data()
+
         youtube = googleapiclient.discovery.build(
             'youtube', 'v3', developerKey=os.environ['GOOGLE_API_KEY'], cache_discovery=False)
 
