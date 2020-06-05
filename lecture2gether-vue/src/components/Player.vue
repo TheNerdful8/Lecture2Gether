@@ -11,8 +11,8 @@
                       @seeked="onPlayerSeeked"
                       @ratechange="onPlayerRate">
         </video-player>
-        <VideoMetaData class="video-meta-data">
-        </VideoMetaData>
+        <video-meta-data class="video-meta-data">
+        </video-meta-data>
     </div>
 </template>
 
@@ -34,7 +34,7 @@ require('videojs-contrib-hls/dist/videojs-contrib-hls.js');
 require('videojs-youtube/dist/Youtube');
 
 @Component({
-    components: { videoPlayer },
+    components: { videoPlayer, VideoMetaData },
 })
 export default class L2gPlayer extends Vue {
     // To avoid re-sending the received events to the other users, we set the following flags
