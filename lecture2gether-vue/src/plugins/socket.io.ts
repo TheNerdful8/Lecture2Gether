@@ -137,3 +137,8 @@ export const leaveRoom = (request: LeaveRoomRequest): Promise<LeaveRoomResponse>
         })
     })
 }
+
+export const disconnect = () => {
+    console.debug('socket.io closing the socket')
+    getSafeSocket().disconnect();
+}

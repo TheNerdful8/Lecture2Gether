@@ -10,7 +10,7 @@
 <script lang="ts">
 import Component from 'vue-class-component';
 import Vue from 'vue';
-import { connect } from '@/plugins/socket.io';
+import { connect, disconnect } from '@/plugins/socket.io';
 import Toolbar from '@/components/Toolbar.vue';
 
 @Component({
@@ -22,6 +22,11 @@ export default class App extends Vue {
             .then(() => {
                 connect(this.$store);
             });
+        window.addEventListener('beforeunload', this.onClose);
+    }
+
+    onClose(): void {
+        this.$store.dispatch("leaveRoom").then(() => disconnect());
     }
 
     get isCollapsed(): boolean {
