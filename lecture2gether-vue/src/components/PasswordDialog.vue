@@ -8,7 +8,7 @@
                 <v-form ref="form" @submit.prevent="sendPassword" class="ma-12" v-model="valid">
                     <v-layout row justify-space-between>
                         <v-flex md9 class="d-flex align-center">
-                            <v-text-field v-model="password" label="Password" type="password"
+                            <v-text-field autofocus v-model="password" label="Password" type="password"
                                           :rules="[rules.required, rules.passwordWrong]"></v-text-field>
                         </v-flex>
                         <v-flex md2 class="d-flex align-center">
