@@ -19,6 +19,8 @@ from prometheus_client import Gauge, Counter
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 
+from meta_data_provider import L2GoMetaDataProvider, VideoNotFoundException, VideoUnauthorizedException
+
 import eventlet
 eventlet.monkey_patch()
 
@@ -98,66 +100,19 @@ def decode_l2go_path():
     if not data or not 'video_url' in data:
         abort(400)
 
-    video_url = data['video_url']
+    _video_url = data['video_url']
 
-    password = ''
+    _password = ''
     if 'password' in data:
-        password = data['password']
+        _password = data['password']
 
     try:
-        r = requests.post(video_url, data={'_lgopenaccessvideos_WAR_lecture2goportlet_password': password}, headers={'User-Agent': 'Lecture2Gether'})
-    except requests.exceptions.RequestException as e:
+        _meta_data_provider = L2GoMetaDataProvider(_video_url, _password)
+        video_meta_data = _meta_data_provider.get_meta_data()
+    except VideoNotFoundException:
         abort(404)
-
-    title = re.search('<title>(.*)</title>', r.content.decode())
-    if title.groups()[0] == 'Catalog - Lecture2Go':
-        # Redirected to catalog means video does not exist
-        abort(404)
-
-    m = re.search('https://[^"]*m3u8', r.content.decode())
-
-    if m is None:
-        # No m3u8 file found means wrong (or no) password
-        if password:
-            abort(403)
-        else:
-            abort(401)
-
-    video_m3u8 = m.group()
-
-    video_meta_data = {
-        "Url": video_url,
-        "StreamUrl": video_m3u8,
-        "Title": None,
-        "Creator": None,
-        "CreatorLink": None,
-        "Date": None,
-        "License": None,
-        "LicenseLink": None,
-    }
-
-    # Parse video page HTML for additional meta data
-    try:
-        _parsed_url = urlparse(video_url)
-        _html = r.text
-        _soup = BeautifulSoup(_html, 'html.parser')
-        video_title = _soup.find("div", {"class": "meta-title"}).text.strip()
-        _creator = _soup.find("div", {"class": "meta-creators"})
-        video_creator = _creator.find("a").text.strip()
-        video_creator_link = f"{_parsed_url.scheme}://{_parsed_url.netloc}/{_creator.find('a')['href']}".strip()
-        video_date = datetime.strptime(_creator.find("div", "date").text.strip(), "%d.%m.%Y")
-        _license = _soup.find("div", {"class": "license"}).find("a")
-        video_license = re.split(r":\s", _license.text)[1].strip()
-        video_license_link = _license['href'].strip()
-
-        video_meta_data["Title"] = video_title
-        video_meta_data["Creator"] = video_creator
-        video_meta_data["CreatorLink"] = video_creator_link
-        video_meta_data["Date"] = video_date
-        video_meta_data["License"] = video_license
-        video_meta_data["LicenseLink"] = video_license_link
-    except:
-        pass
+    except VideoUnauthorizedException:
+        abort(401)
 
     return jsonify(video_meta_data)
 
