@@ -63,7 +63,7 @@ export const connect = (store: Store<any>) => {
             seconds += 0.000001
         }
         if (!state.paused) {
-            seconds = (state.currentTime - state.setTime) * state.playbackRate + state.seconds;
+            seconds = Math.max(0, (state.currentTime - state.setTime) * state.playbackRate + state.seconds);
         }
         store.commit('setSender', state.sender);
         store.commit('setVideoState', {
