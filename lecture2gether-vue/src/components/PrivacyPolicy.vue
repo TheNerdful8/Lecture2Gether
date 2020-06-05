@@ -2,7 +2,7 @@
     <div class="text-center">
         <v-dialog
             v-model="dialog"
-            width="500"
+            width="900"
         >
             <template v-slot:activator="{ on }">
                 <a class="footer-link"
@@ -20,8 +20,8 @@
                     Privacy Policy
                 </v-card-title>
 
-                <v-card-text class="text-left">
-                    <p>At Lecture2Gether, accessible from https://lecture2gether.eu/, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by Lecture2Gether and how we use it.</p>
+                <v-card-text class="text-left pt-4">
+                    <p>At Lecture2Gether, accessible from https://lecture2gether.eu, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by Lecture2Gether and how we use it.</p>
 
                     <p>If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us.</p>
 
@@ -39,22 +39,27 @@
 
                     <h2>How we use your information</h2>
 
-                    <p>We use the information we collect in various ways, including to:</p>
-
+                    <p>We use the information we collect in various ways, including to:
                     <ul>
-                        <li>Provide, operate, and maintain our website</li>
-                        <li>Improve, personalize, and expand our website</li>
-                        <li>Understand and analyze how you use our website</li>
-                        <li>Develop new products, services, features, and functionality</li>
-                        <li>Communicate with you, either directly or through one of our partners, including for customer service, to provide you with updates and other information relating to the website, and for marketing and promotional purposes</li>
-                        <li>Send you emails</li>
-                        <li>Find and prevent fraud</li>
+                    <li>Provide, operate, and maintain our webste</li>
+                    <li>Improve, personalize, and expand our webste</li>
+                    <li>Understand and analyze how you use our webste</li>
+                    <li>Develop new products, services, features, and functionality</li>
+                    <li>Communicate with you, either directly or through one of our partners, including for customer service, to provide you with updates and other information relating to the webste, and for marketing and promotional purposes</li>
+                    <li>Send you emails</li>
+                    <li>Find and prevent fraud</li>
                     </ul>
+                    </p>
 
                     <h2>Log Files</h2>
 
                     <p>Lecture2Gether follows a standard procedure of using log files. These files log visitors when they visit websites. All hosting companies do this and a part of hosting services' analytics. The information collected by log files include internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date and time stamp, referring/exit pages, and possibly the number of clicks. These are not linked to any information that is personally identifiable. The purpose of the information is for analyzing trends, administering the site, tracking users' movement on the website, and gathering demographic information. Our Privacy Policy was created with the help of the <a href="https://www.privacypolicygenerator.info">Privacy Policy Generator</a> and the <a href="https://www.privacypolicyonline.com/privacy-policy-generator/">Online Privacy Policy Generator</a>.</p>
 
+                    <h2>Cookies and Web Beacons</h2>
+
+                    <p>Like any other website, Lecture2Gether uses 'cookies'. These cookies are used to store information including visitors' preferences, and the pages on the website that the visitor accessed or visited. The information is used to optimize the users' experience by customizing our web page content based on visitors' browser type and/or other information.</p>
+
+                    <p>For more general information on cookies, please read <a href="https://www.cookieconsent.com/what-are-cookies/">"What Are Cookies"</a>.</p>
 
 
 
