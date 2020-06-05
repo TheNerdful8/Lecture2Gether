@@ -103,7 +103,7 @@ class YouTubeMetaDataProvider(MetaDataProvider):
 
     def get_meta_data(self):
         youtube = googleapiclient.discovery.build(
-            'youtube', 'v3', developerKey=os.environ['GOOGLE_API_KEY'])
+            'youtube', 'v3', developerKey=os.environ['GOOGLE_API_KEY'], cache_discovery=False)
 
         request = youtube.videos().list(
             part="snippet,status",
@@ -111,11 +111,11 @@ class YouTubeMetaDataProvider(MetaDataProvider):
         )
         response = request.execute()['items'][0]
         self.video_meta_data = {
-            "Url": f'https://youtube.com/watch?v={self._video_id}',
-            "StreamUrl": f'https://youtube.com/watch?v={self._video_id}',
+            "Url": f'https://www.youtube.com/watch?v={self._video_id}',
+            "StreamUrl": f'https://www.youtube.com/watch?v={self._video_id}',
             "Title": response['snippet']['title'],
             "Creator": response['snippet']['channelTitle'],
-            "CreatorLink": f'https://youtube.com/channel/{response["snippet"]["channelId"]}',
+            "CreatorLink": f'https://www.youtube.com/channel/{response["snippet"]["channelId"]}',
             "Date": datetime.strptime(response['snippet']['publishedAt'], '%Y-%m-%dT%H:%M:%SZ'),
             "License": response['status']['license'],
             "LicenseLink": None,
@@ -134,6 +134,8 @@ def youtube_video_id_from_url(video_url):
             query = parse_qs(url.query)
             if 'v' in query:
                 return query['v'][0]
+        elif re.fullmatch(r'/watch/[a-zA-Z0-9]+', url.path):
+            return url.path[len('/watch/'):]
     return None
 
 

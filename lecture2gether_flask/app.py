@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+from gevent import monkey
+monkey.patch_all()
+
 import os
 import json
 import time
@@ -16,9 +19,6 @@ from prometheus_flask_exporter import PrometheusMetrics
 from prometheus_client import Gauge, Counter
 
 from meta_data_provider import L2GoMetaDataProvider, VideoNotFoundException, VideoUnauthorizedException
-
-import eventlet
-eventlet.monkey_patch()
 
 logging.basicConfig(level=os.getenv('LOGLEVEL', 'INFO'))
 
