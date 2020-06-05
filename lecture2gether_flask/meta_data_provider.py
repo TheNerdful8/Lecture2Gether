@@ -104,6 +104,8 @@ class YouTubeMetaDataProvider(MetaDataProvider):
     def __init__(self, video_url):
         super().__init__(video_url)
         self._video_id = youtube_video_id_from_url(video_url)
+        if not self._video_id:
+            raise VideoNotFoundException
 
     def get_meta_data(self):
         if 'GOOGLE_API_KEY' not in os.environ:
