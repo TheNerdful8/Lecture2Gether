@@ -117,7 +117,6 @@ export default class Toolbar extends Vue {
     }
 
     get userCount(): number {
-        // @ts-ignore
         return this.$store.state.rooms.userCount;
     }
 
