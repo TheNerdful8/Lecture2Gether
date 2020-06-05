@@ -235,6 +235,18 @@ twisted = ["twisted"]
 
 [[package]]
 category = "main"
+description = "Prometheus metrics exporter for Flask"
+name = "prometheus-flask-exporter"
+optional = false
+python-versions = "*"
+version = "0.13.0"
+
+[package.dependencies]
+flask = "*"
+prometheus_client = "*"
+
+[[package]]
+category = "main"
 description = "C parser in Python"
 name = "pycparser"
 optional = false
@@ -358,7 +370,7 @@ dev = ["pytest", "pytest-timeout", "coverage", "tox", "sphinx", "pallets-sphinx-
 watchdog = ["watchdog"]
 
 [metadata]
-content-hash = "075e2d9cc7712147babb25f2fb319a3af99915089f022b23b530d8161ea3d7d4"
+content-hash = "dc5d33ca4cfcfc312d60ee5449128660b81074e637b5fd0c3a5e30c95242df5d"
 python-versions = ">=3.7.*"
 
 [metadata.files]
@@ -534,6 +546,9 @@ monotonic = [
 prometheus-client = [
     {file = "prometheus_client-0.8.0-py2.py3-none-any.whl", hash = "sha256:983c7ac4b47478720db338f1491ef67a100b474e3bc7dafcbaefb7d0b8f9b01c"},
     {file = "prometheus_client-0.8.0.tar.gz", hash = "sha256:c6e6b706833a6bd1fd51711299edee907857be10ece535126a158f911ee80915"},
+]
+prometheus-flask-exporter = [
+    {file = "prometheus_flask_exporter-0.13.0.tar.gz", hash = "sha256:a3d7003df268ba0d91d91526ea8abee08e619c91f1fdc16de1604c196654fdee"},
 ]
 pycparser = [
     {file = "pycparser-2.20-py2.py3-none-any.whl", hash = "sha256:7582ad22678f0fcd81102833f60ef8d0e57288b6b5fb00323d101be910e35705"},
