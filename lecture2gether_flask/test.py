@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import time
 from app import app, socketio
 
@@ -26,6 +27,13 @@ def socketio_test():
         'video_url': 'https://lecture2go.uni-hamburg.de/l2go/-/get/l/4577', 'password': ''})
 
     assert r.status_code == 200, f"Check failed, status code was {r.status_code}, but 200 was expected."
+
+    if os.getenv("L2G_TEST_PASSWD") is not None:
+        r = flask_test_client.post('/api/l2go', json={
+        'video_url': 'https://lecture2go.uni-hamburg.de/l2go/-/get/l/GJfhuZOP4Jc', 'password': str(os.getenv("L2G_TEST_PASSWD"))})
+        assert r.status_code == 200, f"Check failed, status code was {r.status_code}, but 200 was expected."
+    else:
+        print("Skiping the lecture2go password positive test case, because no password secret exists.")
 
     r = flask_test_client.post('/api/l2go', json={
         'video_url': 'https://lecture2go.uni-hamburg.de/l2go/-/get/l/4577'})
