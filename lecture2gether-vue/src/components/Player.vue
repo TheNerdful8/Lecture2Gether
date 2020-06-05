@@ -1,15 +1,18 @@
 <template>
-    <video-player class="video-player-box"
-                  ref="videoPlayer"
-                  :options="playerOptions"
-                  :playsinline="true"
-                  :events="['seeked', 'ratechange']"
+    <div>
+        <video-player class="video-player-box"
+                    ref="videoPlayer"
+                    :options="playerOptions"
+                    :playsinline="true"
+                    :events="['seeked', 'ratechange']"
 
-                  @play="onPlayerPlay"
-                  @pause="onPlayerPause"
-                  @seeked="onPlayerSeeked"
-                  @ratechange="onPlayerRate">
-    </video-player>
+                    @play="onPlayerPlay"
+                    @pause="onPlayerPause"
+                    @seeked="onPlayerSeeked"
+                    @ratechange="onPlayerRate">
+        </video-player>
+        <span>{{userCount}}</span>
+    </div>
 </template>
 
 <script lang="ts">
@@ -84,6 +87,11 @@ export default class L2gPlayer extends Vue {
     get player(): videojs.Player {
         // @ts-ignore
         return this.$refs.videoPlayer.player;
+    }
+
+    get userCount(): number {
+        // @ts-ignore
+        return this.$store.state.rooms.userCount;
     }
 
     getSourceFromURL(url: string): {type: string; src: string} {

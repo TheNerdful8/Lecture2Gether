@@ -6,7 +6,12 @@ import {
     JoinRoomResponse,
     LeaveRoomRequest,
     LeaveRoomResponse,
-    CreateRoomRequest, CreateRoomResponse, SendVideoStateResponse, SendVideoStateRequest, VideoStateEvent,
+    CreateRoomRequest,
+    CreateRoomResponse,
+    SendVideoStateResponse,
+    SendVideoStateRequest,
+    VideoStateEvent,
+    RoomUserCountEvent,
 } from '@/api';
 
 import Socket = SocketIOClient.Socket;
@@ -65,6 +70,11 @@ export const connect = (store: Store<any>) => {
             playbackRate: state.playbackRate,
         })
         store.commit('setUrl', state.videoUrl)
+    });
+
+    socket.on(receivedEvents.roomUserCountUpdated, (state: RoomUserCountEvent) => {
+        console.log("got event!")
+        store.commit('setUserCount', state.users);
     });
 
     socket.connect();
