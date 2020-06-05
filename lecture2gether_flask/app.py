@@ -149,6 +149,10 @@ def on_create(init_state):
     
     # Publish init state
     emit('video_state_update', state, room=room_token)
+
+    # Publish the room user count
+    emit('room_user_count_update', {"users": 1}, room=room_token)
+    
     # Return response
     return {'roomId': room_token, 'status_code': 200}, 200
 
