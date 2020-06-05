@@ -126,8 +126,14 @@ def decode_l2go_path():
     video_m3u8 = m.group()
 
     video_meta_data = {
-        "video_url": video_url,
-        "video_m3u8": video_m3u8,
+        "Url": video_url,
+        "StreamUrl": video_m3u8,
+        "Title": None,
+        "Creator": None,
+        "CreatorLink": None,
+        "Date": None,
+        "License": None,
+        "LicenseLink": None,
     }
 
     # Parse video page HTML for additional meta data
@@ -135,21 +141,21 @@ def decode_l2go_path():
         _parsed_url = urlparse(video_url)
         _html = r.text
         _soup = BeautifulSoup(_html, 'html.parser')
-        video_title = _soup.find("div", {"class": "meta-title"}).text
+        video_title = _soup.find("div", {"class": "meta-title"}).text.strip()
         _creator = _soup.find("div", {"class": "meta-creators"})
-        video_creator = _creator.find("a").text
-        video_creator_link = f"{_parsed_url.scheme}://{_parsed_url.netloc}/{_creator.find('a')['href']}"
-        video_date = datetime.strptime(_creator.find("div", "date").text, "%d.%m.%Y")
+        video_creator = _creator.find("a").text.strip()
+        video_creator_link = f"{_parsed_url.scheme}://{_parsed_url.netloc}/{_creator.find('a')['href']}".strip()
+        video_date = datetime.strptime(_creator.find("div", "date").text.strip(), "%d.%m.%Y")
         _license = _soup.find("div", {"class": "license"}).find("a")
-        video_license = re.split(r":\s", _license.text)[1]
-        video_license_link = _license['href']
+        video_license = re.split(r":\s", _license.text)[1].strip()
+        video_license_link = _license['href'].strip()
 
-        video_meta_data["video_title"] = video_title
-        video_meta_data["video_creator"] = video_creator
-        video_meta_data["video_creator_link"] = video_creator_link
-        video_meta_data["video_date"] = video_date
-        video_meta_data["video_license"] = video_license
-        video_meta_data["video_license_link"] = video_license_link
+        video_meta_data["Title"] = video_title
+        video_meta_data["Creator"] = video_creator
+        video_meta_data["CreatorLink"] = video_creator_link
+        video_meta_data["Date"] = video_date
+        video_meta_data["License"] = video_license
+        video_meta_data["LicenseLink"] = video_license_link
     except:
         pass
 
