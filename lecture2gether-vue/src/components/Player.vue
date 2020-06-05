@@ -11,7 +11,7 @@
                       @seeked="onPlayerSeeked"
                       @ratechange="onPlayerRate">
         </video-player>
-        <video-meta-data class="video-meta-data">
+        <video-meta-data>
         </video-meta-data>
     </div>
 </template>
