@@ -77,7 +77,6 @@ def test_video_parsing():
 
 
 def test_l2go_metadata():
-    flask_test_client = app.test_client()
     meta_data_provider = L2GoMetaDataProvider('https://lecture2go.uni-hamburg.de/l2go/-/get/l/4577')
     meta_data = meta_data_provider.get_meta_data()
     assert meta_data['url'] == 'https://lecture2go.uni-hamburg.de/l2go/-/get/l/4577'
@@ -96,7 +95,6 @@ def test_youtube_metadata():
 
     meta_data_provider = YouTubeMetaDataProvider('https://youtu.be/qxyQCD3QT6Y')
     meta_data = meta_data_provider.get_meta_data()
-    print(meta_data)
     assert meta_data['url'] == 'https://www.youtube.com/watch?v=qxyQCD3QT6Y'
     assert meta_data['streamUrl'] == 'https://www.youtube.com/watch?v=qxyQCD3QT6Y'
     assert meta_data['title'] == 'Last Marble Standing E2 Balancing - Marble Race by Jelle\'s Marble Runs'
