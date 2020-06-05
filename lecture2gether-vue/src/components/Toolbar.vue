@@ -44,6 +44,7 @@ import { Watch, Prop } from 'vue-property-decorator';
 import { Store } from 'vuex';
 import { AuthState } from '@/plugins/store/player';
 import { checkURL } from '@/mediaURLs';
+import { VideoMetaData } from '@/api';
 
 
 @Component({})
@@ -101,15 +102,18 @@ export default class Toolbar extends Vue {
         // update the url to point to the lecture2go playlist when it is a
         // lecture2go url
         let url: string = this.url;
+        let videoMetaData;
         if (url.includes('lecture2go') || url.includes('/l2go/')) {
-            this.urlIsValid = true;
+            this.urlIsValid = true;  // TODO Why?
             const password = this.$store.state.player.password;
-            url = await getL2goPlaylist(this.$store, url, password);
+            videoMetaData = await getL2goPlaylist(this.$store, url, password);
+            if (!videoMetaData) return;
+            url = videoMetaData.StreamUrl;
             if (url === '') return;
         }
         if (this.isValidVideoUrl(url)) {
             this.urlIsValid = true;
-            if (this.$store.state.isConnected) this.$store.dispatch('setUrl', url);
+            if (this.$store.state.isConnected) this.$store.dispatch('setVideoMetaData', videoMetaData);
             else console.warn('Not setting url because we are not connected');
         } else {
             this.urlIsValid = false;
