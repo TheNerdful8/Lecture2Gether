@@ -1,23 +1,19 @@
 #!/usr/bin/env python3
 import os
-import re
 import json
 import time
-import requests
 import logging
 from datetime import datetime
 from time import sleep
 from flask import Flask, request, jsonify, abort
 from flask_cors import CORS
-from flask_socketio import SocketIO, join_room, leave_room, close_room, emit, rooms
+from flask_socketio import SocketIO, join_room, leave_room, emit, rooms
 from redis.client import Redis
 from redis.exceptions import ConnectionError
 from threading import Thread
 from coolname import generate_slug
 from prometheus_flask_exporter import PrometheusMetrics
 from prometheus_client import Gauge, Counter
-from bs4 import BeautifulSoup
-from urllib.parse import urlparse
 
 from meta_data_provider import L2GoMetaDataProvider, VideoNotFoundException, VideoUnauthorizedException
 
