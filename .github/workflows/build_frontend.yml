@@ -15,4 +15,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm install
+        working-directory: lecture2gether-vue
       - run: npm run build
+        working-directory: lecture2gether-vue
