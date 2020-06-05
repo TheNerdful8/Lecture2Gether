@@ -15,7 +15,7 @@ ADD lecture2gether_flask /app/src/backend
 RUN pip3 install wheel
 RUN pip3 install poetry
 WORKDIR /app/src/backend
-RUN poetry export -nf requirements.txt | grep -v "Warning:" > requirements.txt
+RUN poetry export -nf requirements.txt -o requirements.txt
 RUN pip3 install -r requirements.txt
 
 FROM node:current-buster-slim as frontend
