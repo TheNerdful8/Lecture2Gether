@@ -1,6 +1,4 @@
 #!/usr/bin/env python3
-from urllib.parse import urlparse
-
 from gevent import monkey
 monkey.patch_all()
 
@@ -16,6 +14,7 @@ from flask_socketio import SocketIO, join_room, leave_room, emit, rooms
 from redis.client import Redis
 from redis.exceptions import ConnectionError
 from threading import Thread
+from urllib.parse import urlparse
 from coolname import generate_slug
 from prometheus_flask_exporter import PrometheusMetrics
 from prometheus_client import Gauge, Counter
