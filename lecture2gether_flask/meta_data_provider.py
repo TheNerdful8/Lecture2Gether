@@ -1,8 +1,21 @@
+import os
 import re
 import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
+
+import google_auth_oauthlib.flow
+import googleapiclient.discovery
+import googleapiclient.errors
+
+
+class VideoNotFoundException(Exception):
+    pass
+
+
+class VideoUnauthorizedException(Exception):
+    pass
 
 
 class MetaDataProvider():
@@ -86,8 +99,29 @@ class L2GoMetaDataProvider(MetaDataProvider):
     def _parser_license_link(self):
         return self.soup.find("div", {"class": "license"}).find("a")['href'].strip()
 
-class VideoNotFoundException(Exception):
-    pass
 
-class VideoUnauthorizedException(Exception):
-    pass
+class YouTubeMetaDataProvider(MetaDataProvider):
+    def __init__(self, video_url):
+        super().__init__(video_url)
+
+    def main():
+        scopes = []
+        # TODO Read API-Key from environment var
+        api_service_name = "youtube"
+        api_version = "v3"
+        client_secrets_file = "YOUR_CLIENT_SECRET_FILE.json"
+
+        # Get credentials and create an API client
+        flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
+            client_secrets_file, scopes)
+        credentials = flow.run_console()
+        youtube = googleapiclient.discovery.build(
+            api_service_name, api_version, credentials=credentials)
+
+        request = youtube.videos().list(
+            part="status",
+            id="VIDEO-ID"  # TODO
+        )
+        response = request.execute()
+
+        print(response)
