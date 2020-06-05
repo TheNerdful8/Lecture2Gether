@@ -1,15 +1,19 @@
 <template>
-    <video-player class="video-player-box"
-                  ref="videoPlayer"
-                  :options="playerOptions"
-                  :playsinline="true"
-                  :events="['seeked', 'ratechange']"
+    <div>
+        <video-player class="video-player-box"
+                      ref="videoPlayer"
+                      :options="playerOptions"
+                      :playsinline="true"
+                      :events="['seeked', 'ratechange']"
 
-                  @play="onPlayerPlay"
-                  @pause="onPlayerPause"
-                  @seeked="onPlayerSeeked"
-                  @ratechange="onPlayerRate">
-    </video-player>
+                      @play="onPlayerPlay"
+                      @pause="onPlayerPause"
+                      @seeked="onPlayerSeeked"
+                      @ratechange="onPlayerRate">
+        </video-player>
+        <VideoMetaData class="video-meta-data">
+        </VideoMetaData>
+    </div>
 </template>
 
 <script lang="ts">
@@ -20,6 +24,7 @@ import Vue from 'vue';
 import { Watch } from 'vue-property-decorator';
 import videoPlayer from 'vue-video-player/src/player.vue';
 import { checkURL } from '@/mediaURLs';
+import VideoMetaData from '@/components/VideoMetaData.vue';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
