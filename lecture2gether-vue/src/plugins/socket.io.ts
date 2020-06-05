@@ -6,7 +6,12 @@ import {
     JoinRoomResponse,
     LeaveRoomRequest,
     LeaveRoomResponse,
-    CreateRoomRequest, CreateRoomResponse, SendVideoStateResponse, SendVideoStateRequest, VideoStateEvent,
+    CreateRoomRequest,
+    CreateRoomResponse,
+    SendVideoStateResponse,
+    SendVideoStateRequest,
+    VideoStateEvent,
+    RoomUserCountEvent,
 } from '@/api';
 
 import Socket = SocketIOClient.Socket;
@@ -65,6 +70,10 @@ export const connect = (store: Store<any>) => {
             playbackRate: state.playbackRate,
         })
         store.commit('setUrl', state.videoUrl)
+    });
+
+    socket.on(receivedEvents.roomUserCountUpdated, (event: RoomUserCountEvent) => {
+        store.commit('setUserCount', event.users);
     });
 
     socket.connect();
@@ -126,4 +135,9 @@ export const leaveRoom = (request: LeaveRoomRequest): Promise<LeaveRoomResponse>
             else reject(response)
         })
     })
+}
+
+export const disconnect = () => {
+    console.debug('socket.io closing the socket')
+    getSafeSocket().disconnect();
 }

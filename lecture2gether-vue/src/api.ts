@@ -12,6 +12,7 @@ export const sentEvents = {
 
 export const receivedEvents = {
     videoStateUpdated: 'video_state_update',
+    roomUserCountUpdated: 'room_user_count_update',
 };
 
 
@@ -30,6 +31,10 @@ export interface VideoStateEvent {
     currentTime: number;
     setTime: number;
     sender: string;
+}
+
+export interface RoomUserCountEvent {
+    users: number;
 }
 
 

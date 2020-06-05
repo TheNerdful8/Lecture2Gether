@@ -8,6 +8,10 @@
             bottom
             >
                 <h1 v-if="!collapsed" class="lecture2gether-heading display-4">Lecture&#x200b;2Gether</h1>
+                <div v-if="collapsed" style="position: absolute; top: 50%; transform:translateY(-50%); right:2em; color: #fff">
+                    <v-icon dark class="mb-1 mr-1">mdi-account-group</v-icon>
+                    {{userCount}}
+                </div>
         </v-card>
         <v-form @submit.prevent="onWatch">
             <v-card :class="collapsed ? 'searchbar-collapsed' : 'searchbar-extended'"
@@ -110,6 +114,10 @@ export default class Toolbar extends Vue {
         } else {
             this.urlIsValid = false;
         }
+    }
+
+    get userCount(): number {
+        return this.$store.state.rooms.userCount;
     }
 
     isValidVideoUrl(url: string) {

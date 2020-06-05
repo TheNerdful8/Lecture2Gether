@@ -4,17 +4,19 @@
             <Toolbar :collapsed="isCollapsed"></Toolbar>
             <router-view/>
         </v-content>
+        <lecture2-gether-footer/>
     </v-app>
 </template>
 
 <script lang="ts">
 import Component from 'vue-class-component';
 import Vue from 'vue';
-import { connect } from '@/plugins/socket.io';
+import { connect, disconnect } from '@/plugins/socket.io';
 import Toolbar from '@/components/Toolbar.vue';
+import Lecture2GetherFooter from '@/components/Lecture2GetherFooter.vue';
 
 @Component({
-    components: { Toolbar },
+    components: { Lecture2GetherFooter, Toolbar },
 })
 export default class App extends Vue {
     created(): void {
@@ -22,6 +24,11 @@ export default class App extends Vue {
             .then(() => {
                 connect(this.$store);
             });
+        window.addEventListener('beforeunload', this.onClose);
+    }
+
+    onClose(): void {
+        this.$store.dispatch('leaveRoom').then(() => disconnect());
     }
 
     get isCollapsed(): boolean {
