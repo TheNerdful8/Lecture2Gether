@@ -61,8 +61,8 @@ export default class Toolbar extends Vue {
     // The url variable contains the url from the text field at this point.
     @Watch('$store.state.player.password')
     async onWatch() {
-        async function getL2goPlaylist(store: Store<any>, url: string, pass = '') {
-            const apiUrl = `${store.state.settings.apiRoot}l2go`;
+        async function getVideoMetaData(store: Store<any>, url: string, pass = '') {
+            const apiUrl = `${store.state.settings.apiRoot}metadata`;
             return fetch(apiUrl, {
                 method: 'POST',
                 headers: {
@@ -84,12 +84,6 @@ export default class Toolbar extends Vue {
                         pass === '' ? AuthState.NECESSARY : AuthState.FAILURE,
                     );
                     return '';
-                case 403:
-                    store.commit(
-                        'setAuthState',
-                        AuthState.FAILURE,
-                    );
-                    return '';
                 default:
                     console.warn(`${response.status}: Unexpected return code from l2go endpoint`);
                     return '';
@@ -100,21 +94,15 @@ export default class Toolbar extends Vue {
             });
         }
         // update the url to point to the lecture2go playlist when it is a
-        // lecture2go url
         let url: string = this.url;
         let videoMetaData;
-        if (url.includes('lecture2go') || url.includes('/l2go/')) {
-            this.urlIsValid = true;  // TODO Why?
-            const password = this.$store.state.player.password;
-            videoMetaData = await getL2goPlaylist(this.$store, url, password);
-            if (!videoMetaData) return;
-            url = videoMetaData.StreamUrl;
-            if (url === '') return;
-        }
-        if (this.isValidVideoUrl(url)) {
+        if (this.isValidVideoUrl(url) || url.includes('lecture2go') || url.includes('/l2go/')) {
             this.urlIsValid = true;
+            const password = this.$store.state.player.password;
+            videoMetaData = await getVideoMetaData(this.$store, url, password);
+            if (!videoMetaData) return;
             if (this.$store.state.isConnected) this.$store.dispatch('setVideoMetaData', videoMetaData);
-            else console.warn('Not setting url because we are not connected');
+            url = videoMetaData.StreamUrl;
         } else {
             this.urlIsValid = false;
         }

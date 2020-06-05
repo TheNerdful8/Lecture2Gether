@@ -32,35 +32,48 @@ def test_metrics():
 
     assert r.status_code == 200, f"Check failed, status code was {r.status_code}, but 200 was expected."
 
+
 def test_video_parsing():
     flask_test_client = app.test_client()
 
-    r = flask_test_client.post('/api/l2go', json={
+    r = flask_test_client.post('/api/metadata', json={
         'username': 'python', 'password': 'is-great!'})
 
     assert r.status_code == 400, f"Check failed, status code was {r.status_code}, but 400 was expected."
 
-    r = flask_test_client.post('/api/l2go', data={
+    r = flask_test_client.post('/api/metadata', data={
         'username': 'python', 'password': 'is-great!'})
 
     assert r.status_code == 400, f"Check failed, status code was {r.status_code}, but 400 was expected."
 
-    r = flask_test_client.post('/api/l2go', json={
+    r = flask_test_client.post('/api/metadata', json={
         'video_url': 'https://lecture2go.uni-hamburg.de/l2go/-/get/l/4577', 'password': ''})
 
     assert r.status_code == 200, f"Check failed, status code was {r.status_code}, but 200 was expected."
 
     if os.getenv("L2G_TEST_PASSWD") is not None:
-        r = flask_test_client.post('/api/l2go', json={
+        r = flask_test_client.post('/api/metadata', json={
         'video_url': 'https://lecture2go.uni-hamburg.de/l2go/-/get/l/GJfhuZOP4Jc', 'password': str(os.getenv("L2G_TEST_PASSWD"))})
         assert r.status_code == 200, f"Check failed, status code was {r.status_code}, but 200 was expected."
     else:
         print("Skiping the lecture2go password positive test case, because no password secret exists.")
 
-    r = flask_test_client.post('/api/l2go', json={
+    r = flask_test_client.post('/api/metadata', json={
         'video_url': 'https://lecture2go.uni-hamburg.de/l2go/-/get/l/4577'})
 
     assert r.status_code == 200, f"Check failed, status code was {r.status_code}, but 200 was expected."
+
+    r = flask_test_client.post('/api/metadata', json={
+        'video_url': 'https://lecture2go.uni-hamburg.de/l2go/-/get/v/jqxTE9ZN8Q3byd2nXGMkIAxx'
+    })
+
+    assert r.status_code == 401
+
+    r = flask_test_client.post('/api/metadata', json={
+        'video_url': 'https://lecture2go.uni-hamburg.de/l2go/-/get/v/invalid'
+    })
+
+    assert r.status_code == 404
 
 
 def test_l2go_metadata():
