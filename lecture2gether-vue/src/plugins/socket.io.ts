@@ -51,6 +51,7 @@ export const connect = (store: Store<any>) => {
     socket.on('reconnect', (attemptNumber: number) => {
         console.error(`socket.io reconnected after ${attemptNumber} attempts`);
         joinRoom({roomId: store.state.rooms.roomId});
+        store.commit('setSocketId', getSafeSocket().id)
     });
 
     socket.on(receivedEvents.videoStateUpdated, (state: VideoStateEvent) => {
