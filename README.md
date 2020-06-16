@@ -115,9 +115,10 @@ REDIS\_HOST | localhost | Hostname of the redis database which should be used
 REDIS\_PORT | 6379 | Port on which redis listens on the redis-host
 REDIS\_DB | 0 | Which database on the  redis server should be used
 REDIS\_PASSWORD | *empty* | Password to authenticate at the redis server
-CLEANUP_INTERVAL | 900 | Interval (in seconds) of searching for abandoned rooms
-CLEANUP_ROOM_EXPIRE_TIME | 3600 | Time (in seconds) until an empty room gets abandoned
+CLEANUP\_INTERVAL | 900 | Interval (in seconds) of searching for abandoned rooms
+CLEANUP\_ROOM\_EXPIRE\_TIME | 3600 | Time (in seconds) until an empty room gets abandoned
 LOGLEVEL | INFO | Configures the python logging loglevel
+GOOGLE\_API\_KEY | *empty* | A Google API key, used to extract meta data from YouTube videos
 
 The frontend is configured via a `settings.json` file which should be reachable on a
 request to `/` from the running browser application.
