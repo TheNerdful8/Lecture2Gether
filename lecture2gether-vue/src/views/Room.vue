@@ -1,7 +1,7 @@
 <template>
     <div>
         <PasswordDialog v-if="this.$store.getters.authRequired" class="password-dialog"></PasswordDialog>
-        <l2g-player v-if="!this.$store.getters.authRequired && this.$store.state.player.videoMetaData" class="l2g-player"></l2g-player>
+        <l2g-player v-if="!this.$store.getters.authRequired && this.$store.state.player.videoUrl" class="l2g-player"></l2g-player>
         <v-overlay :value="!roomExists" light>
             <v-card class="room-card pa-12">
                 <h2 class="display-1 heading ">Room does not exist (anymore)!</h2>
