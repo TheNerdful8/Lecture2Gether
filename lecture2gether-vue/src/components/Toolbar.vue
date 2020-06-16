@@ -44,7 +44,7 @@ import { Watch, Prop } from 'vue-property-decorator';
 import { Store } from 'vuex';
 import { AuthState } from '@/plugins/store/player';
 import { checkURL } from '@/mediaURLs';
-import { VideoMetaData } from '@/api';
+import { VideoMetaDataWithUrl } from '@/api';
 
 
 @Component({})
@@ -61,7 +61,7 @@ export default class Toolbar extends Vue {
     // The url variable contains the url from the text field at this point.
     @Watch('$store.state.player.password')
     async onWatch() {
-        async function getVideoMetaData(store: Store<any>, url: string, pass = '') {
+        async function getVideoMetaData(store: Store<any>, url: string, pass = ''): Promise<VideoMetaDataWithUrl> {
             const apiUrl = `${store.state.settings.apiRoot}metadata`;
             return fetch(apiUrl, {
                 method: 'POST',
@@ -101,6 +101,8 @@ export default class Toolbar extends Vue {
                 this.urlIsValid = false;
             } else {
                 this.urlIsValid = true;
+                this.$store.dispatch('setUrl', videoMetaData.streamUrl);
+                delete videoMetaData.streamUrl;
                 this.$store.dispatch('setVideoMetaData', videoMetaData);
             }
         } else {
@@ -119,7 +121,7 @@ export default class Toolbar extends Vue {
     // Save url to clipboard
     async saveUrlClipboard() {
         this.showingTooltip = true;
-        const data = window.location.protocol + '//' + window.location.host + this.$route.path;
+        const data = `${window.location.protocol}//${window.location.host}${this.$route.path}`;
         console.debug('Saved to clipboard: ', data);
         await navigator.clipboard.writeText(data);
         setTimeout(() => this.showingTooltip = false, 1000);

@@ -1,5 +1,15 @@
 export interface VideoMetaData {
     url: string,
+    title: string|null,
+    creator: string|null,
+    creatorLink: string|null,
+    date: string|null,
+    license: string|null,
+    licenseLink: string|null,
+}
+
+export interface VideoMetaDataWithUrl {
+    url: string,
     streamUrl: string,
     title: string|null,
     creator: string|null,
@@ -29,6 +39,7 @@ export const receivedEvents = {
 
 export interface VideoStateRequest {
     videoMetaData: VideoMetaData|null;
+    videoUrl: string;
     paused: boolean;
     seconds: number;
     playbackRate: number;
@@ -36,6 +47,7 @@ export interface VideoStateRequest {
 
 export interface VideoStateEvent {
     videoMetaData: VideoMetaData|null;
+    videoUrl: string;
     paused: boolean;
     seconds: number;
     playbackRate: number;

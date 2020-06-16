@@ -60,7 +60,7 @@ export default class L2gPlayer extends Vue {
     playPauseAfterFirstSeek = false;
 
     get url() {
-        return this.$store.state.player.videoMetaData.streamUrl;
+        return this.$store.state.player.videoUrl;
     }
 
     get playerOptions() {

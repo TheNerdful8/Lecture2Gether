@@ -4,6 +4,7 @@ import { VideoMetaData } from '@/api'
 
 export class PlayerState {
     videoMetaData: VideoMetaData|null = null;
+    videoUrl: string = '';
     paused: boolean = false;
     seconds: number = 0;
     playbackRate: number = 1;
@@ -24,6 +25,9 @@ export const playerModule: Module<PlayerState, any> = {
         setVideoMetaData: (state, payload: VideoMetaData) => {
             state.videoMetaData = payload;
         },
+        setUrl: (state, payload: string) => {
+            state.videoUrl = payload;
+        },
         setPassword: (state, payload: string) => {
             state.password = payload;
         },
@@ -41,11 +45,23 @@ export const playerModule: Module<PlayerState, any> = {
     },
 
     actions: {
-        setVideoMetaData: async (ctx, payload: string) => {
+        setVideoMetaData: async (ctx, payload: VideoMetaData) => {
             ctx.commit('setVideoMetaData', payload);
             sendVideoState({
                 roomId: ctx.rootState.rooms.roomId,
                 videoMetaData: ctx.state.videoMetaData,
+                videoUrl: ctx.state.videoUrl,
+                paused: ctx.state.paused,
+                seconds: ctx.state.seconds,
+                playbackRate: ctx.state.playbackRate,
+            });
+        },
+        setUrl: async (ctx, payload: string) => {
+            ctx.commit('setUrl', payload);
+            sendVideoState({
+                roomId: ctx.rootState.rooms.roomId,
+                videoMetaData: ctx.state.videoMetaData,
+                videoUrl: ctx.state.videoUrl,
                 paused: ctx.state.paused,
                 seconds: ctx.state.seconds,
                 playbackRate: ctx.state.playbackRate,
@@ -56,6 +72,7 @@ export const playerModule: Module<PlayerState, any> = {
             sendVideoState({
                 roomId: ctx.rootState.rooms.roomId,
                 videoMetaData: ctx.state.videoMetaData,
+                videoUrl: ctx.state.videoUrl,
                 paused: ctx.state.paused,
                 seconds: ctx.state.seconds,
                 playbackRate: ctx.state.playbackRate,
