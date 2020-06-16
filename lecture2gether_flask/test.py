@@ -97,7 +97,7 @@ def test_youtube_metadata():
     meta_data = meta_data_provider.get_meta_data()
     assert meta_data['url'] == 'https://www.youtube.com/watch?v=qxyQCD3QT6Y'
     assert meta_data['streamUrl'] == 'https://www.youtube.com/watch?v=qxyQCD3QT6Y'
-    assert meta_data['title'] == 'Last Marble Standing E2 Balancing - Marble Race by Jelle\'s Marble Runs'
+    assert meta_data['title'] == 'Cravendale Last Marble Standing E2 Balancing - Marble Race by Jelle\'s Marble Runs'
     assert meta_data['creator'] == 'Jelle\'s Marble Runs'
     assert meta_data['creatorLink'] == 'https://www.youtube.com/channel/UCYJdpnjuSWVOLgGT9fIzL0g'
     assert meta_data['date'] == datetime(year=2020, month=6, day=5, hour=17, minute=0, second=13)
