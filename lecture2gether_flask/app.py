@@ -98,27 +98,27 @@ def decode_l2go_path():
     if not data or not 'video_url' in data:
         abort(400)
 
-    _video_url = data['video_url']
+    video_url = data['video_url']
 
-    _password = ''
+    password = ''
     if 'password' in data:
-        _password = data['password']
+        password = data['password']
 
-    url = urlparse(_video_url)
+    url = urlparse(video_url)
 
     try:
         if url.hostname in ['www.youtube.com', 'youtube.com', 'youtu.be']:
-            _meta_data_provider = YouTubeMetaDataProvider(_video_url)
+            meta_data_provider = YouTubeMetaDataProvider(video_url)
         elif 'lecture2go' in url.hostname or '/l2go/' in url.path:
-            _meta_data_provider = L2GoMetaDataProvider(_video_url, _password)
+            meta_data_provider = L2GoMetaDataProvider(video_url, password)
         else:
-            _meta_data_provider = DefaultMetaDataProvider(_video_url)
+            meta_data_provider = DefaultMetaDataProvider(video_url)
     except VideoNotFoundException:
         abort(404)
     except VideoUnauthorizedException:
         abort(401)
 
-    video_meta_data = _meta_data_provider.get_meta_data()
+    video_meta_data = meta_data_provider.get_meta_data()
 
     return jsonify(video_meta_data)
 
