@@ -24,7 +24,7 @@ from meta_data_provider import L2GoMetaDataProvider, VideoNotFoundException, Vid
 
 logging.basicConfig(level=os.getenv('LOGLEVEL', 'INFO'))
 
-# Crete app
+# Create app
 app = Flask(__name__)
 app.config['DEBUG'] = True
 
