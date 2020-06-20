@@ -226,6 +226,7 @@ def on_leave(data):
     if not room_token in rooms(sid=request.sid):
         return {'status_code': 403}, 403
 
+    # Leave the socket.io room
     leave_room(room_token)
     # Get room from db
     room = json.loads(db.hget('rooms', room_token))
