@@ -227,6 +227,7 @@ def on_leave(data):
     if not room_token in rooms(sid=request.sid):
         return {'status_code': 403}, 403
 
+    leave_room(room_token)
     # Get room from db
     room = json.loads(db.hget('rooms', room_token))
     # Deacrease active users in room
@@ -235,8 +236,7 @@ def on_leave(data):
     emit('room_user_count_update', {"users": room['count']}, room=room_token)
     # Save in db
     db.hset('rooms', room_token, json.dumps(room))
-    # Leave the socket.io room
-    leave_room(room_token)
+    
     # Return status
     return {'status_code': 200}, 200
 
