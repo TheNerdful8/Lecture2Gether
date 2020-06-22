@@ -2,11 +2,7 @@ FROM debian:buster AS base
 
 # Install normal dependencies
 RUN apt-get update
-RUN apt-get -y --no-install-recommends install python3 python3-pip python3-setuptools python3-openssl netbase nginx redis-server supervisor
-
-# Clean apt
-RUN apt-get -y autoremove
-RUN apt-get clean
+RUN apt-get -y --no-install-recommends install python3 python3-pip python3-setuptools python3-openssl netbase nginx redis-server supervisor build-essential python3-dev
 
 # Add project code to container
 ADD lecture2gether_flask /app/src/backend
@@ -15,8 +11,12 @@ ADD lecture2gether_flask /app/src/backend
 RUN pip3 install wheel
 RUN pip3 install poetry
 WORKDIR /app/src/backend
-RUN poetry export -nf requirements.txt -o requirements.txt
+RUN poetry export --without-hashes -nf requirements.txt -o requirements.txt
 RUN pip3 install -r requirements.txt
+
+# Clean apt
+RUN apt-get remove --autoremove -y build-essential python3-dev python3-pip
+RUN apt-get clean
 
 FROM node:current-buster-slim as frontend
 
