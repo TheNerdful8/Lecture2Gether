@@ -20,9 +20,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install poetry
-          cd lecture2gether_flask
-          poetry export -nf requirements.txt -o requirements.txt
-          pip3 install -r requirements.txt
+          poetry install --no-root
+        working-directory: lecture2gether_flask
       - name: Run Tests
         run: |
-          python3 lecture2gether_flask/test.py
+          poetry run nosetests test.py
+        env:
+          L2G_TEST_PASSWD: ${{ secrets.L2G_TEST_PASSWD }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        working-directory: lecture2gether_flask

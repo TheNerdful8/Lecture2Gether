@@ -44,6 +44,7 @@ import { Watch, Prop } from 'vue-property-decorator';
 import { Store } from 'vuex';
 import { AuthState } from '@/plugins/store/player';
 import { checkURL } from '@/mediaURLs';
+import { VideoMetaDataWithUrl } from '@/api';
 
 
 @Component({})
@@ -60,8 +61,8 @@ export default class Toolbar extends Vue {
     // The url variable contains the url from the text field at this point.
     @Watch('$store.state.player.password')
     async onWatch() {
-        async function getL2goPlaylist(store: Store<any>, url: string, pass = '') {
-            const apiUrl = `${store.state.settings.apiRoot}l2go`;
+        async function getVideoMetaData(store: Store<any>, url: string, pass = ''): Promise<VideoMetaDataWithUrl> {
+            const apiUrl = `${store.state.settings.apiRoot}metadata`;
             return fetch(apiUrl, {
                 method: 'POST',
                 headers: {
@@ -83,12 +84,6 @@ export default class Toolbar extends Vue {
                         pass === '' ? AuthState.NECESSARY : AuthState.FAILURE,
                     );
                     return '';
-                case 403:
-                    store.commit(
-                        'setAuthState',
-                        AuthState.FAILURE,
-                    );
-                    return '';
                 default:
                     console.warn(`${response.status}: Unexpected return code from l2go endpoint`);
                     return '';
@@ -99,18 +94,17 @@ export default class Toolbar extends Vue {
             });
         }
         // update the url to point to the lecture2go playlist when it is a
-        // lecture2go url
-        let url: string = this.url;
-        if (url.includes('lecture2go') || url.includes('/l2go/')) {
-            this.urlIsValid = true;
+        if (this.isValidVideoUrl(this.url) || this.url.includes('lecture2go') || this.url.includes('/l2go/')) {
             const password = this.$store.state.player.password;
-            url = await getL2goPlaylist(this.$store, url, password);
-            if (url === '') return;
-        }
-        if (this.isValidVideoUrl(url)) {
-            this.urlIsValid = true;
-            if (this.$store.state.isConnected) this.$store.dispatch('setUrl', url);
-            else console.warn('Not setting url because we are not connected');
+            const videoMetaData = await getVideoMetaData(this.$store, this.url, password);
+            if (!videoMetaData) {
+                this.urlIsValid = false;
+            } else {
+                this.urlIsValid = true;
+                this.$store.dispatch('setUrl', videoMetaData.streamUrl);
+                delete videoMetaData.streamUrl;
+                this.$store.dispatch('setVideoMetaData', videoMetaData);
+            }
         } else {
             this.urlIsValid = false;
         }
@@ -127,7 +121,7 @@ export default class Toolbar extends Vue {
     // Save url to clipboard
     async saveUrlClipboard() {
         this.showingTooltip = true;
-        const data = window.location.protocol + '//' + window.location.host + this.$route.path;
+        const data = `${window.location.protocol}//${window.location.host}${this.$route.path}`;
         console.debug('Saved to clipboard: ', data);
         await navigator.clipboard.writeText(data);
         setTimeout(() => this.showingTooltip = false, 1000);

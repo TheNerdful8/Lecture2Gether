@@ -1,28 +1,30 @@
 #!/usr/bin/env python3
+from gevent import monkey
+monkey.patch_all()
+
 import os
-import re
 import json
 import time
-import requests
 import logging
 from datetime import datetime
 from time import sleep
 from flask import Flask, request, jsonify, abort
 from flask_cors import CORS
-from flask_socketio import SocketIO, join_room, leave_room, close_room, emit, rooms
+from flask_socketio import SocketIO, join_room, leave_room, emit, rooms
 from redis.client import Redis
 from redis.exceptions import ConnectionError
 from threading import Thread
+from urllib.parse import urlparse
 from coolname import generate_slug
 from prometheus_flask_exporter import PrometheusMetrics
 from prometheus_client import Gauge, Counter
 
-import eventlet
-eventlet.monkey_patch()
+from meta_data_provider import L2GoMetaDataProvider, VideoNotFoundException, VideoUnauthorizedException, \
+    YouTubeMetaDataProvider, DefaultMetaDataProvider
 
 logging.basicConfig(level=os.getenv('LOGLEVEL', 'INFO'))
 
-# Crete app
+# Create app
 app = Flask(__name__)
 app.config['DEBUG'] = True
 
@@ -87,7 +89,7 @@ def room_cleanup():
 cleanup_thread = Thread(target=room_cleanup, daemon=True)
 cleanup_thread.start()
 
-@app.route('/api/l2go', methods=['POST'])
+@app.route('/api/metadata', methods=['POST'])
 @metrics.counter('l2g_video_url_parsed', 'Number of Lecture2Go videos parsed')
 def decode_l2go_path():
     """Decodes a lecture2go video url"""
@@ -102,26 +104,23 @@ def decode_l2go_path():
     if 'password' in data:
         password = data['password']
 
+    url = urlparse(video_url)
+
     try:
-        r = requests.post(video_url, data={'_lgopenaccessvideos_WAR_lecture2goportlet_password': password}, headers={'User-Agent': 'Lecture2Gether'})
-    except requests.exceptions.RequestException as e:
-        abort(404)
-
-    title = re.search('<title>(.*)</title>', r.content.decode())
-    if title.groups()[0] == 'Catalog - Lecture2Go':
-        # Redirected to catalog means video does not exist
-        abort(404)
-
-    m = re.search('https://[^"]*m3u8', r.content.decode())
-
-    if m is None:
-        # No m3u8 file found means wrong (or no) password
-        if password:
-            abort(403)
+        if url.hostname in ['www.youtube.com', 'youtube.com', 'youtu.be']:
+            meta_data_provider = YouTubeMetaDataProvider(video_url)
+        elif 'lecture2go' in url.hostname or '/l2go/' in url.path:
+            meta_data_provider = L2GoMetaDataProvider(video_url, password)
         else:
-            abort(401)
+            meta_data_provider = DefaultMetaDataProvider(video_url)
+    except VideoNotFoundException:
+        abort(404)
+    except VideoUnauthorizedException:
+        abort(401)
 
-    return jsonify(m.group())
+    video_meta_data = meta_data_provider.get_meta_data()
+
+    return jsonify(video_meta_data)
 
 @socketio.on('connect')
 @metrics.counter('l2g_sockets_connected', 'Number of connections ever made')
@@ -229,6 +228,8 @@ def on_leave(data):
     if not room_token in rooms(sid=request.sid):
         return {'status_code': 403}, 403
 
+    # Leave the socket.io room
+    leave_room(room_token)
     # Get room from db
     room = json.loads(db.hget('rooms', room_token))
     # Deacrease active users in room
@@ -237,8 +238,7 @@ def on_leave(data):
     emit('room_user_count_update', {"users": room['count']}, room=room_token)
     # Save in db
     db.hset('rooms', room_token, json.dumps(room))
-    # Leave the socket.io room
-    leave_room(room_token)
+    
     # Return status
     return {'status_code': 200}, 200
 

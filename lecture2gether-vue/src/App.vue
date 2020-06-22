@@ -32,7 +32,7 @@ export default class App extends Vue {
     }
 
     get isCollapsed(): boolean {
-        return this.$store.state.player.videoUrl !== '' || this.$store.getters.authRequired;
+        return (this.$store.state.player.videoMetaData && this.$store.state.player.videoMetaData.url !== '') || this.$store.getters.authRequired;
     }
 }
 </script>

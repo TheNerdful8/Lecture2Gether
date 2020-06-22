@@ -50,6 +50,8 @@ export const connect = (store: Store<any>) => {
     });
     socket.on('reconnect', (attemptNumber: number) => {
         console.error(`socket.io reconnected after ${attemptNumber} attempts`);
+        joinRoom({roomId: store.state.rooms.roomId});
+        store.commit('setSocketId', getSafeSocket().id)
     });
 
     socket.on(receivedEvents.videoStateUpdated, (state: VideoStateEvent) => {
@@ -61,7 +63,7 @@ export const connect = (store: Store<any>) => {
             seconds += 0.000001
         }
         if (!state.paused) {
-            seconds = (state.currentTime - state.setTime) * state.playbackRate + state.seconds;
+            seconds = Math.max(0, (state.currentTime - state.setTime) * state.playbackRate + state.seconds);
         }
         store.commit('setSender', state.sender);
         store.commit('setVideoState', {
@@ -69,6 +71,7 @@ export const connect = (store: Store<any>) => {
             paused: state.paused,
             playbackRate: state.playbackRate,
         })
+        store.commit('setVideoMetaData', state.videoMetaData)
         store.commit('setUrl', state.videoUrl)
     });
 

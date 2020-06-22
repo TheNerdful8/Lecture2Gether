@@ -1,3 +1,24 @@
+export interface VideoMetaData {
+    url: string,
+    title: string|null,
+    creator: string|null,
+    creatorLink: string|null,
+    date: string|null,
+    license: string|null,
+    licenseLink: string|null,
+}
+
+export interface VideoMetaDataWithUrl {
+    url: string,
+    streamUrl: string,
+    title: string|null,
+    creator: string|null,
+    creatorLink: string|null,
+    date: string|null,
+    license: string|null,
+    licenseLink: string|null,
+}
+
 interface BaseResponse {
     status_code: number;
 }
@@ -17,6 +38,7 @@ export const receivedEvents = {
 
 
 export interface VideoStateRequest {
+    videoMetaData: VideoMetaData|null;
     videoUrl: string;
     paused: boolean;
     seconds: number;
@@ -24,6 +46,7 @@ export interface VideoStateRequest {
 }
 
 export interface VideoStateEvent {
+    videoMetaData: VideoMetaData|null;
     videoUrl: string;
     paused: boolean;
     seconds: number;
@@ -59,7 +82,7 @@ export type LeaveRoomRequest = {
 export interface LeaveRoomResponse extends BaseResponse {}
 
 export interface SendVideoStateRequest extends VideoStateRequest {
-    roomId:string;
+    roomId: string;
 }
 
 export interface SendVideoStateResponse extends BaseResponse {}

@@ -1,15 +1,19 @@
 <template>
-    <video-player class="video-player-box"
-                  ref="videoPlayer"
-                  :options="playerOptions"
-                  :playsinline="true"
-                  :events="['seeked', 'ratechange']"
+    <div>
+        <video-player class="video-player-box"
+                      ref="videoPlayer"
+                      :options="playerOptions"
+                      :playsinline="true"
+                      :events="['seeked', 'ratechange']"
 
-                  @play="onPlayerPlay"
-                  @pause="onPlayerPause"
-                  @seeked="onPlayerSeeked"
-                  @ratechange="onPlayerRate">
-    </video-player>
+                      @play="onPlayerPlay"
+                      @pause="onPlayerPause"
+                      @seeked="onPlayerSeeked"
+                      @ratechange="onPlayerRate">
+        </video-player>
+        <video-meta-data>
+        </video-meta-data>
+    </div>
 </template>
 
 <script lang="ts">
@@ -20,6 +24,7 @@ import Vue from 'vue';
 import { Watch } from 'vue-property-decorator';
 import videoPlayer from 'vue-video-player/src/player.vue';
 import { checkURL } from '@/mediaURLs';
+import VideoMetaData from '@/components/VideoMetaData.vue';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
@@ -29,7 +34,7 @@ require('videojs-contrib-hls/dist/videojs-contrib-hls.js');
 require('videojs-youtube/dist/Youtube');
 
 @Component({
-    components: { videoPlayer },
+    components: { videoPlayer, VideoMetaData },
 })
 export default class L2gPlayer extends Vue {
     // To avoid re-sending the received events to the other users, we set the following flags
@@ -216,7 +221,7 @@ export default class L2gPlayer extends Vue {
         }
     }
 
-    @Watch('$store.state.player.videoURL')
+    @Watch('$store.state.player.videoUrl')
     async onURLChange() {
         if (this.$store.state.player.sender === this.$store.state.socketId) {
             this.skipNextVideoURLSend = false;
