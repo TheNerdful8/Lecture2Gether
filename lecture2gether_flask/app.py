@@ -136,7 +136,9 @@ def on_disconnect():
 
     # Decrease room client counts
     for room_token in rooms(sid=request.sid):  # For all rooms of user
-        if db.hexists('rooms', room_token):  # If room exists
+        # Check if room exists and user is still joined
+        if db.hexists('rooms', room_token) and room_token in rooms(sid=request.sid):
+            leave_room(room_token)
             room = json.loads(db.hget('rooms', room_token))
             room['count'] -= 1
             emit('room_user_count_update', {"users": room['count']}, room=room_token)
