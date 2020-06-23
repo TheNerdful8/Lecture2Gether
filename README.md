@@ -117,6 +117,7 @@ REDIS\_DB | 0 | Which database on the  redis server should be used
 REDIS\_PASSWORD | *empty* | Password to authenticate at the redis server
 CLEANUP\_INTERVAL | 900 | Interval (in seconds) of searching for abandoned rooms
 CLEANUP\_ROOM\_EXPIRE\_TIME | 3600 | Time (in seconds) until an empty room gets abandoned
+CLEANUP\_MAX\_ROOM\_LIFE\_TIME | 86400 | Time (in seconds) until an active room gets abandoned
 LOGLEVEL | INFO | Configures the python logging loglevel
 GOOGLE\_API\_KEY | *empty* | A Google API key, used to extract meta data from YouTube videos
 SENTRY\_DSN | *empty* | Sentry connection [DSN](https://docs.sentry.io/error-reporting/configuration/?platform=python#dsn)
