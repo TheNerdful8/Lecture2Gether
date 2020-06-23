@@ -98,7 +98,7 @@ npm run serve
 ```
 
 ## Configuration
-There are two main ways of configuring the application.
+There are two main ways of configuring the application: Frontend and backend.
 While the defaults were chosen in such a way that they work in a development environment
 (the docker container has different [ones](./docker/settings.json)) they might need change in a production setup.
 
@@ -113,16 +113,20 @@ REDIS\_PASSWORD | *empty* | Password to authenticate at the redis server
 CLEANUP_INTERVAL | 900 | Interval (in seconds) of searching for abandoned rooms
 CLEANUP_ROOM_EXPIRE_TIME | 3600 | Time (in seconds) until an empty room gets abandoned
 LOGLEVEL | INFO | Configures the python logging loglevel
+SENTRY\_DSN | *empty* | Sentry connection [DSN](https://docs.sentry.io/error-reporting/configuration/?platform=python#dsn)
+SENTRY\_ENV | default | Sentry [environment](https://docs.sentry.io/error-reporting/configuration/?platform=python#environment)
 
 The frontend is configured via a `settings.json` file which should be reachable on a
-request to `/` from the running browser application.
+request to `/settings.json` from the running browser application.
 The format is as follows:
 ```
 {
     "apiRoot": <string>,        // Under which url the server is reachable for http api calls
     "socketioHost": <string>,   // Under which host the socket.io endpoint is served. 
-                                // Can be empty which results in the same as one as where the frontend is deployed
-    "environment": <string>     // Not yet used but necessary
+                                // Can be an empty string which results in the same as where the frontend is deployed
+    "environment": <string>,    // Determines the sentry [environment](https://docs.sentry.io/error-reporting/configuration/?platform=browser#environment)
+    "sentry_dsn": <string>      // Sentry connection [DSN](https://docs.sentry.io/error-reporting/configuration/?platform=browser#dsn)
+                                // Can be an empty string which disables sentry reporting
 }
 ```
 
