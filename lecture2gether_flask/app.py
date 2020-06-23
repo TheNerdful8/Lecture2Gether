@@ -6,6 +6,7 @@ import os
 import json
 import time
 import logging
+import sentry_sdk
 from datetime import datetime
 from time import sleep
 from flask import Flask, request, jsonify, abort
@@ -18,6 +19,7 @@ from urllib.parse import urlparse
 from coolname import generate_slug
 from prometheus_flask_exporter import PrometheusMetrics
 from prometheus_client import Gauge, Counter
+from sentry_sdk.integrations.flask import FlaskIntegration
 
 from meta_data_provider import L2GoMetaDataProvider, VideoNotFoundException, VideoUnauthorizedException, \
     YouTubeMetaDataProvider, DefaultMetaDataProvider
@@ -39,6 +41,18 @@ room_clean_metric = Counter('l2g_room_cleaned', 'Number of rooms cleaned by the 
 # Enable cross origin resource sharing in debug mode
 if app.config['DEBUG']:
     CORS(app)
+
+# Enable Sentry error reporting
+if os.getenv('SENTRY_DSN', '') != '':
+    sentry_sdk.init(
+        dsn=os.getenv('SENTRY_DSN'),
+        integrations=[FlaskIntegration()],
+        environment=os.getenv('SENTRY_ENV', 'default')
+    )
+    
+
+# Count active clients
+ACTIVE_CLIENTS = 0
 
 # Init socket.io websockets, which are used for state sync
 socketio = SocketIO(app, cors_allowed_origins="*")
