@@ -34,7 +34,8 @@ if app.config['DEBUG']:
 if os.getenv('SENTRY_DSN', '') != '':
     sentry_sdk.init(
         dsn=os.getenv('SENTRY_DSN'),
-        integrations=[FlaskIntegration()]
+        integrations=[FlaskIntegration()],
+        environment=os.getenv('SENTRY_ENV', 'default')
     )
     
 
