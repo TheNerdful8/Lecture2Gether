@@ -73,12 +73,15 @@ for room_token, room in db.hgetall('rooms').items():  # For all rooms in db
 # Get params
 cleanup_interval = int(os.getenv('CLEANUP_INTERVAL', 60*15))
 cleanup_room_expire_time = int(os.getenv('CLEANUP_ROOM_EXPIRE_TIME', 60*60))
+cleanup_room_life_time = int(os.getenv('CLEANUP_ROOM_LIFE_TIME', 60*60*24))
 # Define function that cleans abandoned rooms in an interval
 def room_cleanup():
     while True:
         for room_token, room in db.hgetall('rooms').items():  # For all rooms in db
             room = json.loads(room) # Deserialize room data
-            if room['count'] <= 0 and datetime.now().timestamp() - room['state']['setTime'] > cleanup_room_expire_time:  # Delete empty old rooms
+            # Delete empty old rooms or rooms that reached maximum life time
+            if (room['count'] <= 0 and datetime.now().timestamp() - room['state']['setTime'] > cleanup_room_expire_time) or \
+                    datetime.now().timestamp() - room['state']['setTime'] > cleanup_room_life_time:
                 db.hdel('rooms', room_token) # Delete room
                 logging.info("Delete Room {}".format(room_token))
                 room_clean_metric.inc()
@@ -238,7 +241,7 @@ def on_leave(data):
     emit('room_user_count_update', {"users": room['count']}, room=room_token)
     # Save in db
     db.hset('rooms', room_token, json.dumps(room))
-    
+
     # Return status
     return {'status_code': 200}, 200
 
