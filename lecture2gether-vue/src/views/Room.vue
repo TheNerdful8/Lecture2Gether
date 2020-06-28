@@ -73,6 +73,7 @@ export default class L2gPlayerView extends Vue {
         width: 100%!important;
     }
     .l2g-player {
+        width: 100vw;
         max-width: 750px;
     }
 </style>
