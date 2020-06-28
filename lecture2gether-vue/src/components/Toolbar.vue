@@ -139,7 +139,7 @@ export default class Toolbar extends Vue {
         width: 100%;
         max-width: 100%;
         transition: all 0.8s ease;
-        margin-bottom: 128px;
+        margin-bottom: 32px;
     }
 
     .searchbar-cover-collapsed {

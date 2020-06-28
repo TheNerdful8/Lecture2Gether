@@ -1,15 +1,18 @@
 <template>
-    <div class="video-meta-data" style="visibility: hidden;">
-        <div class="title">
+    <div class="video-meta-data pa-6">
+        <div class="video-title display-1">
             {{ videoMetaData.title }}
         </div>
-        <a class="creator" :href="videoMetaData.creatorLink">
-            {{ videoMetaData.creator }}
-        </a>
-        <div class="date">
-            {{ videoDate }}
+        <div>
+            <a class="creator body-1 meta-data-link" :href="videoMetaData.creatorLink">
+                {{ videoMetaData.creator }}
+            </a>
+            <div class="date body-1">
+                {{ videoDate }}
+            </div>
         </div>
-        <a class="license" :href="videoMetaData.licenseLink">
+        <v-spacer></v-spacer>
+        <a class="license body-1 meta-data-link" :href="videoMetaData.licenseLink">
             License: {{ videoMetaData.license }}
         </a>
     </div>
@@ -34,4 +37,26 @@ export default class VideoMetaData extends Vue {
 </script>
 
 <style scoped lang="scss">
+    .video-meta-data {
+        text-align: left;
+        display: grid;
+        grid-gap: 1em;
+        grid-template-columns: auto 1fr auto;
+    }
+
+    .video-title {
+        grid-column: span 3;
+    }
+
+    .meta-data-link {
+        color: #222222 !important;
+    }
+
+    .meta-data-link:link {
+        text-decoration: none;
+    }
+
+    .meta-data-link:hover {
+        text-decoration: underline;
+    }
 </style>

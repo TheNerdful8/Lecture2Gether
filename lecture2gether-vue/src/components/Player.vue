@@ -76,7 +76,7 @@ export default class L2gPlayer extends Vue {
             // videojs options
             muted: false,
             language: 'en',
-            width: '750px',
+            fluid: true,
             playbackRates: [0.75, 1.0, 1.25, 1.5, 1.75, 2.0],
             sources,
             techOrder: ['youtube', 'html5'],
