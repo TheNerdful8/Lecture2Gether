@@ -1,0 +1,18 @@
+name: Kubernetes configuration
+
+on: [push]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: docker pull nekottyo/kustomize-kubeval
+      - name: render kustomization
+        run: |
+          docker run -i -w /working -v $(pwd):/working nekottyo/kustomize-kubeval \
+          kustomize build . >> k8s.yml
+      - name: check kubernetes configuration
+        run: |
+          docker run -i -w /working -v $(pwd):/working nekottyo/kustomize-kubeval \
+          kubeval k8s.yml --strict
