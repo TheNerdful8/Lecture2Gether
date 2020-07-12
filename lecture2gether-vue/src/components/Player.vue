@@ -95,7 +95,7 @@ export default class L2gPlayer extends Vue {
 
     getPlaybackRatesFromSource(src: string): Number[] {
         if (src === 'video/youtube') {
-            // YouTube does not support 4x player speed
+            // YouTube does not support player speed above 2x
             return [0.75, 1.0, 1.25, 1.5, 1.75, 2.0];
         } else {
             return [0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5];
