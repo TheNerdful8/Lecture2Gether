@@ -21,8 +21,84 @@ class L2gApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: L2gAppBar(),
-        body: Text("Hello World"),
+        body: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            L2gAppBar(),
+            SliverList(
+              delegate: SliverChildListDelegate([
+                ListTile(
+                    leading: Icon(Icons.wb_sunny),
+                    title: Text("Monday")
+                ),
+                ListTile(
+                    leading: Icon(Icons.wb_sunny),
+                    title: Text("Monday")
+                ),
+                ListTile(
+                    leading: Icon(Icons.wb_sunny),
+                    title: Text("Monday")
+                ),
+                ListTile(
+                    leading: Icon(Icons.wb_sunny),
+                    title: Text("Monday")
+                ),
+                ListTile(
+                    leading: Icon(Icons.wb_sunny),
+                    title: Text("Monday")
+                ),
+                ListTile(
+                    leading: Icon(Icons.wb_sunny),
+                    title: Text("Monday")
+                ),
+                ListTile(
+                    leading: Icon(Icons.wb_sunny),
+                    title: Text("Monday")
+                ),
+                ListTile(
+                    leading: Icon(Icons.wb_sunny),
+                    title: Text("Monday")
+                ),
+                ListTile(
+                    leading: Icon(Icons.wb_sunny),
+                    title: Text("Monday")
+                ),
+                ListTile(
+                    leading: Icon(Icons.wb_sunny),
+                    title: Text("Monday")
+                ),
+                ListTile(
+                    leading: Icon(Icons.wb_sunny),
+                    title: Text("Monday")
+                ),
+                ListTile(
+                    leading: Icon(Icons.wb_sunny),
+                    title: Text("Monday")
+                ),
+                ListTile(
+                    leading: Icon(Icons.wb_sunny),
+                    title: Text("Monday")
+                ),
+                ListTile(
+                    leading: Icon(Icons.wb_sunny),
+                    title: Text("Monday")
+                ),
+                ListTile(
+                    leading: Icon(Icons.wb_sunny),
+                    title: Text("Monday")
+                ),
+                ListTile(
+                    leading: Icon(Icons.wb_sunny),
+                    title: Text("Monday")
+                ),
+                ListTile(
+                    leading: Icon(Icons.wb_sunny),
+                    title: Text("Monday")
+                ),
+              ]),
+            )
+          ],
+        ),
       ),
     );
   }

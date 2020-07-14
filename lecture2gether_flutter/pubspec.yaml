@@ -29,6 +29,8 @@ dependencies:
 
   provider: ^4.3.1
   socket_io_client: ^0.9.10
+  share: ^0.6.4+3
+  clipboard: ^0.1.2+8
 
 dev_dependencies:
   flutter_test:

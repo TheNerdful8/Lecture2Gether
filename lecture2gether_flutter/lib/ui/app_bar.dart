@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:lecture2gether/ui/share_room_button.dart';
 import 'package:lecture2gether/ui/user_counter.dart';
 
-class L2gAppBar extends StatefulWidget implements PreferredSizeWidget {
-  L2gAppBar({Key key}) : super(key: key);
-
-  @override
-  _L2gAppBarState createState() => _L2gAppBarState();
-
-  @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
-}
-
-class _L2gAppBarState extends State<L2gAppBar> {
+class L2gAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      title: Text("Lecture2Gether"),
+    return SliverAppBar(
+      pinned: true,
+      expandedHeight: 150.0,
+      flexibleSpace: const FlexibleSpaceBar(
+        title: Text("Lecture2Gether"),
+        centerTitle: true,
+      ),
       actions: [
-        L2gUserCounter()
+        L2gUserCounter(),
+        L2gShareRoomButton(),
+        IconButton(
+          icon: const Icon(Icons.settings),
+          tooltip: "Settings",
+          onPressed: () {},
+        )
       ],
     );
   }
