@@ -31,10 +31,15 @@ dependencies:
   socket_io_client: ^0.9.10
   share: ^0.6.4+3
   clipboard: ^0.1.2+8
+  http: ^0.12.1
+  json_annotation: ^3.0.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  json_serializable: ^3.3.0
+  build_runner: ^1.10.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

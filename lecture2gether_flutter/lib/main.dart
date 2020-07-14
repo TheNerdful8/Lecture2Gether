@@ -5,18 +5,22 @@ import 'package:lecture2gether/domain/shared_state.dart';
 import 'package:lecture2gether/ui/app_bar.dart';
 import 'package:provider/provider.dart';
 
-void main() => runApp(
-  MultiProvider(
-    providers: [
-      ChangeNotifierProvider(create: (_) => SharedStateModel()),
-      ChangeNotifierProvider(create: (_) => PersistentSettingsModel()),
-      ChangeNotifierProvider(create: (_) => ConnectionStateModel()),
-    ],
-    child: L2gApp(),
-  )
-);
+void main() => runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => SharedStateModel()),
+        ChangeNotifierProvider(create: (_) => PersistentSettingsModel()),
+        ChangeNotifierProvider(create: (_) => RemoteSettingsModel()),
+        ChangeNotifierProvider(create: (_) => ConnectionStateModel()),
+      ],
+      child: L2gApp(),
+    ));
 
-class L2gApp extends StatelessWidget {
+class L2gApp extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _L2gAppState();
+}
+
+class _L2gAppState extends State<L2gApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -27,79 +31,21 @@ class L2gApp extends StatelessWidget {
             L2gAppBar(),
             SliverList(
               delegate: SliverChildListDelegate([
-                ListTile(
-                    leading: Icon(Icons.wb_sunny),
-                    title: Text("Monday")
-                ),
-                ListTile(
-                    leading: Icon(Icons.wb_sunny),
-                    title: Text("Monday")
-                ),
-                ListTile(
-                    leading: Icon(Icons.wb_sunny),
-                    title: Text("Monday")
-                ),
-                ListTile(
-                    leading: Icon(Icons.wb_sunny),
-                    title: Text("Monday")
-                ),
-                ListTile(
-                    leading: Icon(Icons.wb_sunny),
-                    title: Text("Monday")
-                ),
-                ListTile(
-                    leading: Icon(Icons.wb_sunny),
-                    title: Text("Monday")
-                ),
-                ListTile(
-                    leading: Icon(Icons.wb_sunny),
-                    title: Text("Monday")
-                ),
-                ListTile(
-                    leading: Icon(Icons.wb_sunny),
-                    title: Text("Monday")
-                ),
-                ListTile(
-                    leading: Icon(Icons.wb_sunny),
-                    title: Text("Monday")
-                ),
-                ListTile(
-                    leading: Icon(Icons.wb_sunny),
-                    title: Text("Monday")
-                ),
-                ListTile(
-                    leading: Icon(Icons.wb_sunny),
-                    title: Text("Monday")
-                ),
-                ListTile(
-                    leading: Icon(Icons.wb_sunny),
-                    title: Text("Monday")
-                ),
-                ListTile(
-                    leading: Icon(Icons.wb_sunny),
-                    title: Text("Monday")
-                ),
-                ListTile(
-                    leading: Icon(Icons.wb_sunny),
-                    title: Text("Monday")
-                ),
-                ListTile(
-                    leading: Icon(Icons.wb_sunny),
-                    title: Text("Monday")
-                ),
-                ListTile(
-                    leading: Icon(Icons.wb_sunny),
-                    title: Text("Monday")
-                ),
-                ListTile(
-                    leading: Icon(Icons.wb_sunny),
-                    title: Text("Monday")
-                ),
+                Placeholder(),
+                Placeholder(),
+                Placeholder(),
               ]),
             )
           ],
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    var settings = context.read<PersistentSettingsModel>();
+    settings.fetchRemoteSettings(context);
   }
 }

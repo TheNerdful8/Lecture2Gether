@@ -1,18 +1,5 @@
 import 'package:flutter/foundation.dart';
-
-class VideoMetaData {
-  String url;
-  String title;
-  String creator;
-  String creatorLink;
-  String date;
-  String license;
-  String licenseLink;
-}
-
-class VideoMetaDataWithUrl extends VideoMetaData {
-  String streamUrl;
-}
+import 'api.dart';
 
 enum AuthState {
   UNNECESSARY,

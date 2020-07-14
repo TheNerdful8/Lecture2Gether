@@ -10,7 +10,6 @@ class L2gAppBar extends StatelessWidget {
       expandedHeight: 150.0,
       flexibleSpace: const FlexibleSpaceBar(
         title: Text("Lecture2Gether"),
-        centerTitle: true,
       ),
       actions: [
         L2gUserCounter(),

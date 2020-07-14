@@ -8,11 +8,15 @@ class L2gUserCounter extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<SharedStateModel>(
       builder: (context, value, child) {
-        return Row(
-          children: [
-            Text("1"),  // TODO Put correct user number in app-bar
-            Icon(Icons.account_box)
-          ],
+        return IconButton(
+          icon: Row(
+            children: [
+              Text("1"),     // TODO Display correct number of users in room
+              Icon(Icons.supervisor_account),
+            ],
+          ),
+          tooltip: "Number of users currently in the Room",
+          onPressed: () {},
         );
       },
     );
