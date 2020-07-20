@@ -1,5 +1,5 @@
 export function checkURL(url: string): {type: string, src: URL,} | undefined {
-    const extensions2types: [string,string][] = 
+    const extensions2types: [string,string][] =
         [['m3u8', 'application/x-mpegURL']
         ,['mp4', 'video/mp4']
         ,['ogg', 'video/ogg']
@@ -20,7 +20,7 @@ export function checkURL(url: string): {type: string, src: URL,} | undefined {
         urlobj = new URL(url);
         host = urlobj.hostname;
         extension = urlobj.pathname.split('.').pop();
-    } catch { 
+    } catch {
         return undefined;
     }
 

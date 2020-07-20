@@ -49,7 +49,7 @@ if os.getenv('SENTRY_DSN', '') != '':
         integrations=[FlaskIntegration()],
         environment=os.getenv('SENTRY_ENV', 'default')
     )
-    
+
 
 # Count active clients
 ACTIVE_CLIENTS = 0

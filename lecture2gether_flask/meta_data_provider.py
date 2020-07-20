@@ -16,6 +16,7 @@ class VideoNotFoundException(Exception):
 class VideoUnauthorizedException(Exception):
     pass
 
+
 class APIUnauthorizedException(Exception):
     pass
 
