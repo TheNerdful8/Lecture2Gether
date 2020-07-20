@@ -6,7 +6,7 @@ import os
 import time
 
 from app import app, socketio
-from meta_data_provider import youtube_video_id_from_url, L2GoMetaDataProvider, YouTubeMetaDataProvider, GoogleDriveMetaDataProvider
+from meta_data_provider import L2GoMetaDataProvider, YouTubeMetaDataProvider, GoogleDriveMetaDataProvider
 
 
 def test_socketio():
@@ -138,30 +138,30 @@ def test_youtube_video_id_from_url():
     error_message = 'Wrong video id for url %s: %s'
     id = 'qxyQCD3QT6Y'
     url = f'https://youtu.be/{id}'
-    res = youtube_video_id_from_url(url)
+    res = YouTubeMetaDataProvider.youtube_video_id_from_url(url)
     assert res == id, error_message % (url, res)
     url = f'https://www.youtube.com/watch?v={id}'
-    res = youtube_video_id_from_url(url)
+    res = YouTubeMetaDataProvider.youtube_video_id_from_url(url)
     assert res == id, error_message % (url, res)
     url = f'https://www.youtube.com/watch/?v={id}'
-    res = youtube_video_id_from_url(url)
+    res = YouTubeMetaDataProvider.youtube_video_id_from_url(url)
     assert res == id, error_message % (url, res)
     url = f'https://www.youtube.com/watch/{id}'
-    res = youtube_video_id_from_url(url)
+    res = YouTubeMetaDataProvider.youtube_video_id_from_url(url)
     assert res == id, error_message % (url, res)
     url = f'http://youtube.com/watch?v={id}&gl=DE'
-    res = youtube_video_id_from_url(url)
+    res = YouTubeMetaDataProvider.youtube_video_id_from_url(url)
     assert res == id, error_message % (url, res)
     url = f'https://youtu.be/{id}?t=9'
-    res = youtube_video_id_from_url(url)
+    res = YouTubeMetaDataProvider.youtube_video_id_from_url(url)
     assert res == id, error_message % (url, res)
     listid = 'PLSmWeUDtr9fAusnPxzrAG2v1B8sMeFlbT'
     url = f'https://www.youtube.com/watch?v={id}&list={listid}&index=2'
-    res = youtube_video_id_from_url(url)
+    res = YouTubeMetaDataProvider.youtube_video_id_from_url(url)
     assert res == id, error_message % (url, res)
     url = 'https://www.youtube.com/channel/UCYJdpnjuSWVOLgGT9fIzL0g'
-    res = youtube_video_id_from_url(url)
+    res = YouTubeMetaDataProvider.youtube_video_id_from_url(url)
     assert res is None, error_message % (url, res)
     url = 'https://www.youtube.com/watch'
-    res = youtube_video_id_from_url(url)
+    res = YouTubeMetaDataProvider.youtube_video_id_from_url(url)
     assert res is None, error_message % (url, res)

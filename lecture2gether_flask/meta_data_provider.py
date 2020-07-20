@@ -110,7 +110,7 @@ class L2GoMetaDataProvider(MetaDataProvider):
 class YouTubeMetaDataProvider(MetaDataProvider):
     def __init__(self, video_url):
         super().__init__(video_url)
-        self._video_id = youtube_video_id_from_url(video_url)
+        self._video_id = YouTubeMetaDataProvider.youtube_video_id_from_url(video_url)
         if not self._video_id:
             raise VideoNotFoundException
 
@@ -141,26 +141,26 @@ class YouTubeMetaDataProvider(MetaDataProvider):
 
         return super().get_meta_data()
 
-
-def youtube_video_id_from_url(video_url):
-    url = urlparse(video_url)
-    if url.hostname == 'youtu.be':
-        # Return path without '/'
-        return url.path[1:]
-    if url.hostname in ['youtube.com', 'www.youtube.com']:
-        if url.path in ['/watch', '/watch/']:
-            query = parse_qs(url.query)
-            if 'v' in query:
-                return query['v'][0]
-        elif re.fullmatch(r'/watch/[a-zA-Z0-9]+', url.path):
-            return url.path[len('/watch/'):]
-    return None
+    @staticmethod
+    def youtube_video_id_from_url(video_url):
+        url = urlparse(video_url)
+        if url.hostname == 'youtu.be':
+            # Return path without '/'
+            return url.path[1:]
+        if url.hostname in ['youtube.com', 'www.youtube.com']:
+            if url.path in ['/watch', '/watch/']:
+                query = parse_qs(url.query)
+                if 'v' in query:
+                    return query['v'][0]
+            elif re.fullmatch(r'/watch/[a-zA-Z0-9]+', url.path):
+                return url.path[len('/watch/'):]
+        return None
 
 
 class GoogleDriveMetaDataProvider(MetaDataProvider):
     def __init__(self, share_link):
         super().__init__(share_link)
-        self._file_id = drive_file_id_from_share_url(share_link)
+        self._file_id = GoogleDriveMetaDataProvider.drive_file_id_from_share_url(share_link)
 
         if not self._file_id:
             raise VideoNotFoundException
@@ -209,13 +209,13 @@ class GoogleDriveMetaDataProvider(MetaDataProvider):
 
         return super().get_meta_data()
 
-
-def drive_file_id_from_share_url(share_url):
-    """
-    Converts a google drive share link into a google drive file id
-    """
-    url = urlparse(share_url)
-    if url.hostname in ['drive.google.com',]:
-        if re.fullmatch(r'/file/d/[a-zA-Z0-9-_]+/view', url.path):
-            return url.path[len('/file/d/'):-len("/view")]
-    return None
+    @staticmethod
+    def drive_file_id_from_share_url(share_url):
+        """
+        Converts a google drive share link into a google drive file id
+        """
+        url = urlparse(share_url)
+        if url.hostname in ['drive.google.com',]:
+            if re.fullmatch(r'/file/d/[a-zA-Z0-9-_]+/view', url.path):
+                return url.path[len('/file/d/'):-len("/view")]
+        return None
