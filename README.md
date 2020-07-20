@@ -119,7 +119,7 @@ CLEANUP\_INTERVAL | 900 | Interval (in seconds) of searching for abandoned rooms
 CLEANUP\_ROOM\_EXPIRE\_TIME | 3600 | Time (in seconds) until an empty room gets abandoned
 CLEANUP\_MAX\_ROOM\_LIFE\_TIME | 86400 | Time (in seconds) until an active room gets abandoned
 LOGLEVEL | INFO | Configures the python logging loglevel
-GOOGLE\_API\_KEY | *empty* | A Google API key, used to extract meta data from YouTube videos
+GOOGLE\_API\_KEY | *empty* | A Google API key, used to extract meta data from YouTube videos and access Google Drive files (note: this key is **publicly readable**, restrict its usage to the used website (e.g. https://lecture2gether.eu) and services (YouTube and Google Drive) the Google Settings.)
 SENTRY\_DSN | *empty* | Sentry connection [DSN](https://docs.sentry.io/error-reporting/configuration/?platform=python#dsn)
 SENTRY\_ENV | default | Sentry [environment](https://docs.sentry.io/error-reporting/configuration/?platform=python#environment)
 
@@ -129,7 +129,7 @@ The format is as follows:
 ```
 {
     "apiRoot": <string>,        // Under which url the server is reachable for http api calls
-    "socketioHost": <string>,   // Under which host the socket.io endpoint is served. 
+    "socketioHost": <string>,   // Under which host the socket.io endpoint is served.
                                 // Can be an empty string which results in the same as where the frontend is deployed
     "environment": <string>,    // Determines the sentry [environment](https://docs.sentry.io/error-reporting/configuration/?platform=browser#environment)
     "sentry_dsn": <string>      // Sentry connection [DSN](https://docs.sentry.io/error-reporting/configuration/?platform=browser#dsn)
