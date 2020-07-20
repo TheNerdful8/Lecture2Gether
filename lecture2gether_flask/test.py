@@ -6,7 +6,7 @@ import os
 import time
 
 from app import app, socketio
-from meta_data_provider import youtube_video_id_from_url, L2GoMetaDataProvider, YouTubeMetaDataProvider
+from meta_data_provider import youtube_video_id_from_url, L2GoMetaDataProvider, YouTubeMetaDataProvider, GoogleDriveMetaDataProvider
 
 
 def test_socketio():
@@ -18,7 +18,7 @@ def test_socketio():
     room_count = 1000
 
     socketio_test_clients = [socketio.test_client(app, flask_test_client=flask_test_client) for i in range(user_count)]
-    
+
     room_responses = ([client.emit("create", {'foo': 'bar'}, callback=True)[0] for client in socketio_test_clients[:room_count]])
 
     assert all([True for response in room_responses if response["status_code"] == 200]), "Check failed, invalid status code while room creation."
@@ -87,6 +87,18 @@ def test_l2go_metadata():
     assert meta_data['date'] == datetime(year=2016, month=3, day=24)
     assert meta_data['license'] == 'UHH-L2G'
     assert meta_data['licenseLink'] == 'https://lecture2go.uni-hamburg.de/license-l2go'
+
+
+def test_google_drive_metadata():
+    if 'GOOGLE_API_KEY' not in os.environ:
+        return
+    url = "https://drive.google.com/file/d/1WESi5lqI-o8N4-_gJJE4R-X87C6EyejB/view?usp=sharing"
+    meta_data_provider = GoogleDriveMetaDataProvider(url)
+    meta_data = meta_data_provider.get_meta_data()
+    assert meta_data['url'] == url
+    assert meta_data['streamUrl'] == f'https://www.googleapis.com/drive/v3/files/1WESi5lqI-o8N4-_gJJE4R-X87C6EyejB?key={str(os.environ["GOOGLE_API_KEY"])}&alt=media'
+    assert meta_data['title'] == 'CI_VIDEO_DO_NOT_TOUCH.webm'
+    assert meta_data['mimeType'] == 'video/webm'
 
 
 def test_youtube_metadata():

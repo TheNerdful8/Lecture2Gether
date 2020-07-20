@@ -32,6 +32,7 @@ class MetaDataProvider():
             "date": None,
             "license": None,
             "licenseLink": None,
+            "mimeType": None
         }
 
     def get_meta_data(self):
@@ -190,6 +191,7 @@ class GoogleDriveMetaDataProvider(MetaDataProvider):
             else:
                 raise e
         self.video_meta_data["title"] = file_meta["name"]
+        self.video_meta_data["mimeType"] = file_meta["mimeType"]
 
         # Get stream url from API
         file_download_url = json.loads(self._drive.files().get_media(fileId=self._file_id).to_json())['uri']
@@ -204,6 +206,6 @@ def drive_file_id_from_share_url(share_url):
     """
     url = urlparse(share_url)
     if url.hostname in ['drive.google.com',]:
-        if re.fullmatch(r'/file/d/[a-zA-Z0-9-]+/view', url.path):
+        if re.fullmatch(r'/file/d/[a-zA-Z0-9-_]+/view', url.path):
             return url.path[len('/file/d/'):-len("/view")]
     return None
