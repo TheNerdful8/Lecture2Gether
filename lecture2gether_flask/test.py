@@ -96,7 +96,7 @@ def test_google_drive_metadata():
     meta_data_provider = GoogleDriveMetaDataProvider(url)
     meta_data = meta_data_provider.get_meta_data()
     assert meta_data['url'] == url
-    assert meta_data['streamUrl'] == f'https://www.googleapis.com/drive/v3/files/1WESi5lqI-o8N4-_gJJE4R-X87C6EyejB?key={str(os.environ["GOOGLE_API_KEY"])}&alt=media'
+    assert meta_data['streamUrl'] == f'https://www.googleapis.com/drive/v3/files/1WESi5lqI-o8N4-_gJJE4R-X87C6EyejB?key={str(os.environ["GOOGLE_API_KEY"])}&alt=media&l2g_media_type=webm'
     assert meta_data['title'] == 'CI_VIDEO_DO_NOT_TOUCH.webm'
     assert meta_data['mimeType'] == 'video/webm'
 
