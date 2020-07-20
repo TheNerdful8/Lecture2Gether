@@ -104,7 +104,13 @@ export default class L2gPlayer extends Vue {
 
     getSourceFromURL(url: string): {type: string; src: string} {
         // shared media logic in src/mediaURLs.ts checkURL
-        const res = checkURL(url);
+        let parsedUrl;
+        try {
+            parsedUrl = new URL(url);
+        } catch (e) {
+            throw new Error('Invalid URL');
+        }
+        const res = checkURL(parsedUrl);
         if (res === undefined) {
             throw new Error('URL not supported');
         } else {

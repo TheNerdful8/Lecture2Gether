@@ -94,8 +94,14 @@ export default class Toolbar extends Vue {
                 throw new Error(`${response.status}: Resource not available`);
             });
         }
-        // update the url to point to the lecture2go playlist when it is a
-        if (this.isValidVideoUrl(this.url) || this.url.includes('lecture2go') || this.url.includes('/l2go/')) {
+        let url;
+        try {
+            url = new URL(this.url);
+        } catch (e) {
+            this.urlIsValid = false;
+            return;
+        }
+        if (checkURL(url)) {
             const password = this.$store.state.player.password;
             const videoMetaData = await getVideoMetaData(this.$store, this.url, password);
             if (!videoMetaData) {
@@ -106,6 +112,10 @@ export default class Toolbar extends Vue {
                 delete videoMetaData.streamUrl;
                 this.$store.dispatch('setVideoMetaData', videoMetaData);
             }
+        } else if (url.host === window.location.host) {
+            // A lecture2gether url was entered, redirect to that room
+            await this.$store.dispatch('leaveRoom');
+            await this.$router.push(url.pathname);
         } else {
             this.urlIsValid = false;
         }
@@ -113,10 +123,6 @@ export default class Toolbar extends Vue {
 
     get userCount(): number {
         return this.$store.state.rooms.userCount;
-    }
-
-    isValidVideoUrl(url: string) {
-        return checkURL(url) !== undefined;
     }
 
     // Save url to clipboard
