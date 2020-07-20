@@ -137,7 +137,7 @@ def decode_l2go_path():
     except VideoUnauthorizedException:
         abort(401, "You are not authorized to watch this video")
     except APIUnauthorizedException:
-        abort(501, "Lecture2Gether needs a working Google API key for this feature!")
+        abort(501, "Lecture2Gether cannot access required API to access data. Is the API key (e.g. for Google) correct?")
 
     video_meta_data = meta_data_provider.get_meta_data()
 
