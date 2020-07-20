@@ -1,7 +1,9 @@
 import os
 import re
+import json
 import requests
 import googleapiclient.discovery
+from googleapiclient.errors import HttpError
 from datetime import datetime
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, parse_qs
@@ -12,6 +14,9 @@ class VideoNotFoundException(Exception):
 
 
 class VideoUnauthorizedException(Exception):
+    pass
+
+class APIUnauthorizedException(Exception):
     pass
 
 
@@ -150,3 +155,54 @@ def youtube_video_id_from_url(video_url):
     return None
 
 
+class GoogleDriveMetaDataProvider(MetaDataProvider):
+    def __init__(self, share_link):
+        super().__init__(share_link)
+        self._file_id = drive_file_id_from_share_url(share_link)
+
+        if not self._file_id:
+            raise VideoNotFoundException
+
+        # Check API Key
+        if 'GOOGLE_API_KEY' not in os.environ:
+            raise APIUnauthorizedException
+
+        # Init Google API
+        try:
+            self._drive = googleapiclient.discovery.build(
+                'drive', 'v3', developerKey=os.environ['GOOGLE_API_KEY'], cache_discovery=False)
+        except HttpError as e:
+            if e.resp.status in [400, 401, 403]:
+                raise APIUnauthorizedException
+            else:
+                raise e
+
+    def get_meta_data(self):
+        # Get meta data for file
+        try:
+            file_meta = self._drive.files().get(fileId=self._file_id).execute()
+        except HttpError as e:
+            if e.resp.status in [400, 401, 403]:
+                raise VideoUnauthorizedException
+            elif e.resp.status in [404,]:
+                raise VideoNotFoundException
+            else:
+                raise e
+        self.video_meta_data["title"] = file_meta["name"]
+
+        # Get stream url from API
+        file_download_url = json.loads(self._drive.files().get_media(fileId=self._file_id).to_json())['uri']
+        self.video_meta_data["streamUrl"] = file_download_url
+
+        return super().get_meta_data()
+
+
+def drive_file_id_from_share_url(share_url):
+    """
+    Converts a google drive share link into a google drive file id
+    """
+    url = urlparse(share_url)
+    if url.hostname in ['drive.google.com',]:
+        if re.fullmatch(r'/file/d/[a-zA-Z0-9-]+/view', url.path):
+            return url.path[len('/file/d/'):-len("/view")]
+    return None
