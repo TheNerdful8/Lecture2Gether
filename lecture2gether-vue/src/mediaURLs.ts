@@ -7,10 +7,7 @@ export function checkURL(url: string): {type: string, src: URL,} | undefined {
     const host2types: [string,string][] =
         [['youtube.com', 'video/youtube']
         ,['www.youtube.com', 'video/youtube']
-        ,['youtu.be', 'video/youtube']
-        ,['drive.google.com', 'video/mp4']
-        ,['www.googleapis.com', 'video/mp4']
-        ,['googleapis.com', 'video/mp4']];
+        ,['youtu.be', 'video/youtube']];
 
     //Use this to extract the type from the associative arrays above
     const assoc = function<A,B>(list: [A,B][], elem: A): B|undefined {
@@ -18,16 +15,22 @@ export function checkURL(url: string): {type: string, src: URL,} | undefined {
         return res === undefined ? undefined : res[1];
     };
 
-    let host, extension, urlobj;
+    let host, extension, urlobj, media_type;
     try {
         urlobj = new URL(url);
         host = urlobj.hostname;
+        // Get a custom get param added by the backend if it knows the mime type
+        media_type = urlobj.searchParams.get("l2g_media_type")
         extension = urlobj.pathname.split('.').pop();
     } catch {
         return undefined;
     }
 
     let type;
+
+    // Prefer a media type set by the backend
+    if (media_type) extension = media_type;
+
     //check type based on extension first
     type = assoc(extensions2types, extension);
     //check type based on hostname next
