@@ -195,17 +195,9 @@ class GoogleDriveMetaDataProvider(MetaDataProvider):
         self.video_meta_data["title"] = file_meta["name"]
         self.video_meta_data["mimeType"] = file_meta["mimeType"]
 
-        # This is inv of the table in the frontend
-        mime2ext = {
-            "application/x-mpegURL": 'm3u8',
-            'video/mp4': 'mp4',
-            'video/ogg': 'ogg',
-            'video/webm': 'webm',
-        }
-
         # Get stream url from API
         file_download_url = json.loads(self._drive.files().get_media(fileId=self._file_id).to_json())['uri']
-        self.video_meta_data["streamUrl"] = f"{file_download_url}&l2g_media_type={mime2ext[file_meta['mimeType']]}"
+        self.video_meta_data["streamUrl"] = f"{file_download_url}&l2g_media_type={file_meta['mimeType']}"
 
         return super().get_meta_data()
 

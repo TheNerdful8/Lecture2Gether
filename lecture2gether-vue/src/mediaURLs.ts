@@ -29,7 +29,10 @@ export function checkURL(url: string): {type: string, src: URL,} | undefined {
     let type;
 
     // Prefer a media type set by the backend
-    if (media_type) extension = media_type;
+    if (media_type) return {
+        type: media_type,
+        src: urlobj,
+    };
 
     //check type based on extension first
     type = assoc(extensions2types, extension);
