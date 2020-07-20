@@ -7,7 +7,10 @@ export function checkURL(url: string): {type: string, src: URL,} | undefined {
     const host2types: [string,string][] =
         [['youtube.com', 'video/youtube']
         ,['www.youtube.com', 'video/youtube']
-        ,['youtu.be', 'video/youtube']];
+        ,['youtu.be', 'video/youtube']
+        ,['drive.google.com', 'video/mp4']
+        ,['www.googleapis.com', 'video/mp4']
+        ,['googleapis.com', 'video/mp4']];
 
     //Use this to extract the type from the associative arrays above
     const assoc = function<A,B>(list: [A,B][], elem: A): B|undefined {
