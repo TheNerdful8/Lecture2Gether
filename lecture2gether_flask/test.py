@@ -119,8 +119,9 @@ def test_youtube_metadata():
 
 
 def test_youtube_metadata_no_api_key():
-    API_KEY = os.environ['GOOGLE_YOUTUBE_API_KEY']
-    del os.environ['GOOGLE_YOUTUBE_API_KEY']
+    API_KEY = os.getenv('GOOGLE_YOUTUBE_API_KEY', "")
+    if API_KEY:
+        del os.environ['GOOGLE_YOUTUBE_API_KEY']
     meta_data_provider = YouTubeMetaDataProvider('https://youtu.be/qxyQCD3QT6Y')
     meta_data = meta_data_provider.get_meta_data()
     print(meta_data)
