@@ -27,5 +27,6 @@ jobs:
           poetry run nosetests test.py
         env:
           L2G_TEST_PASSWD: ${{ secrets.L2G_TEST_PASSWD }}
-          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          GOOGLE_YOUTUBE_API_KEY: ${{ secrets.GOOGLE_YOUTUBE_API_KEY }}
+          GOOGLE_DRIVE_API_KEY: ${{ secrets.GOOGLE_DRIVE_API_KEY }}
         working-directory: lecture2gether_flask

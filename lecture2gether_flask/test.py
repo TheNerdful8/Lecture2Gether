@@ -90,19 +90,19 @@ def test_l2go_metadata():
 
 
 def test_google_drive_metadata():
-    if 'GOOGLE_API_KEY' not in os.environ:
+    if 'GOOGLE_DRIVE_API_KEY' not in os.environ:
         return
     url = "https://drive.google.com/file/d/1WESi5lqI-o8N4-_gJJE4R-X87C6EyejB/view?usp=sharing"
     meta_data_provider = GoogleDriveMetaDataProvider(url)
     meta_data = meta_data_provider.get_meta_data()
     assert meta_data['url'] == url
-    assert meta_data['streamUrl'] == f'https://www.googleapis.com/drive/v3/files/1WESi5lqI-o8N4-_gJJE4R-X87C6EyejB?key={str(os.environ["GOOGLE_API_KEY"])}&alt=media&l2g_media_type=video/webm'
+    assert meta_data['streamUrl'] == f'https://www.googleapis.com/drive/v3/files/1WESi5lqI-o8N4-_gJJE4R-X87C6EyejB?key={str(os.environ["GOOGLE_DRIVE_API_KEY"])}&alt=media&l2g_media_type=video/webm'
     assert meta_data['title'] == 'CI_VIDEO_DO_NOT_TOUCH.webm'
     assert meta_data['mimeType'] == 'video/webm'
 
 
 def test_youtube_metadata():
-    if 'GOOGLE_API_KEY' not in os.environ:
+    if 'GOOGLE_YOUTUBE_API_KEY' not in os.environ:
         return
 
     meta_data_provider = YouTubeMetaDataProvider('https://youtu.be/qxyQCD3QT6Y')
@@ -118,8 +118,8 @@ def test_youtube_metadata():
 
 
 def test_youtube_metadata_no_api_key():
-    API_KEY = os.environ['GOOGLE_API_KEY']
-    del os.environ['GOOGLE_API_KEY']
+    API_KEY = os.environ['GOOGLE_YOUTUBE_API_KEY']
+    del os.environ['GOOGLE_YOUTUBE_API_KEY']
     meta_data_provider = YouTubeMetaDataProvider('https://youtu.be/qxyQCD3QT6Y')
     meta_data = meta_data_provider.get_meta_data()
     print(meta_data)
@@ -131,7 +131,7 @@ def test_youtube_metadata_no_api_key():
     assert meta_data['date'] is None
     assert meta_data['license'] is None
     assert meta_data['licenseLink'] is None
-    os.environ['GOOGLE_API_KEY'] = API_KEY
+    os.environ['GOOGLE_YOUTUBE_API_KEY'] = API_KEY
 
 
 def test_youtube_video_id_from_url():
