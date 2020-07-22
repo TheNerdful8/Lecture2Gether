@@ -115,13 +115,13 @@ class YouTubeMetaDataProvider(MetaDataProvider):
             raise VideoNotFoundException
 
     def get_meta_data(self):
-        if 'GOOGLE_API_KEY' not in os.environ:
+        if 'GOOGLE_YOUTUBE_API_KEY' not in os.environ:
             self.video_meta_data["url"] = f'https://www.youtube.com/watch?v={self._video_id}'
             self.video_meta_data["streamUrl"] = f'https://www.youtube.com/watch?v={self._video_id}'
             return super().get_meta_data()
 
         youtube = googleapiclient.discovery.build(
-            'youtube', 'v3', developerKey=os.environ['GOOGLE_API_KEY'], cache_discovery=False)
+            'youtube', 'v3', developerKey=os.environ['GOOGLE_YOUTUBE_API_KEY'], cache_discovery=False)
 
         request = youtube.videos().list(
             part="snippet,status",
@@ -166,13 +166,13 @@ class GoogleDriveMetaDataProvider(MetaDataProvider):
             raise VideoNotFoundException
 
         # Check API Key
-        if 'GOOGLE_API_KEY' not in os.environ:
+        if 'GOOGLE_DRIVE_API_KEY' not in os.environ:
             raise APIUnauthorizedException
 
         # Init Google API
         try:
             self._drive = googleapiclient.discovery.build(
-                'drive', 'v3', developerKey=os.environ['GOOGLE_API_KEY'], cache_discovery=False)
+                'drive', 'v3', developerKey=os.environ['GOOGLE_DRIVE_API_KEY'], cache_discovery=False)
         except HttpError as e:
             if e.resp.status in [400, 401, 403]:
                 raise APIUnauthorizedException
