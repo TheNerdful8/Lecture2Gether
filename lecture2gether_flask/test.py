@@ -90,13 +90,14 @@ def test_l2go_metadata():
 
 
 def test_google_drive_metadata():
-    if 'GOOGLE_DRIVE_API_KEY' not in os.environ:
+    if 'GOOGLE_DRIVE_API_KEY_BACKEND' not in os.environ or \
+        'GOOGLE_DRIVE_API_KEY_FRONTEND' not in os.environ:
         return
     url = "https://drive.google.com/file/d/1WESi5lqI-o8N4-_gJJE4R-X87C6EyejB/view?usp=sharing"
     meta_data_provider = GoogleDriveMetaDataProvider(url)
     meta_data = meta_data_provider.get_meta_data()
     assert meta_data['url'] == url
-    assert meta_data['streamUrl'] == f'https://www.googleapis.com/drive/v3/files/1WESi5lqI-o8N4-_gJJE4R-X87C6EyejB?key={str(os.environ["GOOGLE_DRIVE_API_KEY"])}&alt=media&l2g_media_type=video/webm'
+    assert meta_data['streamUrl'] == f'https://www.googleapis.com/drive/v3/files/1WESi5lqI-o8N4-_gJJE4R-X87C6EyejB?key={str(os.environ["GOOGLE_DRIVE_API_KEY_FRONTEND"])}&alt=media&l2g_media_type=video/webm'
     assert meta_data['title'] == 'CI_VIDEO_DO_NOT_TOUCH.webm'
     assert meta_data['mimeType'] == 'video/webm'
 

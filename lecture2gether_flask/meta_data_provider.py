@@ -1,12 +1,12 @@
 import os
 import re
 import json
+import urllib
 import requests
 import googleapiclient.discovery
 from googleapiclient.errors import HttpError
 from datetime import datetime
 from bs4 import BeautifulSoup
-from urllib.parse import urlparse, parse_qs
 
 
 class VideoNotFoundException(Exception):
@@ -54,7 +54,7 @@ class L2GoMetaDataProvider(MetaDataProvider):
         except requests.exceptions.RequestException as e:
             raise VideoNotFoundException()
 
-        self.parsed_url = urlparse(video_url)
+        self.parsed_url = urllib.parse.urlparse(video_url)
         self.soup = BeautifulSoup(r.text, 'html.parser')
 
         # Redirected to catalog means video does not exist
@@ -143,13 +143,13 @@ class YouTubeMetaDataProvider(MetaDataProvider):
 
     @staticmethod
     def youtube_video_id_from_url(video_url):
-        url = urlparse(video_url)
+        url = urllib.parse.urlparse(video_url)
         if url.hostname == 'youtu.be':
             # Return path without '/'
             return url.path[1:]
         if url.hostname in ['youtube.com', 'www.youtube.com']:
             if url.path in ['/watch', '/watch/']:
-                query = parse_qs(url.query)
+                query = urllib.parse.parse_qs(url.query)
                 if 'v' in query:
                     return query['v'][0]
             elif re.fullmatch(r'/watch/[a-zA-Z0-9]+', url.path):
@@ -166,13 +166,16 @@ class GoogleDriveMetaDataProvider(MetaDataProvider):
             raise VideoNotFoundException
 
         # Check API Key
-        if 'GOOGLE_DRIVE_API_KEY' not in os.environ:
+        if 'GOOGLE_DRIVE_API_KEY_BACKEND' not in os.environ or \
+            'GOOGLE_DRIVE_API_KEY_FRONTEND' not in os.environ:
             raise APIUnauthorizedException
+
+        self._frontend_key = os.environ['GOOGLE_DRIVE_API_KEY_FRONTEND']
 
         # Init Google API
         try:
             self._drive = googleapiclient.discovery.build(
-                'drive', 'v3', developerKey=os.environ['GOOGLE_DRIVE_API_KEY'], cache_discovery=False)
+                'drive', 'v3', developerKey=os.environ['GOOGLE_DRIVE_API_KEY_BACKEND'], cache_discovery=False)
         except HttpError as e:
             if e.resp.status in [400, 401, 403]:
                 raise APIUnauthorizedException
@@ -197,7 +200,15 @@ class GoogleDriveMetaDataProvider(MetaDataProvider):
 
         # Get stream url from API
         file_download_url = json.loads(self._drive.files().get_media(fileId=self._file_id).to_json())['uri']
-        self.video_meta_data["streamUrl"] = f"{file_download_url}&l2g_media_type={file_meta['mimeType']}"
+        # Replace backend API key by frontend, so the user can access the video
+        url_parts = urllib.parse.urlparse(file_download_url)
+        query = urllib.parse.parse_qs(url_parts.query)
+        query['key'] = self._frontend_key
+        query['alt'] = query['alt'][0]
+        new_url_parts = list(url_parts)
+        new_url_parts[4] = urllib.parse.urlencode(query)
+        new_file_download_url = urllib.parse.urlunparse(new_url_parts)
+        self.video_meta_data["streamUrl"] = f"{new_file_download_url}&l2g_media_type={file_meta['mimeType']}"
 
         return super().get_meta_data()
 
@@ -206,7 +217,7 @@ class GoogleDriveMetaDataProvider(MetaDataProvider):
         """
         Converts a google drive share link into a google drive file id
         """
-        url = urlparse(share_url)
+        url = urllib.parse.urlparse(share_url)
         if url.hostname in ['drive.google.com',]:
             if re.fullmatch(r'/file/d/[a-zA-Z0-9-_]+/view', url.path):
                 return url.path[len('/file/d/'):-len("/view")]
