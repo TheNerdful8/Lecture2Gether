@@ -15,7 +15,7 @@ class SharedStateModel with ChangeNotifier {
   bool paused = false;
   int seconds = 0;
   int playbackRate = 1;
-  String password = "";
+  String password = '';
   AuthState auth = AuthState.UNNECESSARY;
-  String sender = "";
+  String sender = '';
 }

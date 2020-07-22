@@ -9,14 +9,14 @@ class L2gAppBar extends StatelessWidget {
       pinned: true,
       expandedHeight: 150.0,
       flexibleSpace: const FlexibleSpaceBar(
-        title: Text("Lecture2Gether"),
+        title: Text('Lecture2Gether'),
       ),
       actions: [
         L2gUserCounter(),
         L2gShareRoomButton(),
         IconButton(
           icon: const Icon(Icons.settings),
-          tooltip: "Settings",
+          tooltip: 'Settings',
           onPressed: () {},
         )
       ],

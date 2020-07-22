@@ -80,6 +80,8 @@ class SendVideoStateResponse extends _BaseResponse {}
 // ======= Events ========
 
 class VideoStateEvent {
+  static const eventName = 'video_state_event';
+
   VideoMetaData videoMetaData;
   String videoUrl;
   bool paused;
@@ -91,5 +93,7 @@ class VideoStateEvent {
 }
 
 class RoomUserCountEvent {
+  static const eventName = 'room_user_count_update';
+
   int users;
 }

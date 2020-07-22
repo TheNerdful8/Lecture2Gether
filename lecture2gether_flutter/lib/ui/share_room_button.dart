@@ -10,16 +10,16 @@ class L2gShareRoomButton extends StatelessWidget {
     return IconButton(
       onPressed: onPress,
       icon: const Icon(Icons.share),
-      tooltip: "Share Room",
+      tooltip: 'Share Room',
     );
   }
 
   void onPress() {
-    var url = "https://lecture2gether.eu";  // TODO Actually share url to l2g room
+    var url = 'https://lecture2gether.eu';  // TODO Actually share url to l2g room
 
     if (kIsWeb) {
       FlutterClipboard.copy(url);
-      print("$url copied to clipboard");  // TODO Display a toast instead
+      print('$url copied to clipboard');  // TODO Display a toast instead
     } else {
       Share.share(url);
     }

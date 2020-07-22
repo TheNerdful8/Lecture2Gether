@@ -5,7 +5,8 @@ import 'package:lecture2gether/domain/shared_state.dart';
 import 'package:lecture2gether/ui/app_bar.dart';
 import 'package:provider/provider.dart';
 
-void main() => runApp(MultiProvider(
+void main() =>
+    runApp(MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => SharedStateModel()),
         ChangeNotifierProvider(create: (_) => PersistentSettingsModel()),
@@ -23,6 +24,8 @@ class L2gApp extends StatefulWidget {
 class _L2gAppState extends State<L2gApp> {
   @override
   Widget build(BuildContext context) {
+    context.watch<RemoteSettingsModel>();
+
     return MaterialApp(
       home: Scaffold(
         body: CustomScrollView(
@@ -40,6 +43,17 @@ class _L2gAppState extends State<L2gApp> {
         ),
       ),
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    var remoteSettings = context.read<RemoteSettingsModel>();
+    var connection = context.read<ConnectionStateModel>();
+    if (remoteSettings.hasUpdated && !connection.isConnected) {
+      connection.connect(remoteSettings);
+    }
   }
 
   @override

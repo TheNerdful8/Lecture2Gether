@@ -11,11 +11,11 @@ class L2gUserCounter extends StatelessWidget {
         return IconButton(
           icon: Row(
             children: [
-              Text("1"),     // TODO Display correct number of users in room
+              Text('1'),     // TODO Display correct number of users in room
               Icon(Icons.supervisor_account),
             ],
           ),
-          tooltip: "Number of users currently in the Room",
+          tooltip: 'Number of users currently in the Room',
           onPressed: () {},
         );
       },
