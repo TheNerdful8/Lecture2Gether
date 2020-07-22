@@ -198,17 +198,11 @@ class GoogleDriveMetaDataProvider(MetaDataProvider):
         self.video_meta_data["title"] = file_meta["name"]
         self.video_meta_data["mimeType"] = file_meta["mimeType"]
 
-        # Get stream url from API
-        file_download_url = json.loads(self._drive.files().get_media(fileId=self._file_id).to_json())['uri']
-        # Replace backend API key by frontend, so the user can access the video
-        url_parts = urllib.parse.urlparse(file_download_url)
-        query = urllib.parse.parse_qs(url_parts.query)
-        query['key'] = self._frontend_key
-        query['alt'] = query['alt'][0]
-        new_url_parts = list(url_parts)
-        new_url_parts[4] = urllib.parse.urlencode(query)
-        new_file_download_url = urllib.parse.urlunparse(new_url_parts)
-        self.video_meta_data["streamUrl"] = f"{new_file_download_url}&l2g_media_type={file_meta['mimeType']}"
+        # Get construct the stream url
+        stream_url = f"https://www.googleapis.com/drive/v3/files/{str(self._file_id)}"
+        stream_url += f"?key={str(os.environ['GOOGLE_DRIVE_API_KEY_FRONTEND'])}"
+        stream_url += f"&alt=media&l2g_media_type={str(file_meta['mimeType'])}"
+        self.video_meta_data["streamUrl"] = stream_url
 
         return super().get_meta_data()
 
