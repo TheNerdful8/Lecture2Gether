@@ -64,8 +64,8 @@ RUN npm run build
 FROM backend as final
 COPY --from=frontend /app/src/frontend/dist/ /app/static
 # Setup configs
+VOLUME /app/config
 ADD docker/supervisor.conf /etc/supervisor/conf.d/app.conf
-RUN mkdir /app/config
 ADD docker/settings.json /app/config/settings.json
 RUN ln -sf /app/config/settings.json /app/static/settings.json
 ADD docker/nginx.conf /etc/nginx/sites-enabled/default

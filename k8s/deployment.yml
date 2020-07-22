@@ -7,12 +7,17 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: "NOT_SET"
+      app: "lecture2gether"
   template:
     metadata:
       labels:
-        app: "NOT_SET"
+        app: "lecture2gether"
     spec:
+      volumes:
+        - name: "frontend-config"
+          configMap:
+            name: "frontend"
+
       containers:
         - image: "docker.io/thenerdful8/lecture2gether"
           name: "main"
@@ -21,4 +26,11 @@ spec:
               containerPort: 8000
             - name: "metrics"
               containerPort: 5000
+          envFrom:
+            - configMapRef: 
+                name: "backend"
+          volumeMounts:
+            - name: "frontend-config"
+              mountPath: "/app/config"
+              readOnly: true
             
