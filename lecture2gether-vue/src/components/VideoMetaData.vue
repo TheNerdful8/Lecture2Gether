@@ -1,19 +1,19 @@
 <template>
     <div class="video-meta-data pa-6">
         <div class="video-title display-1"
-             :class="{ hidden: videoMetaData.title === null }"
+             v-if="videoMetaData.title !== null"
         >
             {{ videoMetaData.title }}
         </div>
         <div>
             <a class="creator body-1 meta-data-link"
                :href="videoMetaData.creatorLink"
-               :class="{ hidden: videoMetaData.creator === null }"
+               v-if="videoMetaData.creator !== null"
             >
                 {{ videoMetaData.creator }}
             </a>
             <div class="date body-1"
-                 :class="{ hidden: videoMetaData.date === null }"
+                 v-if="videoMetaData.date !== null"
             >
                 {{ videoDate }}
             </div>
@@ -21,7 +21,7 @@
         <v-spacer></v-spacer>
         <a class="license body-1 meta-data-link"
            :href="videoMetaData.licenseLink"
-           :class="{ hidden: videoMetaData.license === null }"
+           v-if="videoMetaData.license !== null"
         >
             License: {{ videoMetaData.license }}
         </a>
@@ -68,9 +68,5 @@ export default class VideoMetaData extends Vue {
 
     .meta-data-link:hover {
         text-decoration: underline;
-    }
-
-    .hidden {
-        visibility: hidden;
     }
 </style>
