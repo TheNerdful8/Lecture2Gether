@@ -4,6 +4,13 @@
              v-if="videoMetaData.title !== null"
         >
             {{ videoMetaData.title }}
+            <v-btn icon
+                   :href="videoMetaData.url"
+                   target="_blank"
+                   v-if="videoMetaData.url !== null"
+            >
+                <v-icon>mdi-open-in-new</v-icon>
+            </v-btn>
         </div>
         <div>
             <a class="creator body-1 meta-data-link"
