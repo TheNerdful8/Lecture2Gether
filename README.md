@@ -120,10 +120,12 @@ CLEANUP\_ROOM\_EXPIRE\_TIME | 3600 | Time (in seconds) until an empty room gets 
 CLEANUP\_MAX\_ROOM\_LIFE\_TIME | 86400 | Time (in seconds) until an active room gets abandoned
 LOGLEVEL | INFO | Configures the python logging loglevel
 GOOGLE\_YOUTUBE\_API\_KEY | *empty* | Google YouTube Data v3 API-key, used to extract meta data from YouTube videos
-GOOGLE\_DRIVE\_API\_KEY_BACKEND | *empty* | Google Drive API key, used to access Google Drive files and extract meta data
-GOOGLE\_DRIVE\_API\_KEY_FRONTEND | *empty* | Google Drive API key, used to access Google Drive files in the frontend (note: this key is **publicly readable**, restrict its usage to the used website (e.g. https://lecture2gether.eu or equivalent IP address) and Google Drive the Google API console.)
+GOOGLE\_DRIVE\_API\_KEY_BACKEND | *empty* | Google Drive API key, used to access meta data in the backend
+GOOGLE\_DRIVE\_API\_KEY_FRONTEND | *empty* | Google Drive API key, used to access Google Drive files in the frontend (see **warning [1]**)
 SENTRY\_DSN | *empty* | Sentry connection [DSN](https://docs.sentry.io/error-reporting/configuration/?platform=python#dsn)
 SENTRY\_ENV | default | Sentry [environment](https://docs.sentry.io/error-reporting/configuration/?platform=python#environment)
+
+[1] This key is **publicly readable**, restrict its usage to the used website (e.g. https://lecture2gether.eu or equivalent IP address) and Google Drive in the Google API console.)
 
 The frontend is configured via a `settings.json` file which should be reachable on a
 request to `/settings.json` from the running browser application.
