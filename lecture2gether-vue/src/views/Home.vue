@@ -22,7 +22,7 @@ export default class L2gHome extends Vue {
     async onConnectedChanged() {
         await this.$store.dispatch('newRoom');
         await this.$router.push({
-            name: 'player',
+            name: 'room',
             params: {
                 roomId: this.$store.state.rooms.roomId,
             },
