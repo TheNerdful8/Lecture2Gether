@@ -1,6 +1,6 @@
 import { RouteConfig } from 'vue-router';
 import Home from '@/views/Home.vue';
-import Player from '@/views/Room.vue';
+import Room from '@/views/Room.vue';
 
 export default [
     {
@@ -10,8 +10,8 @@ export default [
     },
     {
         path: '/l/:roomId',
-        name: 'player',
-        component: Player,
+        name: 'room',
+        component: Room,
     },
     {
         path: '/sync/debug',
