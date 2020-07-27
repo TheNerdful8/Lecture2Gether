@@ -64,9 +64,11 @@ export default class L2gPlayer extends Vue {
     }
 
     get playerOptions() {
-        const sources = [];
+        let source;
+        let playbackRates;
         try {
-            sources.push(this.getSourceFromURL(this.url));
+            source = this.getSourceFromURL(this.url);
+            playbackRates = this.getPlaybackRatesFromSource(source.type);
         } catch (e) {
             console.error(e);
             // Show error page
@@ -77,8 +79,8 @@ export default class L2gPlayer extends Vue {
             muted: false,
             language: 'en',
             fluid: true,
-            playbackRates: [0.75, 1.0, 1.25, 1.5, 1.75, 2.0],
-            sources,
+            playbackRates,
+            sources: [source],
             techOrder: ['youtube', 'html5'],
             youtube: {
                 ytControls: 0,
@@ -89,6 +91,15 @@ export default class L2gPlayer extends Vue {
     get player(): videojs.Player {
         // @ts-ignore
         return this.$refs.videoPlayer.player;
+    }
+
+    getPlaybackRatesFromSource(src: string): Number[] {
+        if (src === 'video/youtube') {
+            // YouTube does not support player speed above 2x
+            return [0.75, 1.0, 1.25, 1.5, 1.75, 2.0];
+        } else {
+            return [0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5];
+        }
     }
 
     getSourceFromURL(url: string): {type: string; src: string} {
@@ -261,5 +272,8 @@ export default class L2gPlayer extends Vue {
 }
 .video-js .vjs-duration {
     display: block;
+}
+.vjs-menu-button-popup .vjs-menu .vjs-menu-content {
+    max-height: 16em;
 }
 </style>

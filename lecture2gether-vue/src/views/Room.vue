@@ -3,7 +3,7 @@
         <v-row>
             <v-spacer></v-spacer>
             <PasswordDialog v-if="this.$store.getters.authRequired" class="password-dialog"></PasswordDialog>
-            <l2g-player v-if="!this.$store.getters.authRequired && this.$store.state.player.videoUrl" class="l2g-player"></l2g-player>
+            <player v-if="!this.$store.getters.authRequired && this.$store.state.player.videoUrl" class="l2g-player"></player>
             <v-spacer></v-spacer>
         </v-row>
         <v-overlay :value="!roomExists" light>
@@ -21,15 +21,15 @@
 // @ is an alias to /src
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import L2gPlayer from '@/components/Player.vue';
+import Player from '@/components/Player.vue';
 import { Watch } from 'vue-property-decorator';
 import { AuthState } from '@/plugins/store/player';
 import PasswordDialog from '@/components/PasswordDialog.vue';
 
 @Component({
-    components: { PasswordDialog, L2gPlayer },
+    components: { PasswordDialog, Player },
 })
-export default class L2gPlayerView extends Vue {
+export default class Room extends Vue {
     roomExists = true;
 
     @Watch('$route.params.roomId')

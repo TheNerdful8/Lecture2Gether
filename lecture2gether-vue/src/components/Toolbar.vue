@@ -25,7 +25,8 @@
                     </v-btn>
                     <v-tooltip bottom v-model="showingTooltip">
                         <template v-slot:activator="_">
-                            <v-btn @click="saveUrlClipboard()" class="canCopy share ml-4" color="primary" depressed outlined large type="button">
+                            <v-btn @click="saveUrlClipboard()" class="canCopy share ml-4" color="primary" depressed
+                                   outlined large type="button" aria-label="Copy share URL">
                                 <v-icon>mdi-share</v-icon>
                             </v-btn>
                         </template>
