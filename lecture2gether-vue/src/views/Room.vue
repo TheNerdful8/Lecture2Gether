@@ -1,7 +1,11 @@
 <template>
     <div>
-        <PasswordDialog v-if="this.$store.getters.authRequired" class="password-dialog"></PasswordDialog>
-        <player v-if="!this.$store.getters.authRequired && this.$store.state.player.videoUrl" class="l2g-player"></player>
+        <v-row>
+            <v-spacer></v-spacer>
+            <PasswordDialog v-if="this.$store.getters.authRequired" class="password-dialog"></PasswordDialog>
+            <player v-if="!this.$store.getters.authRequired && this.$store.state.player.videoUrl" class="l2g-player"></player>
+            <v-spacer></v-spacer>
+        </v-row>
         <v-overlay :value="!roomExists" light>
             <v-card class="room-card pa-12">
                 <h2 class="display-1 heading ">Room does not exist (anymore)!</h2>
@@ -69,14 +73,7 @@ export default class Room extends Vue {
         width: 100%!important;
     }
     .l2g-player {
-        margin: auto;
-        //hacky way to force centered video.
-        //this size has to be the same as the video
-        //width in src/components/Player.vue
+        width: 100vw;
         max-width: 750px;
-    }
-
-    .password-dialog {
-        margin: auto;
     }
 </style>
