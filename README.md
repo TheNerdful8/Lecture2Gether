@@ -119,9 +119,13 @@ CLEANUP\_INTERVAL | 900 | Interval (in seconds) of searching for abandoned rooms
 CLEANUP\_ROOM\_EXPIRE\_TIME | 3600 | Time (in seconds) until an empty room gets abandoned
 CLEANUP\_MAX\_ROOM\_LIFE\_TIME | 86400 | Time (in seconds) until an active room gets abandoned
 LOGLEVEL | INFO | Configures the python logging loglevel
-GOOGLE\_API\_KEY | *empty* | A Google API key, used to extract meta data from YouTube videos
+GOOGLE\_YOUTUBE\_API\_KEY | *empty* | Google YouTube Data v3 API-key, used to extract meta data from YouTube videos
+GOOGLE\_DRIVE\_API\_KEY_BACKEND | *empty* | Google Drive API key, used to access meta data in the backend
+GOOGLE\_DRIVE\_API\_KEY_FRONTEND | *empty* | Google Drive API key, used to access Google Drive files in the frontend (see **warning [1]**)
 SENTRY\_DSN | *empty* | Sentry connection [DSN](https://docs.sentry.io/error-reporting/configuration/?platform=python#dsn)
 SENTRY\_ENV | default | Sentry [environment](https://docs.sentry.io/error-reporting/configuration/?platform=python#environment)
+
+[1] This key is **publicly readable**, restrict its usage to the used website (e.g. https://lecture2gether.eu or equivalent IP address) and Google Drive in the Google API console.)
 
 The frontend is configured via a `settings.json` file which should be reachable on a
 request to `/settings.json` from the running browser application.
@@ -129,7 +133,7 @@ The format is as follows:
 ```
 {
     "apiRoot": <string>,        // Under which url the server is reachable for http api calls
-    "socketioHost": <string>,   // Under which host the socket.io endpoint is served. 
+    "socketioHost": <string>,   // Under which host the socket.io endpoint is served.
                                 // Can be an empty string which results in the same as where the frontend is deployed
     "environment": <string>,    // Determines the sentry [environment](https://docs.sentry.io/error-reporting/configuration/?platform=browser#environment)
     "sentry_dsn": <string>      // Sentry connection [DSN](https://docs.sentry.io/error-reporting/configuration/?platform=browser#dsn)

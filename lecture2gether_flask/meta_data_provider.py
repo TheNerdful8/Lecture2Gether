@@ -1,10 +1,12 @@
 import os
 import re
+import json
 import requests
 import googleapiclient.discovery
+from googleapiclient.errors import HttpError
+from urllib.parse import urlparse, parse_qs
 from datetime import datetime
 from bs4 import BeautifulSoup
-from urllib.parse import urlparse, parse_qs
 
 
 class VideoNotFoundException(Exception):
@@ -12,6 +14,10 @@ class VideoNotFoundException(Exception):
 
 
 class VideoUnauthorizedException(Exception):
+    pass
+
+
+class APIUnauthorizedException(Exception):
     pass
 
 
@@ -26,6 +32,7 @@ class MetaDataProvider():
             "date": None,
             "license": None,
             "licenseLink": None,
+            "mimeType": None
         }
 
     def get_meta_data(self):
@@ -103,18 +110,18 @@ class L2GoMetaDataProvider(MetaDataProvider):
 class YouTubeMetaDataProvider(MetaDataProvider):
     def __init__(self, video_url):
         super().__init__(video_url)
-        self._video_id = youtube_video_id_from_url(video_url)
+        self._video_id = YouTubeMetaDataProvider.youtube_video_id_from_url(video_url)
         if not self._video_id:
             raise VideoNotFoundException
 
     def get_meta_data(self):
-        if 'GOOGLE_API_KEY' not in os.environ:
+        if 'GOOGLE_YOUTUBE_API_KEY' not in os.environ:
             self.video_meta_data["url"] = f'https://www.youtube.com/watch?v={self._video_id}'
             self.video_meta_data["streamUrl"] = f'https://www.youtube.com/watch?v={self._video_id}'
             return super().get_meta_data()
 
         youtube = googleapiclient.discovery.build(
-            'youtube', 'v3', developerKey=os.environ['GOOGLE_API_KEY'], cache_discovery=False)
+            'youtube', 'v3', developerKey=os.environ['GOOGLE_YOUTUBE_API_KEY'], cache_discovery=False)
 
         request = youtube.videos().list(
             part="snippet,status",
@@ -134,19 +141,78 @@ class YouTubeMetaDataProvider(MetaDataProvider):
 
         return super().get_meta_data()
 
+    @staticmethod
+    def youtube_video_id_from_url(video_url):
+        url = urlparse(video_url)
+        if url.hostname == 'youtu.be':
+            # Return path without '/'
+            return url.path[1:]
+        if url.hostname in ['youtube.com', 'www.youtube.com']:
+            if url.path in ['/watch', '/watch/']:
+                query = parse_qs(url.query)
+                if 'v' in query:
+                    return query['v'][0]
+            elif re.fullmatch(r'/watch/[a-zA-Z0-9]+', url.path):
+                return url.path[len('/watch/'):]
+        return None
 
-def youtube_video_id_from_url(video_url):
-    url = urlparse(video_url)
-    if url.hostname == 'youtu.be':
-        # Return path without '/'
-        return url.path[1:]
-    if url.hostname in ['youtube.com', 'www.youtube.com']:
-        if url.path in ['/watch', '/watch/']:
-            query = parse_qs(url.query)
-            if 'v' in query:
-                return query['v'][0]
-        elif re.fullmatch(r'/watch/[a-zA-Z0-9]+', url.path):
-            return url.path[len('/watch/'):]
-    return None
 
+class GoogleDriveMetaDataProvider(MetaDataProvider):
+    def __init__(self, share_link):
+        super().__init__(share_link)
+        self._file_id = GoogleDriveMetaDataProvider.drive_file_id_from_share_url(share_link)
 
+        if not self._file_id:
+            raise VideoNotFoundException
+
+        # Check API Key
+        if 'GOOGLE_DRIVE_API_KEY_BACKEND' not in os.environ or \
+            'GOOGLE_DRIVE_API_KEY_FRONTEND' not in os.environ:
+            raise APIUnauthorizedException
+
+        self._frontend_key = os.environ['GOOGLE_DRIVE_API_KEY_FRONTEND']
+
+        # Init Google API
+        try:
+            self._drive = googleapiclient.discovery.build(
+                'drive', 'v3', developerKey=os.environ['GOOGLE_DRIVE_API_KEY_BACKEND'], cache_discovery=False)
+        except HttpError as e:
+            if e.resp.status in [400, 401, 403]:
+                raise APIUnauthorizedException
+            else:
+                raise e
+
+    def get_meta_data(self):
+        # Get meta data for file
+        try:
+            file_meta = self._drive.files().get(fileId=self._file_id).execute()
+        except HttpError as e:
+            if e.resp.status in [400, 401, 403]:
+                raise VideoUnauthorizedException
+            elif e.resp.status in [404,]:
+                raise VideoNotFoundException
+            else:
+                raise e
+
+        # Set the metadata
+        self.video_meta_data["title"] = file_meta["name"]
+        self.video_meta_data["mimeType"] = file_meta["mimeType"]
+
+        # Construct the stream url
+        stream_url = f"https://www.googleapis.com/drive/v3/files/{str(self._file_id)}"
+        stream_url += f"?key={str(os.environ['GOOGLE_DRIVE_API_KEY_FRONTEND'])}"
+        stream_url += f"&alt=media&l2g_media_type={str(file_meta['mimeType'])}"
+        self.video_meta_data["streamUrl"] = stream_url
+
+        return super().get_meta_data()
+
+    @staticmethod
+    def drive_file_id_from_share_url(share_url):
+        """
+        Converts a google drive share link into a google drive file id
+        """
+        url = urlparse(share_url)
+        if url.hostname in ['drive.google.com',]:
+            if re.fullmatch(r'/file/d/[a-zA-Z0-9-_]+/view', url.path):
+                return url.path[len('/file/d/'):-len("/view")]
+        return None

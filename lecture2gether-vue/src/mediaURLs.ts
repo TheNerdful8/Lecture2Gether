@@ -1,5 +1,5 @@
 export function checkURL(url: string): {type: string, src: URL,} | undefined {
-    const extensions2types: [string,string][] = 
+    const extensions2types: [string,string][] =
         [['m3u8', 'application/x-mpegURL']
         ,['mp4', 'video/mp4']
         ,['ogg', 'video/ogg']
@@ -15,16 +15,25 @@ export function checkURL(url: string): {type: string, src: URL,} | undefined {
         return res === undefined ? undefined : res[1];
     };
 
-    let host, extension, urlobj;
+    let host, extension, urlobj, media_type;
     try {
         urlobj = new URL(url);
         host = urlobj.hostname;
+        // Get a custom get param added by the backend if it knows the mime type
+        media_type = urlobj.searchParams.get("l2g_media_type")
         extension = urlobj.pathname.split('.').pop();
-    } catch { 
+    } catch {
         return undefined;
     }
 
     let type;
+
+    // Prefer a media type set by the backend
+    if (media_type) return {
+        type: media_type,
+        src: urlobj,
+    };
+
     //check type based on extension first
     type = assoc(extensions2types, extension);
     //check type based on hostname next

@@ -21,8 +21,8 @@ from prometheus_flask_exporter import PrometheusMetrics
 from prometheus_client import Gauge, Counter
 from sentry_sdk.integrations.flask import FlaskIntegration
 
-from meta_data_provider import L2GoMetaDataProvider, VideoNotFoundException, VideoUnauthorizedException, \
-    YouTubeMetaDataProvider, DefaultMetaDataProvider
+from meta_data_provider import DefaultMetaDataProvider, L2GoMetaDataProvider, YouTubeMetaDataProvider, GoogleDriveMetaDataProvider, \
+    APIUnauthorizedException, VideoNotFoundException, VideoUnauthorizedException
 
 logging.basicConfig(level=os.getenv('LOGLEVEL', 'INFO'))
 
@@ -49,7 +49,7 @@ if os.getenv('SENTRY_DSN', '') != '':
         integrations=[FlaskIntegration()],
         environment=os.getenv('SENTRY_ENV', 'default')
     )
-    
+
 
 # Count active clients
 ACTIVE_CLIENTS = 0
@@ -126,14 +126,18 @@ def decode_l2go_path():
     try:
         if url.hostname in ['www.youtube.com', 'youtube.com', 'youtu.be']:
             meta_data_provider = YouTubeMetaDataProvider(video_url)
+        elif url.hostname in ['drive.google.com', ]:
+            meta_data_provider = GoogleDriveMetaDataProvider(video_url)
         elif 'lecture2go' in url.hostname or '/l2go/' in url.path:
             meta_data_provider = L2GoMetaDataProvider(video_url, password)
         else:
             meta_data_provider = DefaultMetaDataProvider(video_url)
     except VideoNotFoundException:
-        abort(404)
+        abort(404, "Video not found")
     except VideoUnauthorizedException:
-        abort(401)
+        abort(401, "You are not authorized to watch this video")
+    except APIUnauthorizedException:
+        abort(501, "Lecture2Gether cannot access required API to access data. Is the API key (e.g. for Google) correct?")
 
     video_meta_data = meta_data_provider.get_meta_data()
 
