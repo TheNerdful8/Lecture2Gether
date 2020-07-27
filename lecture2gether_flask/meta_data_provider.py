@@ -3,8 +3,8 @@ import re
 import json
 import requests
 import googleapiclient.discovery
-from urllib.parse import urlparse, parse_qs
 from googleapiclient.errors import HttpError
+from urllib.parse import urlparse, parse_qs
 from datetime import datetime
 from bs4 import BeautifulSoup
 
