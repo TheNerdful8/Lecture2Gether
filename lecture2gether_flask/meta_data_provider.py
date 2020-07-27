@@ -198,7 +198,7 @@ class GoogleDriveMetaDataProvider(MetaDataProvider):
         self.video_meta_data["title"] = file_meta["name"]
         self.video_meta_data["mimeType"] = file_meta["mimeType"]
 
-        # Get construct the stream url
+        # Construct the stream url
         stream_url = f"https://www.googleapis.com/drive/v3/files/{str(self._file_id)}"
         stream_url += f"?key={str(os.environ['GOOGLE_DRIVE_API_KEY_FRONTEND'])}"
         stream_url += f"&alt=media&l2g_media_type={str(file_meta['mimeType'])}"
