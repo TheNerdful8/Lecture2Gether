@@ -28,7 +28,6 @@ The video streams are synchronized to partially restore the social aspect of cam
 
 [![Flask CI](https://github.com/TheNerdful8/Lecture2Gether/workflows/Flask%20CI/badge.svg?branch=master)](https://github.com/TheNerdful8/Lecture2Gether/actions?query=workflow%3A%22Flask+CI%22) &nbsp;&nbsp; [![Node.js CI](https://github.com/TheNerdful8/Lecture2Gether/workflows/Node.js%20CI/badge.svg)](https://github.com/TheNerdful8/Lecture2Gether/actions?query=workflow%3A%22Node.js+CI%22) &nbsp;&nbsp; [![Kubernetes configuration](https://github.com/TheNerdful8/Lecture2Gether/workflows/Kubernetes%20configuration/badge.svg)](https://github.com/TheNerdful8/Lecture2Gether/actions?query=workflow%3A%22Kubernetes+configuration%22)
 
-<!-- TODO: Installation for frontend -->
 ## Install
 ### Using docker (or podman)
 You can either build the image from source or use one of the provided versions from our
@@ -127,7 +126,6 @@ The format is as follows:
 The backend publishes statistical data (No. sessions, No. joined/left rooms, server infos, ...) in the [Prometheus](https://prometheus.io/) format to `/metrics`. This can be scraped by a [Prometheus](https://prometheus.io/) server and displayed in e.g. [Grafana](https://grafana.com/).
 
 ## Built With
-
 * [Vue.js](https://vuejs.org)
 * [Vuetify](https://vuetifyjs.com)
 * [socket.io](https://socket.io)
@@ -136,7 +134,6 @@ The backend publishes statistical data (No. sessions, No. joined/left rooms, ser
 * [videojs-contrib-hls](https://github.com/videojs/videojs-contrib-hls)
 * [Flask](https://flask.palletsprojects.com)
 * [Flask-SocketIO](https://flask-socketio.readthedocs.io)
-* [Flask-RESTful](https://flask-restful.readthedocs.io)
 * [Prometheus Flask exporter](https://github.com/rycus86/prometheus_flask_exporter)
 * [Prometheus Python Client](https://github.com/prometheus/client_python)
 * [gevent](http://gevent.org)
