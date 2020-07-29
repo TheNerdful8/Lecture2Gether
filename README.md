@@ -35,7 +35,6 @@ The video streams are synchronized to partially restore the social aspect of cam
 * [videojs-contrib-hls](https://github.com/videojs/videojs-contrib-hls)
 * [Flask](https://flask.palletsprojects.com)
 * [Flask-SocketIO](https://flask-socketio.readthedocs.io)
-* [Flask-RESTful](https://flask-restful.readthedocs.io)
 * [Prometheus Flask exporter](https://github.com/rycus86/prometheus_flask_exporter)
 * [Prometheus Python Client](https://github.com/prometheus/client_python)
 * [gevent](http://gevent.org)
