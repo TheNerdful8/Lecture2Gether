@@ -15,10 +15,6 @@
     ·
     <a href="https://github.com/TheNerdful8/Lecture2Gether/pulls">Send a Pull Request</a>
   </p>
-  <p align="center">
-    <img src="static/L2Ge_frontpage.png" alt="Screenshot Frontpage" height="200">
-    <img src="static/L2Ge_player.png" alt="Screenshot Player" height="200">
-  </p>
 </p>
 
 ## About The Project
@@ -27,6 +23,12 @@ Lecture2Gether makes it possible to watch online lectures with friends by pastin
 The video streams are synchronized to partially restore the social aspect of campus life.
 
 [![Flask CI](https://github.com/TheNerdful8/Lecture2Gether/workflows/Flask%20CI/badge.svg?branch=master)](https://github.com/TheNerdful8/Lecture2Gether/actions?query=workflow%3A%22Flask+CI%22) &nbsp;&nbsp; [![Node.js CI](https://github.com/TheNerdful8/Lecture2Gether/workflows/Node.js%20CI/badge.svg)](https://github.com/TheNerdful8/Lecture2Gether/actions?query=workflow%3A%22Node.js+CI%22) &nbsp;&nbsp; [![Kubernetes configuration](https://github.com/TheNerdful8/Lecture2Gether/workflows/Kubernetes%20configuration/badge.svg)](https://github.com/TheNerdful8/Lecture2Gether/actions?query=workflow%3A%22Kubernetes+configuration%22)
+
+## Screenshots
+<p align="center">
+  <img src="static/L2Ge_frontpage.png" alt="Screenshot Frontpage" width="49%"/>
+  <img src="static/L2Ge_player.png" alt="Screenshot Player" width="49%"/>
+</table>
 
 ## Install
 ### Using docker (or podman)
