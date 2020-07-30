@@ -20,6 +20,7 @@ spec:
 
       containers:
         - image: "docker.io/thenerdful8/lecture2gether"
+          imagePullPolicy: "Always"
           name: "main"
           ports:
             - name: "http"

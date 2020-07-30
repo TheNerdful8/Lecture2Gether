@@ -1,0 +1,51 @@
+---
+kind: pipeline
+type: kubernetes
+name: production
+
+trigger:
+  branch:
+    - master
+
+steps:
+  - name: update container
+    image: plugins/docker
+    settings:
+      repo: thenerdful8/lecture2gether
+      username: ftsell
+      password:
+        from_secret: dockerhub-access-token
+
+  - name: deploy
+    image: registry.mafiasi.de/deployment_restarter
+    settings:
+      namespace: mafiasi-prod
+      name: lecture2gether-deployment
+
+
+
+---
+kind: pipeline
+type: kubernetes
+name: staging
+
+trigger:
+  branch:
+    - staging
+
+steps:
+  - name: update container
+    image: plugins/docker
+    settings:
+      repo: thenerdful8/lecture2gether
+      tags: staging-latest
+      username: ftsell
+      password:
+        from_secret: dockerhub-access-token
+
+  - name: deploy
+    image: registry.mafiasi.de/deployment_restarter
+    settings:
+      namespace: mafiasi-staging
+      name: lecture2gether-deployment
+
