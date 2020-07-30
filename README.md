@@ -16,8 +16,8 @@
     <a href="https://github.com/TheNerdful8/Lecture2Gether/pulls">Send a Pull Request</a>
   </p>
   <p align="center">
-    <img src="https://github.com/TheNerdful8/Lecture2Gether/blob/master/static/L2Ge_frontpage.png" alt="Screenshot Frontpage" height="200">
-    <img src="https://github.com/TheNerdful8/Lecture2Gether/blob/master/static/L2Ge_player.png" alt="Screenshot Player" height="200">
+    <img src="https://github.com/TheNerdful8/Lecture2Gether/blob/refactor/update_readme/static/L2Ge_frontpage.png" alt="Screenshot Frontpage" height="200">
+    <img src="https://github.com/TheNerdful8/Lecture2Gether/blob/refactor/update_readme/static/L2Ge_player.png" alt="Screenshot Player" height="200">
   </p>
 </p>
 
