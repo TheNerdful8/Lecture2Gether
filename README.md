@@ -24,7 +24,7 @@ The video streams are synchronized to partially restore the social aspect of cam
 
 [![Flask CI](https://github.com/TheNerdful8/Lecture2Gether/workflows/Flask%20CI/badge.svg?branch=master)](https://github.com/TheNerdful8/Lecture2Gether/actions?query=workflow%3A%22Flask+CI%22) &nbsp;&nbsp; [![Node.js CI](https://github.com/TheNerdful8/Lecture2Gether/workflows/Node.js%20CI/badge.svg)](https://github.com/TheNerdful8/Lecture2Gether/actions?query=workflow%3A%22Node.js+CI%22) &nbsp;&nbsp; [![Kubernetes configuration](https://github.com/TheNerdful8/Lecture2Gether/workflows/Kubernetes%20configuration/badge.svg)](https://github.com/TheNerdful8/Lecture2Gether/actions?query=workflow%3A%22Kubernetes+configuration%22)
 
-## Screenshots
+### Screenshots
 <p align="center">
   <img src="static/L2Ge_frontpage.png" alt="Screenshot Frontpage" width="49%"/>
   <img src="static/L2Ge_player.png" alt="Screenshot Player" width="49%"/>
