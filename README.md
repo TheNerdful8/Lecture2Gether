@@ -18,34 +18,18 @@
 </p>
 
 ## About The Project
-<!-- TODO add screenshot -->
 
-Lecture2Gether makes it possible to watch online lectures with friends by pasting a link to a [Lecture2Go](https://github.com/lecture2go/portal-6.2-ce-ga6) Video, a YouTube Video or a simple mp4 link.
+Lecture2Gether makes it possible to watch online lectures with friends by pasting a link to a [Lecture2Go](https://github.com/lecture2go/portal-6.2-ce-ga6) Video, a YouTube Video, Google Drive Video or a simple .mp4 link.
 The video streams are synchronized to partially restore the social aspect of campus life.
 
 [![Flask CI](https://github.com/TheNerdful8/Lecture2Gether/workflows/Flask%20CI/badge.svg?branch=master)](https://github.com/TheNerdful8/Lecture2Gether/actions?query=workflow%3A%22Flask+CI%22) &nbsp;&nbsp; [![Node.js CI](https://github.com/TheNerdful8/Lecture2Gether/workflows/Node.js%20CI/badge.svg)](https://github.com/TheNerdful8/Lecture2Gether/actions?query=workflow%3A%22Node.js+CI%22) &nbsp;&nbsp; [![Kubernetes configuration](https://github.com/TheNerdful8/Lecture2Gether/workflows/Kubernetes%20configuration/badge.svg)](https://github.com/TheNerdful8/Lecture2Gether/actions?query=workflow%3A%22Kubernetes+configuration%22) &nbsp;&nbsp; [![Build Status](https://ci.mafiasi.de/api/badges/mafiasi-ag/Lecture2Gether/status.svg)](https://ci.mafiasi.de/mafiasi-ag/Lecture2Gether)
 
-### Built With
+### Screenshots
+<p align="center">
+  <img src="static/L2Ge_frontpage.png" alt="Screenshot Frontpage" width="49%"/>
+  <img src="static/L2Ge_player.png" alt="Screenshot Player" width="49%"/>
+</table>
 
-* [Vue.js](https://vuejs.org)
-* [Vuetify](https://vuetifyjs.com)
-* [socket.io](https://socket.io)
-* [video.js](https://videojs.com)
-* [videojs-youtube](https://github.com/videojs/videojs-youtube)
-* [videojs-contrib-hls](https://github.com/videojs/videojs-contrib-hls)
-* [Flask](https://flask.palletsprojects.com)
-* [Flask-SocketIO](https://flask-socketio.readthedocs.io)
-* [Prometheus Flask exporter](https://github.com/rycus86/prometheus_flask_exporter)
-* [Prometheus Python Client](https://github.com/prometheus/client_python)
-* [gevent](http://gevent.org)
-* [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/)
-* [Google API Python Client](https://github.com/googleapis/google-api-python-client/)
-* [Nose](https://nose.readthedocs.io/en/latest/)
-* [Redis](https://redis.io/)
-* [coolname](https://github.com/alexanderlukanin13/coolname)
-
-
-<!-- TODO: Installation for frontend -->
 ## Install
 ### Using docker (or podman)
 You can either build the image from source or use one of the provided versions from our
@@ -134,14 +118,32 @@ The format is as follows:
     "apiRoot": <string>,        // Under which url the server is reachable for http api calls
     "socketioHost": <string>,   // Under which host the socket.io endpoint is served.
                                 // Can be an empty string which results in the same as where the frontend is deployed
-    "environment": <string>,    // Determines the sentry [environment](https://docs.sentry.io/error-reporting/configuration/?platform=browser#environment)
-    "sentry_dsn": <string>      // Sentry connection [DSN](https://docs.sentry.io/error-reporting/configuration/?platform=browser#dsn)
+    "environment": <string>,    // Determines the sentry environment
+    "sentry_dsn": <string>      // Sentry connection DSN
                                 // Can be an empty string which disables sentry reporting
 }
 ```
 
 ## Statistics
 The backend publishes statistical data (No. sessions, No. joined/left rooms, server infos, ...) in the [Prometheus](https://prometheus.io/) format to `/metrics`. This can be scraped by a [Prometheus](https://prometheus.io/) server and displayed in e.g. [Grafana](https://grafana.com/).
+
+## Built With
+* [Vue.js](https://vuejs.org)
+* [Vuetify](https://vuetifyjs.com)
+* [socket.io](https://socket.io)
+* [video.js](https://videojs.com)
+* [videojs-youtube](https://github.com/videojs/videojs-youtube)
+* [videojs-contrib-hls](https://github.com/videojs/videojs-contrib-hls)
+* [Flask](https://flask.palletsprojects.com)
+* [Flask-SocketIO](https://flask-socketio.readthedocs.io)
+* [Prometheus Flask exporter](https://github.com/rycus86/prometheus_flask_exporter)
+* [Prometheus Python Client](https://github.com/prometheus/client_python)
+* [gevent](http://gevent.org)
+* [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/)
+* [Google API Python Client](https://github.com/googleapis/google-api-python-client/)
+* [Nose](https://nose.readthedocs.io/en/latest/)
+* [Redis](https://redis.io/)
+* [coolname](https://github.com/alexanderlukanin13/coolname)
 
 ## License
 
