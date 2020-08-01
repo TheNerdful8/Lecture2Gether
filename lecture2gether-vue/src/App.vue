@@ -1,9 +1,9 @@
 <template>
     <v-app>
-        <v-content>
+        <v-main>
             <Toolbar :collapsed="isCollapsed"></Toolbar>
             <router-view/>
-        </v-content>
+        </v-main>
         <lecture2-gether-footer/>
     </v-app>
 </template>
