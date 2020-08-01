@@ -28,10 +28,15 @@
         <v-spacer></v-spacer>
         <a class="license body-1 meta-data-link"
            :href="videoMetaData.licenseLink"
-           v-if="videoMetaData.license !== null"
+           v-if="videoMetaData.license !== null && videoMetaData.licenseLink !== null"
         >
             License: {{ videoMetaData.license }}
         </a>
+        <span class="license body-1"
+           v-if="videoMetaData.license !== null && videoMetaData.licenseLink === null"
+        >
+            License: {{ videoMetaData.license }}
+        </span>
     </div>
 </template>
 
