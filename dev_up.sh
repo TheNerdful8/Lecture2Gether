@@ -14,6 +14,6 @@ $CONTAINER_RUNTIME run \
     -v $D/lecture2gether_flask/.venvs/:/root/.cache/pypoetry/virtualenvs \
     -p 5000:5000 \
     -p 8080:8080 \
-    $@ -it \
+    $@ -it --rm \
     lecture2gether
 
