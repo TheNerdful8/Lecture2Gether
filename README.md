@@ -47,6 +47,17 @@ docker run -p 8000:8000 thenerdful8/lecture2gether
 This will start the whole application stack and expose it at
 [http://localhost:8000/](http://localhost:8000).
 
+
+### Full Development Environment
+For development we recommend building a dev container (defined in default Dockerfile) and
+mounting your local sources into it.
+
+This can be done by simply executing the `dev_up.sh` script.
+Any arguments appended to this script are passed to the container runtime so if you want to
+define environment variables you should use a `-e NAME=VALUE` flag.
+By default the script uses docker as a container runtime but you can choose a different
+one (like podman) by exporting the environment variable `CONTAINER_RUNTIME` before executing the script.
+
 ### Install single Backend
 The backend runs on a redis database.
 Run the redis docker `docker run -it -p 6379:6379 redis:buster` or install manually by following [this guide](https://redis.io/topics/quickstart#installing-redis-more-properly).
@@ -86,10 +97,16 @@ npm run serve
 ```
 
 ## Configuration
-There are two main ways of configuring the application: Frontend and backend.
-While the defaults were chosen in such a way that they work in a development environment
-(the docker container has different [ones](./docker/settings.json)) they might need change in a production setup.
+### How to configure
+The application is configured at two places:
+1) Environment variables for the backend
+2) A `settings.json` file for the frontend
 
+Defaults defined in the source code were chosen to work in a development environment. The
+Container Image uses different defaults for the frontend which make more sense in a
+production environment (defined in `docker/settings.json`).
+
+### Detailed Configuration possibilities
 The server can be configured via the following environment variables
 Name | Default Value | Description
 -----|---------------|------------
