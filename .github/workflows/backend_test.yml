@@ -1,6 +1,9 @@
 name: Flask CI
 
-on: [push]
+on:
+  push: 
+  schedule:
+    - cron: 33 3 * * *
 
 jobs:
   pytest:
