@@ -80,7 +80,7 @@ class L2GoMetaDataProvider(MetaDataProvider):
         return re.search('https://[^"]*m3u8', str(self.soup)).group()
 
     def _parse_title(self):
-        return self.soup.find("div", {"class": "meta-title"}).text.strip()
+        return self.soup.find("h2", {"class": "meta-title"}).text.strip()
 
     def _parse_creator(self):
         return self.soup.find("div", {"class": "meta-creators"}).find("a").text.strip()
