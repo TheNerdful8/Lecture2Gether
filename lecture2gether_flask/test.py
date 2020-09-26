@@ -83,7 +83,7 @@ def test_l2go_metadata():
     assert meta_data['streamUrl'] == 'https://fms.rrz.uni-hamburg.de/vod/_definst/mp4:4l2gkoowiso/00.000_Prof.Dr.OlafAsbach_2016-03-24_14-37.mp4/playlist.m3u8'
     assert meta_data['title'] == 'Dies Academicus'
     assert meta_data['creator'] == 'Prof. Dr. Olaf Asbach'
-    assert meta_data['creatorLink'] == 'https://lecture2go.uni-hamburg.de/l2go/-/get/0/0/0/0/0/?_lgopenaccessvideos_WAR_lecture2goportlet_searchQuery=Prof. Dr. Olaf Asbach'
+    assert meta_data['creatorLink'] == 'https://lecture2go.uni-hamburg.de/l2go/-/get/0/0/0/0/0/?_lgopenaccessvideos_WAR_lecture2goportlet_searchQuery=Prof.+Dr.+Olaf+Asbach'
     assert meta_data['date'] == datetime(year=2016, month=3, day=24)
     assert meta_data['license'] == 'UHH-L2G'
     assert meta_data['licenseLink'] == 'https://lecture2go.uni-hamburg.de/license-l2go'
