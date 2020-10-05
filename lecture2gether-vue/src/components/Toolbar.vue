@@ -103,7 +103,7 @@ export default class Toolbar extends Vue {
             } else {
                 this.urlIsValid = true;
                 this.$store.dispatch('setUrl', videoMetaData.streamUrl);
-                delete videoMetaData.streamUrl;
+                videoMetaData.streamUrl = '';
                 this.$store.dispatch('setVideoMetaData', videoMetaData);
             }
         } else {
