@@ -5,32 +5,30 @@ import store from './plugins/store';
 import vuetify from './plugins/vuetify';
 import * as Sentry from "@sentry/browser";
 import {Vue as VueIntegration} from "@sentry/integrations/dist/vue";
+import {SettingsState} from "@/plugins/store/settings";
 
 
 Vue.config.productionTip = false;
 
-// Fetch settings because we can only initialize sentry before Vue      TODO Improve because loading delay
-fetch(new Request('/settings.json', {
-    mode: 'same-origin',
-}))
-    .then(response => response.json())
-    .then(response => {
-        if (response.sentry_dsn !== '')
-            Sentry.init({
-                dsn: response.sentry_dsn,
-                environment: response.environment,
-                integrations: [new VueIntegration({
-                    // @ts-ignore
-                    Vue: Vue,
-                    attachProps: true,
-                    logErrors: true,
-                })],
-            });
+// @ts-ignore
+// global settings are loaded via a separate script tag so that they can be runtime configurable
+const settings: SettingsState = window.L2GO_SETTINGS;
 
-        new Vue({
-            router,
-            store,
-            vuetify,
-            render: (h) => h(App),
-        }).$mount('#app');
+if (settings.sentry_dsn != null && settings.sentry_dsn !== '')
+    Sentry.init({
+        dsn: settings.sentry_dsn,
+        environment: settings.environment,
+        integrations: [new VueIntegration({
+            // @ts-ignore
+            Vue: Vue,
+            attachProps: true,
+            logErrors: true,
+        })],
     });
+
+new Vue({
+    router,
+    store,
+    vuetify,
+    render: (h) => h(App),
+}).$mount('#app');

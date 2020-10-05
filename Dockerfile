@@ -66,8 +66,8 @@ COPY --from=frontend /app/src/frontend/dist/ /app/static
 # Setup configs
 VOLUME /app/config
 ADD docker/supervisor.conf /etc/supervisor/conf.d/app.conf
-ADD docker/settings.json /app/config/settings.json
-RUN ln -sf /app/config/settings.json /app/static/settings.json
+ADD docker/settings.js /app/config/settings.js
+RUN ln -sf /app/config/settings.js /app/static/settings.js
 ADD docker/nginx.conf /etc/nginx/sites-enabled/default
 
 # http

@@ -127,9 +127,13 @@ SENTRY\_ENV | default | Sentry [environment](https://docs.sentry.io/error-report
 
 [1] This key is **publicly readable**, restrict its usage to the used website (e.g. https://lecture2gether.eu or equivalent IP address) and Google Drive in the Google API console.
 
-The frontend is configured via a `settings.json` file which should be reachable on a
-request to `/settings.json` from the running browser application.
-The format is as follows:
+The frontend is configured via a `settings.js` file which should be reachable on a
+request to `/settings.js` from the running browser application.
+This Javascript file **must** register the variable `window.L2GO_SETTINGS` which **must** be an object defining the
+below described properties.
+It can be mounted into our provided container under `/app/config/settings.js`.
+
+The frontend settings object is defined as follows:
 ```
 {
     "apiRoot": <string>,        // Under which url the server is reachable for http api calls

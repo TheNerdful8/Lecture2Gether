@@ -20,10 +20,7 @@ import Lecture2GetherFooter from '@/components/Lecture2GetherFooter.vue';
 })
 export default class App extends Vue {
     created(): void {
-        this.$store.dispatch('fetchSettings')
-            .then(() => {
-                connect(this.$store);
-            });
+        connect(this.$store)
         window.addEventListener('beforeunload', this.onClose);
     }
 
