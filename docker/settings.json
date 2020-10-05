@@ -1,6 +1,0 @@
-{
-  "apiRoot": "/api/",
-  "socketioHost": "",
-  "environment": "",
-  "sentry_dsn": ""
-}

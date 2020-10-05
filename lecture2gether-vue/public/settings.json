@@ -1,5 +1,0 @@
-{
-  "apiRoot": "http://localhost:5000/api/",
-  "socketioHost": "http://localhost:5000",
-  "environment": "dev"
-}

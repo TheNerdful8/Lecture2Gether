@@ -11,4 +11,4 @@ configMapGenerator:
   - name: "backend"
   - name: "frontend"
     files:
-      - "settings.json=./docker/settings.json"
+      - "settings.js=./docker/settings.js"
