@@ -55,8 +55,7 @@ FROM node:current-buster-slim as frontend
 ADD lecture2gether-vue /app/src/frontend
 WORKDIR /app/src/frontend
 RUN rm -rf node_modules
-RUN rm -rf package-lock.json
-RUN npm install
+RUN npm ci
 RUN npm run build
 
 
