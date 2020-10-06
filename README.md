@@ -125,7 +125,7 @@ GOOGLE\_DRIVE\_API\_KEY_FRONTEND | *empty* | Google Drive API key, used to acces
 SENTRY\_DSN | *empty* | Sentry connection [DSN](https://docs.sentry.io/error-reporting/configuration/?platform=python#dsn)
 SENTRY\_ENV | default | Sentry [environment](https://docs.sentry.io/error-reporting/configuration/?platform=python#environment)
 
-[1] This key is **publicly readable**, restrict its usage to the used website (e.g. https://lecture2gether.eu or equivalent IP address) and Google Drive in the Google API console.
+[1] This key is **publicly readable**, restrict its usage to the used website (e.g. https://lecture2gether.eu) and Google Drive in the Google API console.
 
 The frontend is configured via a `settings.js` file which should be reachable on a
 request to `/settings.js` from the running browser application.
