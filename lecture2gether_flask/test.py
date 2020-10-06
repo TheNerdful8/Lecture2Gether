@@ -79,14 +79,14 @@ def test_video_parsing():
 def test_l2go_metadata():
     meta_data_provider = L2GoMetaDataProvider('https://lecture2go.uni-hamburg.de/l2go/-/get/l/4577')
     meta_data = meta_data_provider.get_meta_data()
-    assert meta_data['url'] == 'https://lecture2go.uni-hamburg.de/l2go/-/get/l/4577'
-    assert meta_data['streamUrl'] == 'https://fms.rrz.uni-hamburg.de/vod/_definst/mp4:4l2gkoowiso/00.000_Prof.Dr.OlafAsbach_2016-03-24_14-37.mp4/playlist.m3u8'
-    assert meta_data['title'] == 'Dies Academicus'
-    assert meta_data['creator'] == 'Prof. Dr. Olaf Asbach'
-    assert meta_data['creatorLink'] == 'https://lecture2go.uni-hamburg.de/l2go/-/get/0/0/0/0/0/?_lgopenaccessvideos_WAR_lecture2goportlet_searchQuery=Prof. Dr. Olaf Asbach'
-    assert meta_data['date'] == datetime(year=2016, month=3, day=24)
-    assert meta_data['license'] == 'UHH-L2G'
-    assert meta_data['licenseLink'] == 'https://lecture2go.uni-hamburg.de/license-l2go'
+    assert meta_data['url'] == 'https://lecture2go.uni-hamburg.de/l2go/-/get/l/4577', f" The actual url was {meta_data['url']}"
+    assert meta_data['streamUrl'] == 'https://fms.rrz.uni-hamburg.de/vod/_definst/mp4:4l2gkoowiso/00.000_Prof.Dr.OlafAsbach_2016-03-24_14-37.mp4/playlist.m3u8', f" The actual stream url was {meta_data['streamUrl']}"
+    assert meta_data['title'] == 'Dies Academicus', f" The actual title was {meta_data['title']}"
+    assert meta_data['creator'] == 'Prof. Dr. Olaf Asbach', f" The creator url was {meta_data['creator']}"
+    assert meta_data['creatorLink'] == 'https://lecture2go.uni-hamburg.de/l2go/-/get/0/0/0/0/0/?_lgopenaccessvideos_WAR_lecture2goportlet_searchQuery=Prof. Dr. Olaf Asbach', f" The actual creatorLink was {meta_data['creatorLink']}"
+    assert meta_data['date'] == datetime(year=2016, month=3, day=24), f" The date was {meta_data['date']}"
+    assert meta_data['license'] == 'UHH-L2G', f" The license was {meta_data['license']}"
+    assert meta_data['licenseLink'] == 'https://lecture2go.uni-hamburg.de/license-l2go', f" The licenseLink was {meta_data['licenseLink']}"
 
 
 def test_google_drive_metadata():
@@ -96,10 +96,10 @@ def test_google_drive_metadata():
     url = "https://drive.google.com/file/d/1WESi5lqI-o8N4-_gJJE4R-X87C6EyejB/view?usp=sharing"
     meta_data_provider = GoogleDriveMetaDataProvider(url)
     meta_data = meta_data_provider.get_meta_data()
-    assert meta_data['url'] == url
-    assert meta_data['streamUrl'] == f'https://www.googleapis.com/drive/v3/files/1WESi5lqI-o8N4-_gJJE4R-X87C6EyejB?key={str(os.environ["GOOGLE_DRIVE_API_KEY_FRONTEND"])}&alt=media&l2g_media_type=video/webm'
-    assert meta_data['title'] == 'CI_VIDEO_DO_NOT_TOUCH.webm'
-    assert meta_data['mimeType'] == 'video/webm'
+    assert meta_data['url'] == url, f" The actual url was {meta_data['url']}"
+    assert meta_data['streamUrl'] == f'https://www.googleapis.com/drive/v3/files/1WESi5lqI-o8N4-_gJJE4R-X87C6EyejB?key={str(os.environ["GOOGLE_DRIVE_API_KEY_FRONTEND"])}&alt=media&l2g_media_type=video/webm',  f" The actual stream url was {meta_data['streamUrl']}"
+    assert meta_data['title'] == 'CI_VIDEO_DO_NOT_TOUCH.webm', f" The actual title was {meta_data['title']}"
+    assert meta_data['mimeType'] == 'video/webm', f" The actual mimeType was {meta_data['mimeType']}"
 
 
 def test_youtube_metadata():
@@ -108,13 +108,13 @@ def test_youtube_metadata():
 
     meta_data_provider = YouTubeMetaDataProvider('https://youtu.be/qxyQCD3QT6Y')
     meta_data = meta_data_provider.get_meta_data()
-    assert meta_data['url'] == 'https://www.youtube.com/watch?v=qxyQCD3QT6Y'
-    assert meta_data['streamUrl'] == 'https://www.youtube.com/watch?v=qxyQCD3QT6Y'
-    assert meta_data['title'] == 'Cravendale Last Marble Standing E2 Balancing - Marble Race by Jelle\'s Marble Runs'
-    assert meta_data['creator'] == 'Jelle\'s Marble Runs'
-    assert meta_data['creatorLink'] == 'https://www.youtube.com/channel/UCYJdpnjuSWVOLgGT9fIzL0g'
-    assert meta_data['date'] == datetime(year=2020, month=6, day=5, hour=17, minute=0, second=13)
-    assert meta_data['license'] == 'youtube'
+    assert meta_data['url'] == 'https://www.youtube.com/watch?v=qxyQCD3QT6Y', f" The actual url was {meta_data['url']}"
+    assert meta_data['streamUrl'] == 'https://www.youtube.com/watch?v=qxyQCD3QT6Y', f" The actual streamUrl was {meta_data['streamUrl']}"
+    assert meta_data['title'] == 'Cravendale Last Marble Standing E2 Balancing - Marble Race by Jelle\'s Marble Runs', f" The actual title was {meta_data['title']}"
+    assert meta_data['creator'] == 'Jelle\'s Marble Runs', f" The actual creator was {meta_data['creator']}"
+    assert meta_data['creatorLink'] == 'https://www.youtube.com/channel/UCYJdpnjuSWVOLgGT9fIzL0g', f" The actual creatorLink was {meta_data['creatorLink']}"
+    assert meta_data['date'] == datetime(year=2020, month=6, day=5, hour=17, minute=0, second=13), f" The actual date was {meta_data['date']}"
+    assert meta_data['license'] == 'youtube', f" The actual license was {meta_data['license']}"
     assert meta_data['licenseLink'] is None
 
 
@@ -125,8 +125,8 @@ def test_youtube_metadata_no_api_key():
     meta_data_provider = YouTubeMetaDataProvider('https://youtu.be/qxyQCD3QT6Y')
     meta_data = meta_data_provider.get_meta_data()
     print(meta_data)
-    assert meta_data['url'] == 'https://www.youtube.com/watch?v=qxyQCD3QT6Y'
-    assert meta_data['streamUrl'] == 'https://www.youtube.com/watch?v=qxyQCD3QT6Y'
+    assert meta_data['url'] == 'https://www.youtube.com/watch?v=qxyQCD3QT6Y', f" The actual url was {meta_data['url']}"
+    assert meta_data['streamUrl'] == 'https://www.youtube.com/watch?v=qxyQCD3QT6Y', f" The actual streamUrl was {meta_data['streamUrl']}"
     assert meta_data['title'] is None
     assert meta_data['creator'] is None
     assert meta_data['creatorLink'] is None
