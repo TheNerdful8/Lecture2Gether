@@ -4,7 +4,7 @@ import json
 import requests
 import googleapiclient.discovery
 from googleapiclient.errors import HttpError
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import urlparse, parse_qs, unquote_plus
 from datetime import datetime
 from bs4 import BeautifulSoup
 
@@ -24,8 +24,8 @@ class APIUnauthorizedException(Exception):
 class MetaDataProvider():
     def __init__(self, video_url):
         self.video_meta_data = {
-            "url": video_url,
-            "streamUrl": video_url,
+            "url": unquote_plus(video_url),
+            "streamUrl": unquote_plus(video_url),
             "title": None,
             "creator": None,
             "creatorLink": None,
@@ -77,7 +77,7 @@ class L2GoMetaDataProvider(MetaDataProvider):
         return super().get_meta_data()
 
     def _parse_stream_url(self):
-        return re.search('https://[^"]*m3u8', str(self.soup)).group()
+        return unquote_plus(re.search('https://[^"]*m3u8', str(self.soup)).group())
 
     def _parse_title(self):
         return self.soup.find("h2", {"class": "meta-title"}).text.strip()
@@ -89,7 +89,7 @@ class L2GoMetaDataProvider(MetaDataProvider):
         _creator_link = self.soup.find("div", {"class": "meta-creators"}).find('a')['href']
         if _creator_link is None:
             return None
-        return f"{self.parsed_url.scheme}://{self.parsed_url.netloc}{_creator_link}"
+        return unquote_plus(f"{self.parsed_url.scheme}://{self.parsed_url.netloc}{_creator_link}")
 
     def _parse_date(self):
         _date_string = self.soup.find("div", {"class": "meta-creators"}).find("div", "date").text.strip()
