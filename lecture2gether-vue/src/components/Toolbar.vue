@@ -45,7 +45,7 @@ import { Watch, Prop } from 'vue-property-decorator';
 import { Store } from 'vuex';
 import { AuthState } from '@/plugins/store/player';
 import { checkURL } from '@/mediaURLs';
-import { VideoMetaDataWithUrl } from '@/api';
+import { VideoMetaData } from '@/api';
 
 
 @Component({})
@@ -62,7 +62,7 @@ export default class Toolbar extends Vue {
     // The url variable contains the url from the text field at this point.
     @Watch('$store.state.player.password')
     async onWatch() {
-        async function getVideoMetaData(store: Store<any>, url: string, pass = ''): Promise<VideoMetaDataWithUrl> {
+        async function getVideoMetaData(store: Store<any>, url: string, pass = ''): Promise<VideoMetaData> {
             const apiUrl = `${store.state.settings.apiRoot}metadata`;
             return fetch(apiUrl, {
                 method: 'POST',
@@ -103,7 +103,7 @@ export default class Toolbar extends Vue {
             } else {
                 this.urlIsValid = true;
                 this.$store.dispatch('setUrl', videoMetaData.streamUrl);
-                videoMetaData.streamUrl = '';
+                delete videoMetaData.streamUrl;
                 this.$store.dispatch('setVideoMetaData', videoMetaData);
             }
         } else {
