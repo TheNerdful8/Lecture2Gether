@@ -1,16 +1,6 @@
 export interface VideoMetaData {
     url: string,
-    title: string|null,
-    creator: string|null,
-    creatorLink: string|null,
-    date: string|null,
-    license: string|null,
-    licenseLink: string|null,
-}
-
-export interface VideoMetaDataWithUrl {
-    url: string,
-    streamUrl: string,
+    streamUrl?: string,
     title: string|null,
     creator: string|null,
     creatorLink: string|null,
