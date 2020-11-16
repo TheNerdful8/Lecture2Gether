@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 import os
-from datetime import datetime
-
-import os
+import re
 import time
+from datetime import datetime
 
 from app import app, socketio
 from meta_data_provider import L2GoMetaDataProvider, YouTubeMetaDataProvider, GoogleDriveMetaDataProvider
@@ -80,7 +79,7 @@ def test_l2go_metadata():
     meta_data_provider = L2GoMetaDataProvider('https://lecture2go.uni-hamburg.de/l2go/-/get/l/4577')
     meta_data = meta_data_provider.get_meta_data()
     assert meta_data['url'] == 'https://lecture2go.uni-hamburg.de/l2go/-/get/l/4577', f" The actual url was {meta_data['url']}"
-    assert meta_data['streamUrl'] == 'https://fms.rrz.uni-hamburg.de/vod/_definst/mp4:4l2gkoowiso/00.000_Prof.Dr.OlafAsbach_2016-03-24_14-37.mp4/playlist.m3u8', f" The actual stream url was {meta_data['streamUrl']}"
+    assert re.fullmatch(r"https://fms\d*\.rrz\.uni-hamburg\.de/vod/_definst/mp4:4l2gkoowiso/00\.000_Prof\.Dr\.OlafAsbach_2016-03-24_14-37\.mp4/playlist\.m3u8", meta_data['streamUrl']) is not None, f"The actual stream url was {meta_data['streamUrl']}"
     assert meta_data['title'] == 'Dies Academicus', f" The actual title was {meta_data['title']}"
     assert meta_data['creator'] == 'Prof. Dr. Olaf Asbach', f" The creator url was {meta_data['creator']}"
     assert meta_data['creatorLink'] == 'https://lecture2go.uni-hamburg.de/l2go/-/get/0/0/0/0/0/?_lgopenaccessvideos_WAR_lecture2goportlet_searchQuery=Prof. Dr. Olaf Asbach', f" The actual creatorLink was {meta_data['creatorLink']}"
