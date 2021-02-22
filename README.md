@@ -37,7 +37,7 @@ You can either build the image from source or use one of the provided versions f
 
 ```bash
 # for building from source
-docker build -t lecture2gether
+docker build -t lecture2gether .
 docker run -p 8000:8000 lecture2gether
 
 # for running from docker hub
