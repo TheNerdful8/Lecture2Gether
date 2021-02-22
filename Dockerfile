@@ -19,6 +19,7 @@ FROM debian:buster AS base
 # Install normal dependencies
 RUN apt-get update
 RUN apt-get -y --no-install-recommends install python3 python3-pip python3-setuptools python3-openssl netbase nginx redis-server supervisor build-essential python3-dev rustc cargo
+RUN pip3 install pip --user --upgrade
 
 
 # Build dev-image
