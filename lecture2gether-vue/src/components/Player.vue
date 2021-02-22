@@ -126,35 +126,34 @@ export default class L2gPlayer extends Vue {
         if (this.playPauseAfterFirstSeek) {
             // We now have the correct time and pause state and can set the player's pause state accordingly.
             // Then, we are ready to be a regular player and the setup is finished.
-            this.onPausedChange();
+            //this.onPausedChange();
             this.playPauseAfterFirstSeek = false;
             return;
         }
-        if (this.skipNextPlaySend) {
-            this.skipNextPlaySend = false;
-            return;
+        console.log("play event");
+        if (this.$store.state.player.paused != false){
+            this.$store.dispatch('setVideoState', {
+                paused: false,
+                seconds: 0,
+                playbackRate: this.player.playbackRate(),
+            });
         }
-        this.$store.dispatch('setVideoState', {
-            paused: false,
-            seconds: this.player.currentTime(),
-            playbackRate: this.player.playbackRate(),
-        });
     }
 
     onPlayerPause() {
         if (this.playPauseAfterFirstSeek) {
+            //this.onPausedChange();
             this.playPauseAfterFirstSeek = false;
             return;
         }
-        if (this.skipNextPauseSend) {
-            this.skipNextPauseSend = false;
-            return;
+        console.log("pause event");
+        if (this.$store.state.player.paused != true){
+            this.$store.dispatch('setVideoState', {
+                paused: true,
+                seconds: 0,
+                playbackRate: this.player.playbackRate(),
+            });
         }
-        this.$store.dispatch('setVideoState', {
-            paused: true,
-            seconds: this.player.currentTime(),
-            playbackRate: this.player.playbackRate(),
-        });
     }
 
     onPlayerSeeked() {
@@ -206,16 +205,9 @@ export default class L2gPlayer extends Vue {
 
     @Watch('$store.state.player.paused')
     async onPausedChange() {
-        if (this.$store.state.player.sender === this.$store.state.socketId) {
-            this.skipNextPauseSend = false;
-            this.skipNextPlaySend = false;
-            return;
-        }
         if (this.$store.state.player.paused) {
-            this.skipNextPauseSend = true;
             this.player.pause();
         } else {
-            this.skipNextPlaySend = true;
             this.player.play();
         }
     }
@@ -234,11 +226,6 @@ export default class L2gPlayer extends Vue {
 
     @Watch('$store.state.player.videoUrl')
     async onURLChange() {
-        if (this.$store.state.player.sender === this.$store.state.socketId) {
-            this.skipNextVideoURLSend = false;
-            return;
-        }
-        this.skipNextVideoURLSend = true;
         this.player.src(this.getSourceFromURL(this.$store.state.player.videoUrl));
     }
 
