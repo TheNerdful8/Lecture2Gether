@@ -5,8 +5,8 @@ import { VideoMetaData } from '@/api'
 export class PlayerState {
     videoMetaData: VideoMetaData|null = null;
     videoUrl: string = '';
-    paused: boolean = false;
-    seconds: number = 0;
+    paused: boolean = true;
+    seconds: number = -1;
     playbackRate: number = 1;
     password = ''
     auth = AuthState.UNNECESSARY
@@ -41,7 +41,7 @@ export const playerModule: Module<PlayerState, any> = {
         },
         setSender: (state, payload) => {
             state.sender = payload;
-        }
+        },
     },
 
     actions: {
