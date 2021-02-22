@@ -115,7 +115,6 @@ export default class L2gPlayer extends Vue {
 
             return
         }
-        console.log("play event");
         if (this.$store.state.player.paused != false){
             this.$store.dispatch('setVideoState', {
                 paused: false,
@@ -126,7 +125,6 @@ export default class L2gPlayer extends Vue {
     }
 
     onPlayerPause() {
-        console.log("pause event");
         if (this.$store.state.player.paused != true){
             this.$store.dispatch('setVideoState', {
                 paused: true,
@@ -179,7 +177,6 @@ export default class L2gPlayer extends Vue {
 
     @Watch('$store.state.player.paused')
     async onPausedChange() {
-        console.log(this.$store.state.player.paused);
         if (this.$store.state.player.paused) {
             this.player.pause();
         } else {
@@ -189,7 +186,6 @@ export default class L2gPlayer extends Vue {
 
     @Watch('$store.state.player.seconds')
     async onSecondsChange() {
-        console.log("Seconds store changes", this.$store.state.player.seconds);
         if (Math.abs(this.player.currentTime() - this.$store.state.player.seconds) > 1) {
             this.player.currentTime(this.$store.state.player.seconds);
         }
