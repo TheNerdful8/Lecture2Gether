@@ -175,8 +175,8 @@ def on_create(init_state):
             break
 
     # Annotate state with timestamp
-    state = add_current_time_to_state(init_state)
-    state = add_set_time_to_state(state)
+    state = add_set_time_to_state(init_state)
+    state = add_current_time_to_state(state)
 
     # Create room in db
     room = {'state': state, 'count': 1}
@@ -282,8 +282,8 @@ def on_video_state_set(state):
         return {'status_code': 403}, 403
 
     # Annotate state with server timestamp
-    state = add_current_time_to_state(state)
     state = add_set_time_to_state(state)
+    state = add_current_time_to_state(state)
 
     # Get room from db
     room = json.loads(db.hget('rooms', room_token))

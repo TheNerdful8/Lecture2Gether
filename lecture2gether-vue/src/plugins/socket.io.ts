@@ -65,14 +65,11 @@ export const connect = (store: Store<any>) => {
         if (!state.paused) {
             seconds = Math.max(0, (state.currentTime - state.setTime) * state.playbackRate + state.seconds);
         }
+        state.seconds = seconds;
         store.commit('setSender', state.sender);
-        store.commit('setVideoState', {
-            seconds,
-            paused: state.paused,
-            playbackRate: state.playbackRate,
-        })
-        store.commit('setVideoMetaData', state.videoMetaData)
-        store.commit('setUrl', state.videoUrl)
+        store.commit('setVideoState', state);
+        store.commit('setVideoMetaData', state.videoMetaData);
+        store.commit('setUrl', state.videoUrl);
     });
 
     socket.on(receivedEvents.roomUserCountUpdated, (event: RoomUserCountEvent) => {
